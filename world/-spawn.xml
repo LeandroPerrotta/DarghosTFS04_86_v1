@@ -6407,22 +6407,21 @@
     <monster name="Wasp" x="22" y="-23" z="7" spawntime="60"/>
     <monster name="Wasp" x="25" y="-18" z="7" spawntime="60"/>
     <monster name="Wasp" x="24" y="-14" z="7" spawntime="60"/>
+    <monster name="Wasp" x="2" y="-10" z="7" spawntime="60"/>
+    <monster name="Wasp" x="3" y="-8" z="7" spawntime="60"/>
     <monster name="Wasp" x="19" y="-8" z="7" spawntime="60"/>
-    <monster name="Wasp" x="-18" y="-6" z="7" spawntime="60"/>
-    <monster name="Wasp" x="3" y="-5" z="7" spawntime="60"/>
-    <monster name="Wasp" x="-7" y="-4" z="7" spawntime="60"/>
+    <monster name="Wasp" x="-23" y="-4" z="7" spawntime="60"/>
     <monster name="Wasp" x="10" y="-3" z="7" spawntime="60"/>
-    <monster name="Wasp" x="-12" y="-1" z="7" spawntime="60"/>
-    <monster name="Wasp" x="-2" y="3" z="7" spawntime="60"/>
-    <monster name="Wasp" x="-14" y="6" z="7" spawntime="60"/>
+    <monster name="Wasp" x="15" y="2" z="7" spawntime="60"/>
+    <monster name="Wasp" x="-22" y="3" z="7" spawntime="60"/>
     <monster name="Wasp" x="17" y="6" z="7" spawntime="60"/>
-    <monster name="Wasp" x="-13" y="8" z="7" spawntime="60"/>
-    <monster name="Wasp" x="3" y="9" z="7" spawntime="60"/>
+    <monster name="Wasp" x="-20" y="7" z="7" spawntime="60"/>
+    <monster name="Wasp" x="-22" y="9" z="7" spawntime="60"/>
     <monster name="Wasp" x="25" y="12" z="7" spawntime="60"/>
     <monster name="Wasp" x="14" y="13" z="7" spawntime="60"/>
-    <monster name="Wasp" x="6" y="18" z="7" spawntime="60"/>
-    <monster name="Wasp" x="-18" y="23" z="7" spawntime="60"/>
-    <monster name="Wasp" x="-5" y="24" z="7" spawntime="60"/>
+    <monster name="Wasp" x="8" y="14" z="7" spawntime="60"/>
+    <monster name="Wasp" x="7" y="18" z="7" spawntime="60"/>
+    <monster name="Wasp" x="1" y="24" z="7" spawntime="60"/>
     <monster name="Wasp" x="5" y="24" z="7" spawntime="60"/>
   </spawn>
   <spawn centerx="2301" centery="1724" centerz="7" radius="10">
@@ -7043,6 +7042,9 @@
   </spawn>
   <spawn centerx="2546" centery="1830" centerz="7" radius="5">
     <monster name="Scorpion" x="2" y="-3" z="7" spawntime="60"/>
+  </spawn>
+  <spawn centerx="2220" centery="1831" centerz="7" radius="1">
+    <npc name="quendor.postman" x="0" y="0" z="7" spawntime="60"/>
   </spawn>
   <spawn centerx="2089" centery="1836" centerz="7" radius="5">
     <monster name="Amazon" x="3" y="-3" z="7" spawntime="120"/>

@@ -81,6 +81,7 @@
 	<!-- BANSHEE QUEST -->
 
 	<movevent type="StepIn" itemid="1387" event="script" value="game/teleport.lua"/>		
+	<movevent type="StepIn" actionid="30101-30199" event="script" value="game/teleport.lua"/>	
 
 	<!-- CUSTOM ITEMS -->
 	<!-- Boots -->

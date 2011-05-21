@@ -49,6 +49,8 @@ function onStepIn(cid, item, position, fromPosition)
 	if(item.actionid == 189 and not isPremium(cid)) then
 		pushBack(cid, position, fromPosition, true)
 		return true
+	else
+		return false
 	end
 
 	local gender = item.actionid - 186

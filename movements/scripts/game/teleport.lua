@@ -7,6 +7,14 @@ function onStepIn(cid, item, position, fromPosition)
 		doPlayerSendTextMessage(cid, MESSAGE_STATUS_DEFAULT,"Now you are a citizen of "..city..".")
 		
 		return TRUE
+	elseif(item.actionid > 30100 and item.actionid < 30200) then
+	
+		local town_id = item.actionid - 30100
+		local town_name = getTownNameById(town_id)
+		doTeleportThing(cid, getTownTemplePosition(town_id))
+		doPlayerSendTextMessage(cid, MESSAGE_STATUS_DEFAULT,"Bem vindo a cidade de ".. town_name .."!")
+		
+		return TRUE
 	end
 	
 	if(item.actionid == aid.CHURCH_PORTAL) then
@@ -28,7 +36,7 @@ function onStepIn(cid, item, position, fromPosition)
 		doTeleportThing(cid, destPos)
 		doSendMagicEffect(destPos, CONST_ME_MAGIC_BLUE)	
 		
-		doPlayerSendCancel(cid, "Voc� n�o pode passar por aqui.")
+		doPlayerSendCancel(cid, "Você não pode passar por aqui.")
 	end
 	
 	return TRUE

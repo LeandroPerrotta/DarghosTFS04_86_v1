@@ -295,6 +295,12 @@
   <house name="General Depot 3" houseid="474" entryx="1266" entryy="2217" entryz="7" rent="1500" townid="6" size="16"/>
   <house name="General Depot 4" houseid="475" entryx="1250" entryy="2213" entryz="6" rent="1500" townid="6" size="16"/>
   <house name="General Depot 5" houseid="476" entryx="1269" entryy="2213" entryz="6" rent="1500" townid="6" size="16"/>
+  <house name="" houseid="477" entryx="0" entryy="0" entryz="0" rent="0" townid="0" size="55"/>
+  <house name="" houseid="482" entryx="0" entryy="0" entryz="0" rent="0" townid="0" size="38"/>
+  <house name="" houseid="485" entryx="0" entryy="0" entryz="0" rent="0" townid="0" size="107"/>
+  <house name="" houseid="486" entryx="0" entryy="0" entryz="0" rent="0" townid="0" size="30"/>
+  <house name="" houseid="487" entryx="0" entryy="0" entryz="0" rent="0" townid="0" size="57"/>
+  <house name="" houseid="513" entryx="0" entryy="0" entryz="0" rent="0" townid="0" size="11"/>
   <house name="West Palace I" houseid="517" entryx="1075" entryy="1121" entryz="7" rent="19000" townid="9" size="51"/>
   <house name="West Palace II" houseid="518" entryx="1075" entryy="1129" entryz="7" rent="19000" townid="9" size="51"/>
   <house name="West GuildHouse I" houseid="519" entryx="1075" entryy="1143" entryz="7" rent="47200" guildhall="1" townid="9" size="92"/>

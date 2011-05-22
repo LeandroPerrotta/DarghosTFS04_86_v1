@@ -388,7 +388,7 @@
   <house name="Fame Town 5" houseid="620" entryx="2241" entryy="1829" entryz="6" rent="4000" townid="1" size="13"/>
   <house name="Fame Town 10" houseid="621" entryx="2244" entryy="1829" entryz="6" rent="4000" townid="1" size="13"/>
   <house name="Fame Town 4" houseid="622" entryx="2235" entryy="1828" entryz="6" rent="22000" townid="1" size="24"/>
-  <house name="Fame Town 3" houseid="623" entryx="2235" entryy="1834" entryz="6" rent="22000" townid="1" size="25"/>
+  <house name="Fame Town 3" houseid="623" entryx="2235" entryy="1833" entryz="6" rent="22000" townid="1" size="25"/>
   <house name="East Entrance Flat 4" houseid="624" entryx="2251" entryy="1844" entryz="6" rent="4000" townid="1" size="12"/>
   <house name="Paradise Lake" houseid="626" entryx="2241" entryy="1848" entryz="7" rent="25000" townid="1" size="48"/>
   <house name="Champion's Lake" houseid="627" entryx="2247" entryy="1848" entryz="7" rent="2400" townid="1" size="16"/>
@@ -411,7 +411,7 @@
   <house name="Depot Shop 7" houseid="647" entryx="2193" entryy="1828" entryz="6" rent="4500" townid="1" size="15"/>
   <house name="Elite Champion 1" houseid="648" entryx="2205" entryy="1804" entryz="7" rent="40000" townid="1" size="102"/>
   <house name="Elite Champion 2" houseid="649" entryx="2215" entryy="1804" entryz="7" rent="40000" townid="1" size="102"/>
-  <house name="Elite Champion 3" houseid="650" entryx="2197" entryy="1812" entryz="7" rent="15000" townid="1" size="59"/>
+  <house name="Elite Champion 3" houseid="650" entryx="2197" entryy="1812" entryz="7" rent="15000" townid="1" size="48"/>
   <house name="The Temples House" houseid="651" entryx="2229" entryy="1864" entryz="7" rent="6000" townid="1" size="18"/>
   <house name="East Entrance Flat 3" houseid="652" entryx="2242" entryy="1844" entryz="6" rent="4000" townid="1" size="12"/>
   <house name="Wall Flat 13" houseid="653" entryx="2237" entryy="1798" entryz="5" rent="4000" townid="1" size="18"/>

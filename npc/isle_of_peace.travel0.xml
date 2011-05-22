@@ -75,12 +75,12 @@
 	<interact keywords="quendor" topic="3">	
 		<response text="Have a good luck in your new journey!">
 			<action name="idle" value="1"/>
-			<action name="teleport" value="1925;1865;6"/>
-			<action name="effect" value="teleport"/>
 			
 			<action name="script">
 			<![CDATA[
 			doPlayerSetTown(cid, 1)
+			doTeleportThing(cid, getTownTemplePosition(1))
+			
 			setRateStage(cid, getPlayerLevel(cid))
 			
 			if(darghos_distro == DISTROS_TFS) then

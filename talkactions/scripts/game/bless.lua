@@ -1,7 +1,9 @@
+local usePvPBless = false
+
 function onSay(cid, words, param)	
 	local blesses = {
 		{name="First", location="Quendor"},
-		{name="Second", location="Thorn"},
+		{name="Second", location="Quendor Palace"},
 		{name="Third", location="Aaragon"},
 		{name="Fourth", location="Thaun"},
 		{name="Fifth", location="Salazart"}
@@ -21,12 +23,14 @@ function onSay(cid, words, param)
 		end
 	end
 	
-	message = message .. "\nPvP Bless (twist of fate): "
-	
-	if(getPlayerPVPBlessing(cid)) then	
-		message = message .. "You have the PvP Bless. Your regular blessings are protected when you die in an duel and 40% or more of the total damage received are from another human player (not monsters)!"
-	else
-		message = message .. "You do not have the PvP Bless, buy it to protect your regular blessings in any temple NPC!"
+	if(usePvPBless) then
+		message = message .. "\nPvP Bless (twist of fate): "
+		
+		if(getPlayerPVPBlessing(cid)) then	
+			message = message .. "You have the PvP Bless. Your regular blessings are protected when you die in an duel and 40% or more of the total damage received are from another human player (not monsters)!"
+		else
+			message = message .. "You do not have the PvP Bless, buy it to protect your regular blessings in any temple NPC!"
+		end
 	end
 	
 	message = message .. "\nItems drop: "

@@ -8,6 +8,13 @@ local TELEPORT_USAGE_INTERVAL = 60 * 30 -- 30 minutos
 
 function onUse(cid, item, frompos, item2, topos)
 
+	local onIsland = (getPlayerStorageValue(cid, sid.IS_ON_TRAINING_ISLAND) == 1) and true or false
+	
+	if(onIsland) then
+		doPlayerSendCancel(cid, "Você não pode usar este item neste lugar!")
+		return	
+	end
+
 	if(hasCondition(cid, CONDITION_INFIGHT) == TRUE) then
 		doPlayerSendCancel(cid, "Você não pode usar este item enquanto estiver em batalha!")
 		return

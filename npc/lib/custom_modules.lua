@@ -124,9 +124,11 @@ function D_CustomNpcModules.travelTrainingIsland(cid, message, keywords, paramet
 		
 		if(parameters.entering ~= nil and parameters.entering) then
 			setPlayerStorageValue(cid, sid.IS_ON_TRAINING_ISLAND, 1)
+			doUpdateCreaturePassable(cid)
 		else
 			setPlayerStorageValue(cid, sid.IS_ON_TRAINING_ISLAND, STORAGE_NULL)
 			setPlayerStorageValue(cid, sid.NEXT_STAMINA_UPDATE, STORAGE_NULL)
+			doUpdateCreatureImpassable(cid)
 		end
 
 		doTeleportThing(cid, parameters.destination, false)

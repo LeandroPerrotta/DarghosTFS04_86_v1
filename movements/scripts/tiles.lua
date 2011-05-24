@@ -24,6 +24,12 @@ function onStepIn(cid, item, position, fromPosition)
 		doTransformItem(item.uid, increasingItems[item.itemid])
 	end
 
+	-- DARGHOS_CHANGE
+	if(movementTileOnStepIn(cid, item, position, fromPosition)) then
+		return true
+	end
+	-- END
+
 	if(item.actionid >= 194 and item.actionid <= 196) then
 		local f = checkCreature[item.actionid - 193]
 		if(f(cid)) then
@@ -137,6 +143,13 @@ function onStepOut(cid, item, position, fromPosition)
  
 	if(not isPlayerGhost(cid)) then
 		doTransformItem(item.uid, decreasingItems[item.itemid])
+		
+		-- DARGHOS_CHANGE
+		if(movementTileOnStepOut(cid, item, position, fromPosition)) then
+			return true
+		end		
+		-- END				
+		
 		return true
 	end
 

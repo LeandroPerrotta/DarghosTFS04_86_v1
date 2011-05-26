@@ -6,62 +6,45 @@ dofile(getDataDir() .. 'npc/lib/npc_system.lua')
 dofile(getDataDir() .. 'npc/lib/custom_modules.lua')
 dofile(getDataDir() .. 'npc/lib/addonItems.lua')
 
+function selfIdle()
+	following = false
+	attacking = false
+
+	selfAttackCreature(0)
+	target = 0
+end
+
 function selfSayChannel(cid, message)
 	return selfSay(message, cid, false)
 end
 
-function selfMoveToThing(id)
-	errors(false)
-	local thing = getThing(id)
-
-	errors(true)
-	if(thing.uid == 0) then
+function selfMoveToCreature(id)
+	if(not id or id == 0) then
 		return
 	end
 
-	local t = getThingPosition(id)
+	local t = getCreaturePosition(id)
+	if(not t.x or t.x == nil) then
+		return
+	end
+
 	selfMoveTo(t.x, t.y, t.z)
 	return
 end
 
-function selfMoveTo(x, y, z)
-	local position = {x = 0, y = 0, z = 0}
-	if(type(x) ~= "table") then
-		position = Position(x, y, z)
-	else
-		position = x
-	end
-
-	if(isValidPosition(position)) then
-		doSteerCreature(getNpcId(), position)
-	end
-end
-
-function selfMove(direction, flags)
-	local flags = flags or 0
-	doMoveCreature(getNpcId(), direction, flags)
-end
-
-function selfTurn(direction)
-	doCreatureSetLookDirection(getNpcId(), direction)
-end
-
-function getNpcDistanceTo(id)
-	errors(false)
-	local thing = getThing(id)
-
-	errors(true)
-	if(thing.uid == 0) then
+function getNpcDistanceToCreature(id)
+	if(not id or id == 0) then
+		selfIdle()
 		return nil
 	end
 
 	local c = getCreaturePosition(id)
-	if(not isValidPosition(c)) then
+	if(not c.x or c.x == 0) then
 		return nil
 	end
 
 	local s = getCreaturePosition(getNpcId())
-	if(not isValidPosition(s) or s.z ~= c.z) then
+	if(not s.x or s.x == 0 or s.z ~= c.z) then
 		return nil
 	end
 
@@ -82,7 +65,11 @@ function doMessageCheck(message, keyword)
 end
 
 function doNpcSellItem(cid, itemid, amount, subType, ignoreCap, inBackpacks, backpack)
-	local amount, subType, ignoreCap, item = amount or 1, subType or 1, ignoreCap and true or false, 0
+	local amount = amount or 1
+	local subType = subType or 1
+	local ignoreCap = ignoreCap and true or false
+
+	local item = 0
 	if(isItemStackable(itemid)) then
 		if(isItemRune(itemid)) then
 			amount = amount * subType
@@ -102,7 +89,8 @@ function doNpcSellItem(cid, itemid, amount, subType, ignoreCap, inBackpacks, bac
 
 	local a = 0
 	if(inBackpacks) then
-		local container, b = doCreateItemEx(backpack, 1), 1
+		local container = doCreateItemEx(backpack, 1)
+		local b = 1
 		for i = 1, amount do
 			item = doAddContainerItem(container, itemid, subType)
 			if(itemid == ITEM_PARCEL) then
@@ -142,7 +130,7 @@ function doNpcSellItem(cid, itemid, amount, subType, ignoreCap, inBackpacks, bac
 	return a, 0
 end
 
-function doRemoveItemIdFromPosition(id, n, position)
+function doRemoveItemIdFromPos(id, n, position)
 	local thing = getThingFromPos({x = position.x, y = position.y, z = position.z, stackpos = 1})
 	if(thing.itemid ~= id) then
 		return false
@@ -157,25 +145,23 @@ function getNpcName()
 end
 
 function getNpcPos()
-	return getThingPosition(getNpcId())
+	return getCreaturePosition(getNpcId())
 end
 
 function selfGetPosition()
-	local t = getThingPosition(getNpcId())
+	local t = getNpcPos()
 	return t.x, t.y, t.z
 end
 
 msgcontains = doMessageCheck
 moveToPosition = selfMoveTo
-moveToCreature = selfMoveToThing
-selfMoveToCreature = selfMoveToThing
+moveToCreature = selfMoveToCreature
 selfMoveToPosition = selfMoveTo
+selfGotoIdle = selfIdle
 isPlayerPremiumCallback = isPremium
-doPosRemoveItem = doRemoveItemIdFromPosition
-doRemoveItemIdFromPos = doRemoveItemIdFromPosition
+doPosRemoveItem = doRemoveItemIdFromPos
 doNpcBuyItem = doPlayerRemoveItem
 doNpcSetCreatureFocus = selfFocus
 getNpcCid = getNpcId
 getDistanceTo = getNpcDistanceTo
-getDistanceToCreature = getNpcDistanceTo
-getNpcDistanceToCreature = getNpcDistanceTo
+getDistanceToCreature = getNpcDistanceToCreature

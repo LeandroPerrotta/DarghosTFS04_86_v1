@@ -26,7 +26,7 @@ function premiumScroll.onUse(cid, item, frompos, item2, topos)
 	
 	local log_id = getItemAttribute(item.uid, "itemShopLogId")
 	
-	if(not log_id or not doLogItemShopUse(log_id)) then
+	if(not log_id or not doLogItemShopUse(cid, log_id)) then
 		doPlayerSendTextMessage(cid, MESSAGE_STATUS_SMALL, "The benefit of this item has already been provided. Issue reported.")
 		return true
 	end

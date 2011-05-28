@@ -86,4 +86,6 @@ function onTradeAccept(cid, target, item, targetItem)
 
 		return false
 	end
+	
+	return true
 end

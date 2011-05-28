@@ -78,8 +78,12 @@ function onTradeAccept(cid, target, item, targetItem)
 	end
 	
 	if(foundItems > 0) then
-		doPlayerSendCancel(cid, "You or your trade partner put one or more items not tradable. Try again without put not tradable items.")
-		doPlayerSendCancel(target, "You or your trade partner put one or more items not tradable. Try again without put not tradable items.")
+	
+		local msg = "Você ou seu parceiro de troca colocou um item não trocavel. Remova itens não trocaveis e tente novamente."
+	
+		doPlayerSendTextMessage(cid, MESSAGE_INFO_DESCR, msg)
+		doPlayerSendTextMessage(cid, MESSAGE_INFO_DESCR, msg)
+
 		return false
 	end
 end

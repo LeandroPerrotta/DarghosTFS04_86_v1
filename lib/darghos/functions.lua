@@ -4,11 +4,38 @@ function defaultActions(cid, item, fromPosition, itemEx, toPosition)
 
 	local item_id = item.itemid
 	
+	local ret = false
+	
 	if(item_id == CUSTOM_ITEMS.TELEPORT_RUNE) then
-		teleportRune.onUse(cid, item, fromPosition, itemEx, toPosition)
+		ret = teleportRune.onUse(cid, item, fromPosition, itemEx, toPosition)
 	elseif(item_id == CUSTOM_ITEMS.UNHOLY_SWORD) then
-		unholySword.onUse(cid, item, fromPosition, itemEx, toPosition)
+		ret = unholySword.onUse(cid, item, fromPosition, itemEx, toPosition)
+	elseif(item_id == CUSTOM_ITEMS.PREMIUM_SCROLL) then
+		ret = premiumScroll.onUse(cid, item, fromPosition, itemEx, toPosition)
 	end
+	
+	return ret
+end
+
+
+premiumScroll = {}
+
+premiumScroll.PREMIUM_DAYS_TO_ADD = 30
+
+function premiumScroll.onUse(cid, item, frompos, item2, topos)
+	
+	local log_id = getItemAttribute(item, "itemShopLogId")
+	
+	if(not item or not doLogItemShopUse(log_id)) then
+		doPlayerSendTextMessage(cid, MESSAGE_STATUS_SMALL, "The benefit of this item has already been provided. Issue reported.")
+		return true
+	end
+	
+	doPlayerAddPremiumDays(cid, premiumScroll.PREMIUM_DAYS_TO_ADD)
+	doPlayerSendTextMessage(cid, MESSAGE_STATUS_CONSOLE_ORANGE, "You have earned " .. premiumScroll.PREMIUM_DAYS_TO_ADD .. " days of premium time with this premium scroll! Good luck!")
+	doRemoveItem(item.uid)	
+	
+	return true
 end
 
 teleportRune = {}
@@ -23,14 +50,21 @@ teleportRune.TELEPORT_USAGE_INTERVAL = 60 * 30 -- 30 minutos
 
 function teleportRune.onUse(cid, item, frompos, item2, topos)
 
+	local onIsland = (getPlayerStorageValue(cid, sid.IS_ON_TRAINING_ISLAND) == 1) and true or false
+	
+	if(onIsland) then
+		doPlayerSendCancel(cid, "Você não pode usar este item neste lugar!")
+		return true
+	end
+
 	if(hasCondition(cid, CONDITION_INFIGHT) == TRUE) then
 		doPlayerSendCancel(cid, "Você não pode usar este item enquanto estiver em batalha!")
-		return
+		return true
 	end
 	
 	if(getPlayerStorageValue(cid, sid.TELEPORT_RUNE_STATE) ~= teleportRune.STATE_NONE) then
 		doPlayerSendCancel(cid, "A carga já sendo carregada, tenha paciencia!")
-		return	
+		return true
 	end
 	
 	local lastTeleportRuneUsage = getPlayerStorageValue(cid, sid.TELEPORT_RUNE_LAST_USAGE)
@@ -44,12 +78,14 @@ function teleportRune.onUse(cid, item, frompos, item2, topos)
 		end
 		
 		doPlayerSendCancel(cid, "Você deve aguardar " .. math.ceil(((lastTeleportRuneUsage + teleportRune.TELEPORT_USAGE_INTERVAL) - os.time()) / 60) .. " minutos para que sua teleport rune descançe e possa usar-la novamente.")
-		return	
+		return true
 	end
 	
 	doCreatureSay(cid, "Faltam 30 segundos para minha teleport rune ser carregada...", TALKTYPE_ORANGE_1)
 	setPlayerStorageValue(cid, sid.TELEPORT_RUNE_STATE, teleportRune.STATE_TELEPORTING_FIRST)
 	addEvent(teleportRune.firstStep, 1000 * 10, cid)
+	
+	return true
 end
 
 function teleportRune.firstStep(cid)
@@ -117,6 +153,31 @@ end
 
 -- END ACTIONS HANDLER
 
+function doLogItemShopUse(cid, log_id)
+
+	if(not canUseShopItem(log_id)) then
+		return false
+	end
+
+	db.getResult("INSERT INTO `wb_itemshop_use_log` (`log_id`, `player_id`, `date`) VALUES (" .. log_id .. ", " .. getPlayerGUID(cid) .. ", " .. os.time() .. ")")
+	return true
+end
+
+function canUseShopItem(log_id)
+
+	local result = db.getResult("SELECT COUNT(*) as `count` FROM `wb_itemshop_use_log` WHERE `log_id` = " .. log_id .. ";")
+
+	if(result:getID() ~= -1) then
+		local count = result:getDataInt("count")
+		result:free()
+		
+		if(count == 0) then
+			return true
+		end
+	end
+	
+	return false	
+end
 
 function restoreAddon(cid)
 

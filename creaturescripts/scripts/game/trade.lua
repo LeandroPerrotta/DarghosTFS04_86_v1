@@ -82,7 +82,7 @@ function onTradeAccept(cid, target, item, targetItem)
 		local msg = "Você ou seu parceiro de troca colocou um item não trocavel. Remova itens não trocaveis e tente novamente."
 	
 		doPlayerSendTextMessage(cid, MESSAGE_INFO_DESCR, msg)
-		doPlayerSendTextMessage(cid, MESSAGE_INFO_DESCR, msg)
+		doPlayerSendTextMessage(target, MESSAGE_INFO_DESCR, msg)
 
 		return false
 	end

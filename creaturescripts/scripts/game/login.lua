@@ -10,6 +10,7 @@ function onLogin(cid)
 	registerCreatureEvent(cid, "CustomBonartesTasks")
 	registerCreatureEvent(cid, "onKill")
 	registerCreatureEvent(cid, "autolotgold")
+	registerCreatureEvent(cid, "tradeHandler")
 	
 	--if(tasks.hasStartedTask(cid)) then
 		registerCreatureEvent(cid, "CustomTasks")

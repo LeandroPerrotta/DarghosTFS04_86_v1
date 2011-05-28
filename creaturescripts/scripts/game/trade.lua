@@ -1,0 +1,85 @@
+function searchItemInContainer(container, foundItems)    
+    for k = (getContainerSize(container) - 1), 0, -1 do
+        local tmp = getContainerItem(container, k)
+        
+        if (isInArray(cannotBeTraded, tmp.itemid)) then	
+    		foundItems = foundItems + 1
+        elseif isContainer(tmp.uid) then
+        	searchItemInContainer(tmp.uid, foundItems)
+        end
+    end
+end
+
+function searchAlreadyUsedPremiumScrolls(container, unusableCount)
+    for k = (getContainerSize(container) - 1), 0, -1 do
+        local tmp = getContainerItem(container, k)
+        
+        if (tmp.itemid == CUSTOM_ITEMS.PREMIUM_SCROLL) then	
+        
+        	local log_id = getItemAttribute(tmp.uid, "itemShopLogId")
+        	
+        	if(not log_id or not canUseShopItem(log_id)) then
+        	
+        		unusableCount = unusableCount + 1
+        	end
+        elseif isContainer(tmp.uid) then
+        	searchAlreadyUsedPremiumScrolls(tmp.uid, unusableCount)
+        end
+    end
+end
+
+function canTradePremiumScroll(item)
+
+	local unusableCount = 0
+	if(isContainer(item.uid)) then
+		searchAlreadyUsedPremiumScrolls(tmp.uid, unusableCount)	
+	else
+		if(item.itemid == CUSTOM_ITEMS.PREMIUM_SCROLL) then				
+        	local log_id = getItemAttribute(tmp.uid, "itemShopLogId")
+        	
+        	if(not log_id or not canUseShopItem(log_id)) then
+        	
+        		unusableCount = unusableCount + 1
+        	end			
+		end	
+	end
+	
+	if(unusableCount > 0) then
+		return false
+	end
+	
+	return true
+end
+
+function onTradeAccept(cid, target, item, targetItem)
+
+	local foundItems = 0
+	
+	--[[
+	if(isContainer(item.uid)) then
+		searchItemInContainer(item.uid, foundItems)
+	else
+		if(isInArray(cannotBeTraded, item.itemid)) then	
+			foundItems = foundItems + 1
+		end
+	end
+	
+	if(isContainer(targetItem.uid)) then
+		searchItemInContainer(targetItem.uid, foundItems)
+	else
+		if(isInArray(cannotBeTraded, targetItem.itemid)) then	
+			foundItems = foundItems + 1
+		end
+	end	
+	]]--
+	
+	if(not canTradePremiumScroll(item) or not canTradePremiumScroll(targetItem)) then
+		foundItems = 1
+	end
+	
+	if(foundItems > 0) then
+		doPlayerSendCancel(cid, "You or your trade partner put one or more items not tradable. Try again without put not tradable items.")
+		doPlayerSendCancel(target, "You or your trade partner put one or more items not tradable. Try again without put not tradable items.")
+		return false
+	end
+end

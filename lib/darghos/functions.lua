@@ -159,7 +159,7 @@ function doLogItemShopUse(cid, log_id)
 		return false
 	end
 
-	db.getResult("INSERT INTO `wb_itemshop_use_log` (`log_id`, `player_id`, `date`) VALUES (" .. log_id .. ", " .. getPlayerGUID(cid) .. ", " .. os.time() .. ")")
+	db.getResult("INSERT INTO `wb_itemshop_use_log` (`log_id`, `player_id`, `date`) VALUES (" .. log_id .. ", " .. getPlayerGUID(cid) .. ", " .. os.time() .. ");")
 	return true
 end
 

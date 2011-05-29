@@ -32,7 +32,7 @@ function canTradePremiumScroll(item)
 
 	local unusableCount = 0
 	if(isContainer(item.uid)) then
-		searchAlreadyUsedPremiumScrolls(tmp.uid, unusableCount)	
+		searchAlreadyUsedPremiumScrolls(item.uid, unusableCount)	
 	else
 		if(item.itemid == CUSTOM_ITEMS.PREMIUM_SCROLL) then				
         	local log_id = getItemAttribute(item.uid, "itemShopLogId")

@@ -229,7 +229,7 @@ function missionCallback(cid, message, keywords, parameters, node)
 	return true
 end
 
-local node = keywordHandler:addKeyword('mission,missão,missao', missionCallback, {npcHandler = npcHandler, onlyFocus = true, text = 'Estou fazendo trabalhando em algo que pode por fim a toda força demoniaca. Para isto preciso de sua ajuda. Pode me trazer 20 demonic essences?!'})
+local node = keywordHandler:addKeyword({'mission,missão,missao'}, missionCallback, {npcHandler = npcHandler, onlyFocus = true, text = 'Estou fazendo trabalhando em algo que pode por fim a toda força demoniaca. Para isto preciso de sua ajuda. Pode me trazer 20 demonic essences?!'})
 	node:addChildKeyword({'yes'}, StdModule.bless, {npcHandler = npcHandler, number = 1, premium = false, baseCost = 2000, levelCost = 200, startLevel = 30, endLevel = 120})
 	node:addChildKeyword({'no'}, StdModule.say, {npcHandler = npcHandler, onlyFocus = true, reset = true, text = 'Too expensive, eh?'})
 

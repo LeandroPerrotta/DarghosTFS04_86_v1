@@ -8,6 +8,9 @@ function onCreatureDisappear(cid) 			npcHandler:onCreatureDisappear(cid) 		end
 function onCreatureSay(cid, type, msg) 		npcHandler:onCreatureSay(cid, type, msg) 	end
 function onThink() 							npcHandler:onThink() 						end
 
+local confirmPattern = {'yes', 'sim'}
+local negationPattern = {'no', 'não', 'nao'}
+
 function npcSystemHeader(cid, message, keywords, parameters, node)
 
 	local npcHandler = parameters.npcHandler
@@ -173,22 +176,20 @@ function missionCallback(cid, message, keywords, parameters, node)
 	end
 	
 	local npcHandler = parameters.npcHandler
-	local confirmPattern = {'yes', 'sim'}
-	local negationPattern = {'no', 'não', 'nao'}
 
 	local questStatus = getPlayerStorageValue(cid, QUESTLOG.INQUISITION.MISSION_OUTFIT)
 	
 	if(questStatus == -1) then
 		npcHandler:say("Estou buscando algo para por fim a toda força demoniaca, e preciso de sua ajuda. Você poderia derrotar algumas destas criaturas e trazer-me 20 demonic essences? <...>", cid)
 		npcHandler:say("Como recompensa lhe darei uma nova roupa!", cid)
-		node:addChildKeyword(confirmPattern, startFirstMissionCallback, {npcHandler = npcHandler, onlyFocus = true})
-		node:addChildKeyword(negationPattern, noCallback, {npcHandler = npcHandler, onlyFocus = true})
+		D_CustomNpcModules.addChildKeyword(confirmPattern, node, startFirstMissionCallback, {npcHandler = npcHandler, onlyFocus = true})
+		D_CustomNpcModules.addChildKeyword(negationPattern, node, noCallback, {npcHandler = npcHandler, onlyFocus = true})
 		
 		return true
 	elseif(questStatus == 0) then
 		npcHandler:say("Estava ancioso por sua volta! E então, conseguiu o que te pedi?", cid)
-		node:addChildKeyword(confirmPattern, finishFirstMissionCallback, {npcHandler = npcHandler, onlyFocus = true})
-		node:addChildKeyword(negationPattern, noCallback, {npcHandler = npcHandler, onlyFocus = true})		
+		D_CustomNpcModules.addChildKeyword(confirmPattern, node, finishFirstMissionCallback, {npcHandler = npcHandler, onlyFocus = true})
+		D_CustomNpcModules.addChildKeyword(negationPattern, node, noCallback, {npcHandler = npcHandler, onlyFocus = true})			
 		
 		return true
 	end
@@ -197,14 +198,14 @@ function missionCallback(cid, message, keywords, parameters, node)
 	
 	if(questStatus == -1) then
 		npcHandler:say("Quer uma novam missão? Oh, eu tenho uma. A presença de um maligno demonio impede que certos rituais sagrados sejam feitos com sucesso, preciso que você o elimine para que possamos continuar o trabalho, aceita?", cid)
-		node:addChildKeyword(confirmPattern, startSecondMissionCallback, {npcHandler = npcHandler, onlyFocus = true})
-		node:addChildKeyword(negationPattern, noCallback, {npcHandler = npcHandler, onlyFocus = true})
+		D_CustomNpcModules.addChildKeyword(confirmPattern, node, startSecondMissionCallback, {npcHandler = npcHandler, onlyFocus = true})
+		D_CustomNpcModules.addChildKeyword(negationPattern, node, noCallback, {npcHandler = npcHandler, onlyFocus = true})			
 		
 		return true	
 	elseif(questStatus == 0) then
 		npcHandler:say("E então, o demonio Ungreez já foi derrotado?", cid)
-		node:addChildKeyword(confirmPattern, finishSecond.MissionCallback, {npcHandler = npcHandler, onlyFocus = true})
-		node:addChildKeyword(negationPattern, noCallback, {npcHandler = npcHandler, onlyFocus = true})		
+		D_CustomNpcModules.addChildKeyword(confirmPattern, node, finishSecondMissionCallback, {npcHandler = npcHandler, onlyFocus = true})
+		D_CustomNpcModules.addChildKeyword(negationPattern, node, noCallback, {npcHandler = npcHandler, onlyFocus = true})						
 		
 		return true		
 	end
@@ -214,14 +215,14 @@ function missionCallback(cid, message, keywords, parameters, node)
 	if(questStatus == -1) then
 		npcHandler:say("Que bom lhe encontrar " .. getCreatureName(cid) .. "! Pois tenho uma ultima missão para você! Com os ingredientes foi possivel criar uma poção de agua sagrada na qual poderá ser usada para ajudar no combate a força demoniaca. <...>", cid)
 		npcHandler:say("Gostaria de aceitar-la?", cid)
-		node:addChildKeyword(confirmPattern, startThirdMissionCallback, {npcHandler = npcHandler, onlyFocus = true})
-		node:addChildKeyword(negationPattern, noCallback, {npcHandler = npcHandler, onlyFocus = true})
+		D_CustomNpcModules.addChildKeyword(confirmPattern, node, startThirdMissionCallback, {npcHandler = npcHandler, onlyFocus = true})
+		D_CustomNpcModules.addChildKeyword(negationPattern, node, noCallback, {npcHandler = npcHandler, onlyFocus = true})			
 		
 		return true	
 	elseif(questStatus == 0) then
 		npcHandler:say("E então, o demonio Ungreez já foi derrotado?", cid)
-		node:addChildKeyword(confirmPattern, finishSecond.MissionCallback, {npcHandler = npcHandler, onlyFocus = true})
-		node:addChildKeyword(negationPattern, noCallback, {npcHandler = npcHandler, onlyFocus = true})		
+		D_CustomNpcModules.addChildKeyword(confirmPattern, node, finishSecondMissionCallback, {npcHandler = npcHandler, onlyFocus = true})
+		D_CustomNpcModules.addChildKeyword(negationPattern, node, noCallback, {npcHandler = npcHandler, onlyFocus = true})			
 		
 		return true		
 	end	
@@ -229,8 +230,6 @@ function missionCallback(cid, message, keywords, parameters, node)
 	return true
 end
 
-local node = keywordHandler:addKeyword({'mission,missão,missao'}, missionCallback, {npcHandler = npcHandler, onlyFocus = true, text = 'Estou fazendo trabalhando em algo que pode por fim a toda força demoniaca. Para isto preciso de sua ajuda. Pode me trazer 20 demonic essences?!'})
-	node:addChildKeyword({'yes'}, StdModule.bless, {npcHandler = npcHandler, number = 1, premium = false, baseCost = 2000, levelCost = 200, startLevel = 30, endLevel = 120})
-	node:addChildKeyword({'no'}, StdModule.say, {npcHandler = npcHandler, onlyFocus = true, reset = true, text = 'Too expensive, eh?'})
+local nodes = D_CustomNpcModules.addKeyword({'mission', 'missão', 'missao'}, keywordHandler, missionCallback, {npcHandler = npcHandler, onlyFocus = true})
 
 npcHandler:addModule(FocusModule:new())

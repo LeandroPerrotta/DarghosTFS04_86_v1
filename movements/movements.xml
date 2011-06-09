@@ -18,7 +18,6 @@
 
 	<!-- INQUISITION QUEST -->
 	
-	<!-- 
 	<movevent type="StepIn" actionid="4033" event="script" value="game/inquisition_hall.lua"/>		
 	<movevent type="StepIn" actionid="4034" event="script" value="game/inquisition_hall.lua"/>		
 	<movevent type="StepIn" actionid="4035" event="script" value="game/inquisition_hall.lua"/>		
@@ -31,7 +30,6 @@
 	<movevent type="StepIn" uniqueid="1025" event="script" value="game/inquisition_hall.lua"/>		
 	<movevent type="StepIn" uniqueid="1027" event="script" value="game/inquisition_hall.lua"/>		
 	<movevent type="StepIn" uniqueid="1034" event="script" value="game/inquisition_hall.lua"/>
-	-->
 
 	<!-- MEDUSA TP -->	
 	<movevent type="StepIn" actionid="4040" event="script" value="game/medusa_tp.lua"/>

@@ -437,7 +437,8 @@ function movementTileOnStepIn(cid, item, position, fromPosition)
 		
 		if(not killUngreez) then
 			doPlayerSendCancel(cid, "Somente os que ajudam a combater as forças demoniacas estão autorizados a atravessar este portal.")
-			pushBack(cid, position, fromPosition, true)
+			doTeleportThing(cid, fromPosition, false)
+			doSendMagicEffect(position, CONST_ME_MAGIC_BLUE)
 		end
 	end	
 

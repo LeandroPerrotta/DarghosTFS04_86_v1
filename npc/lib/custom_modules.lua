@@ -18,28 +18,13 @@ function D_CustomNpcModules.addKeyword(keywords, keywordHandler, callback, param
 	return nodes
 end
 
-function D_CustomNpcModules.addChildKeyword(keywords, nodes, callback, params)
+function D_CustomNpcModules.addChildKeyword(keywords, node, callback, params)
 
-	if(type(nodes) == 'table') then
-		for k,v in pairs(nodes) do
+	for k,v in pairs(keywords) do
+		local keyword = {}
+		table.insert(keyword, v)
 		
-			local node = v
-			
-			for k,v in pairs(keywords) do
-				local keyword = {}
-				table.insert(keyword, v)
-				
-				node:addChildKeyword(keyword, callback, params)	
-			end
-		end
-	else
-	
-		for k,v in pairs(keywords) do
-			local keyword = {}
-			table.insert(keyword, v)
-			
-			nodes:addChildKeyword(keyword, callback, params)	
-		end	
+		node:addChildKeyword(keyword, callback, params)	
 	end
 end
 

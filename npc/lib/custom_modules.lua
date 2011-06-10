@@ -2,32 +2,6 @@
 
 D_CustomNpcModules = {}
 
--- Custom hack to add multiples keywords for same action
-function D_CustomNpcModules.addKeyword(keywords, keywordHandler, callback, params)
-
-	local nodes = {}
-
-	for k,v in pairs(keywords) do
-		local keyword = {}
-		table.insert(keyword, v)
-		
-		local node = keywordHandler:addKeyword(keyword, callback, params)
-		table.insert(nodes, node)
-	end
-	
-	return nodes
-end
-
-function D_CustomNpcModules.addChildKeyword(keywords, node, callback, params)
-
-	for k,v in pairs(keywords) do
-		local keyword = {}
-		table.insert(keyword, v)
-		
-		node:addChildKeyword(keyword, callback, params)	
-	end
-end
-
 function D_CustomNpcModules.addonTradeItems(cid, message, keywords, parameters, node)
 
 	local npcHandler = parameters.npcHandler

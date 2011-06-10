@@ -17,7 +17,7 @@ function onStepIn(cid, item, position, fromPosition)
 		return TRUE
 	end
 	
-	if(item.actionid == aid.CHURCH_PORTAL) then
+	if(item.actionid ~= nil and item.actionid == aid.CHURCH_PORTAL) then
 	
 		local destPos = getThingPos(uid.CHURCH_PORTAL_DEST)
 	
@@ -37,6 +37,17 @@ function onStepIn(cid, item, position, fromPosition)
 		doSendMagicEffect(destPos, CONST_ME_MAGIC_BLUE)	
 		
 		doPlayerSendCancel(cid, "Você não pode passar por aqui.")
+		return TRUE
+	end
+	
+	if(item.actionid ~= nil and item.actionid == aid.INQ_PORTAL) then
+		
+		local killUngreez = (getPlayerStorageValue(cid, sid.INQ_KILL_UNGREEZ) == 1) and true or false	
+		
+		if(not killUngreez) then
+			doPlayerSendCancel(cid, "Somente os que ajudam a combater as forças demoniacas estão autorizados a atravessar este portal.")
+			return FALSE
+		end
 	end
 	
 	return TRUE

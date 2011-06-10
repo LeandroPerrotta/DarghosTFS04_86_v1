@@ -40,15 +40,5 @@ function onStepIn(cid, item, position, fromPosition)
 		return TRUE
 	end
 	
-	if(item.actionid ~= nil and item.actionid == aid.INQ_PORTAL) then
-		
-		local killUngreez = (getPlayerStorageValue(cid, sid.INQ_KILL_UNGREEZ) == 1) and true or false	
-		
-		if(not killUngreez) then
-			doPlayerSendCancel(cid, "Somente os que ajudam a combater as forças demoniacas estão autorizados a atravessar este portal.")
-			return FALSE
-		end
-	end
-	
 	return TRUE
 end

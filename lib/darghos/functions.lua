@@ -430,6 +430,16 @@ function movementTileOnStepIn(cid, item, position, fromPosition)
 	if(item.itemid == 11062 or item.itemid == 11063) then
 		doUpdateCreatureImpassable(cid)
 	end
+	
+	if(item.actionid ~= nil and item.actionid == aid.INQ_PORTAL) then
+		
+		local killUngreez = (getPlayerStorageValue(cid, sid.INQ_KILL_UNGREEZ) == 1) and true or false	
+		
+		if(not killUngreez) then
+			doPlayerSendCancel(cid, "Somente os que ajudam a combater as forças demoniacas estão autorizados a atravessar este portal.")
+			pushBack(cid, position, fromPosition, true)
+		end
+	end	
 
 	return false
 end

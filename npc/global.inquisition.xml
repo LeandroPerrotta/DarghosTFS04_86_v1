@@ -8,7 +8,7 @@
 		<parameter key="message_greet" value="Ola jovem |PLAYERNAME|. O que eu posso fazer para te ajudar?" />
 		<parameter key="keywords" value="job;name" />
 		
-		<parameter key="keyword_reply1" value="Eu sou a autoridade responsavel por eliminar os demonios, sou o inquisidor." />
+		<parameter key="keyword_reply1" value="Eu sou a autoridade responsavel por combater os demonios, sou o inquisidor." />
 		<parameter key="keyword_reply2" value="Meu nome é |NPCNAME|." />			
 	</parameters>
 </npc>

@@ -66,7 +66,7 @@ end
 local function completeMission(cid)
 
 	if(getPlayerStorageValue(cid, sid.INQ_DONE_MWALL) == 1) then
-		doPlayerSendTextMessage(cid, MESSAGE_EVENT_DEFAULT, "You already have completed the shadow nexus mission!")			
+		doPlayerSendTextMessage(cid, MESSAGE_EVENT_DEFAULT, "Você ja a enfraqueceu a fonte da origem demoniaca o sulficiente.")			
 		return
 	end
 
@@ -84,7 +84,7 @@ local function completeMission(cid)
 			replaceWall(true)
 		end
 		
-		doPlayerSendTextMessage(cid, MESSAGE_EVENT_DEFAULT, "You finally could complete the shadow nexus mission! Talk with Myh Sayn in Salazart to get your rewards.")
+		doPlayerSendTextMessage(cid, MESSAGE_EVENT_DEFAULT, "Você conseguiu enfraquecer a fonte da origem demoniaca o sulficiente! Sua missão aqui está concluida!")
 		doSendMagicEffect(wallPos,CONST_ME_FIREAREA)	
 		setPlayerStorageValue(cid, sid.INQ_DONE_MWALL, 1)
 	end

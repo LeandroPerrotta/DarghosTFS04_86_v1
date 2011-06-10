@@ -51,7 +51,7 @@ function startFirstMissionCallback(cid, message, keywords, parameters, node)
 	local npcHandler = parameters.npcHandler
 
 	setPlayerStorageValue(cid, QUESTLOG.INQUISITION.MISSION_OUTFIT, 0)
-	npcHandler:say("Otimo! Volte quando conseguir-las!", cid)
+	npcHandler:say("Então prove o seu valor e retorne quando tiver em posse do solicitado! Boa sorte!", cid)
 	
 	npcHandler:resetNpc()
 end
@@ -67,7 +67,7 @@ function finishFirstMissionCallback(cid, message, keywords, parameters, node)
 	local ITEMS_DEMONIC_ESSENCE = 6500
 
 	if(getPlayerItemCount(cid, ITEMS_DEMONIC_ESSENCE) < 20) then
-		npcHandler:say("Que decepção! Você ainda não conseguiu as 20 demonic essences que lhe solicitei! Seja rápido em conseguir-las! Não há muito tempo!!", cid)
+		npcHandler:say("Que decepção! Você ainda não conseguiu as 20 demonic essences que lhe solicitei! Estou a começando a pensar que irá falhar...", cid)
 		npcHandler:resetNpc()
 		
 		return true
@@ -81,7 +81,7 @@ function finishFirstMissionCallback(cid, message, keywords, parameters, node)
 	setPlayerStorageValue(cid, QUESTLOG.INQUISITION.MISSION_OUTFIT, 1)
 	doPlayerAddOutfitId(cid, 20, 0)
 	
-	npcHandler:say("Perfeito! Agora conseguirei concluir meu trabalho! Como recompensa por me ajudar nesta batalha conta os seres demoniacos lhe concedo a roupa do caçador de demonios!", cid)
+	npcHandler:say("Confesso que estou surpreso! Como recompensa eu lhe darei uma nova roupa, a do caçador de demonios! Retorne quando estiver preparado para sua primeira missão!", cid)
 	npcHandler:resetNpc()
 	
 	return true
@@ -113,7 +113,7 @@ function finishSecondMissionCallback(cid, message, keywords, parameters, node)
 	local ITEMS_DEMONIC_ESSENCE = 6500
 
 	if(not killUngreez) then
-		npcHandler:say("Hmm, ainda sinto a presença maligna meu caro...Seja rapido, ou toda a força demoniaca continuará se espalhando!", cid)
+		npcHandler:say("Está tentando me enganar " .. getCreatureName(cid) .. "? Eu ainda posso sentir que as forças demoniacas continuam forte! Derrote-o!", cid)
 		npcHandler:resetNpc()
 		
 		return true
@@ -122,7 +122,8 @@ function finishSecondMissionCallback(cid, message, keywords, parameters, node)
 	setPlayerStorageValue(cid, QUESTLOG.INQUISITION.MISSION_FIRST_ADDON, 1)
 	doPlayerAddOutfitId(cid, 20, 1)
 	
-	npcHandler:say("Perfeito!" .. getCreatureName(cid) .. "! Agora será possivel concluir o ritual sagrado! Como recompensa pelo seu feito lhe concedo o primeiro addon para sua roupa!", cid)
+	npcHandler:say("Bom trabalho " .. getCreatureName(cid) .. "! Ja vejo as forças demoniacas muito mais vulneraveis! Como recompensa lhe concedo alguns infeites para sua roupa! <...>", cid)
+	npcHandler:say("Retorne a falar comigo quando estiver preparado para a sua ultima missão!", cid)
 	npcHandler:resetNpc()
 	
 	return true
@@ -136,8 +137,8 @@ function startThirdMissionCallback(cid, message, keywords, parameters, node)
 
 	local npcHandler = parameters.npcHandler
 
-	setPlayerStorageValue(cid, QUESTLOG.INQUISITION.MISSION_FIRST_ADDON, 0)
-	npcHandler:say("Você deve ir longe, aonde nascem os demonios, um lugar conhecido como nexo das sombras, em algum lugar nas profundezas de Aaragon, jogue esta agua sagrada em uma barreira de energia, cada vez isto irá torna-la mais fraca. Isto deverá deixar os demonios furiosos, então se prepare. No caminho você enfrentará os demonios guardiões. Que os deuses lhe acompanhem!", cid)
+	setPlayerStorageValue(cid, QUESTLOG.INQUISITION.MISSION_SHADOW_NEXUS, 0)
+	npcHandler:say("Estarei aguardando a sua volta! Espero que tenha sorte e que os Deuses lhe ajudem!", cid)
 	
 	npcHandler:resetNpc()
 end
@@ -149,21 +150,21 @@ function finishThirdMissionCallback(cid, message, keywords, parameters, node)
 	end
 
 	local npcHandler = parameters.npcHandler
-	local killUngreez = (getPlayerStorageValue(cid, sid.INQ_KILL_UNGREEZ) == 1) and true or false
+	local wall = (getPlayerStorageValue(cid, sid.INQ_DONE_MWALL) == 1) and true or false
 
-	local ITEMS_DEMONIC_ESSENCE = 6500
-
-	if(not killUngreez) then
-		npcHandler:say("Hmm, ainda sinto a presença maligna meu caro...Seja rapido, ou toda a força demoniaca continuará se espalhando!", cid)
+	if(not wall) then
+		npcHandler:say("Toda força demoniaca continua muito alta e expandindo! Não parece que você tenha concluido sua missão! Volte quando tiver a terminado!", cid)
 		npcHandler:resetNpc()
 		
 		return true
 	end	
 
-	setPlayerStorageValue(cid, QUESTLOG.INQUISITION.MISSION_FIRST_ADDON, 1)
-	doPlayerAddOutfitId(cid, 20, 1)
+	setPlayerStorageValue(cid, QUESTLOG.INQUISITION.MISSION_SHADOW_NEXUS, 1)
+	doPlayerAddOutfitId(cid, 20, 2)
 	
-	npcHandler:say("Perfeito!" .. getCreatureName(cid) .. "! Agora será possivel concluir o ritual sagrado! Como recompensa pelo seu feito lhe concedo o primeiro addon para sua roupa!", cid)
+	npcHandler:say("Bravo guerreiro! Agora a presença demoniaca está mais controlada! Todo nosso reino lhe agradeçe! <...>", cid)
+	npcHandler:say("Como recompensa por sua grande missão lhe concedo mais alguns infeites para a sua roupa de caçador de demonios! Além disto lhe concedo a permissão para acessar a sala seguindo o corredor a norte <...>!", cid)
+	npcHandler:say("Lá você encontrará alguns dos mais poderosos equipamentos e armas conhecidos! Escolha um para ti! Seja atento a sua decisão, pois não poderá voltar atraz! Boa sorte!", cid)
 	npcHandler:resetNpc()
 	
 	return true
@@ -180,14 +181,14 @@ function missionCallback(cid, message, keywords, parameters, node)
 	local questStatus = getPlayerStorageValue(cid, QUESTLOG.INQUISITION.MISSION_OUTFIT)
 	
 	if(questStatus == -1) then
-		npcHandler:say("Estou buscando algo para por fim a toda força demoniaca, e preciso de sua ajuda. Você poderia derrotar algumas destas criaturas e trazer-me 20 demonic essences? <...>", cid)
-		npcHandler:say("Como recompensa lhe darei uma nova roupa!", cid)
+		npcHandler:say("Nós estamos dando uma grande investida contra as forças demoniacas que assombram este mundo, e sim, precisamos de ajuda. Mas antes de receber a sua primeira missão você devera provar o seu valor e também o seu comprometimento conosco nesta guerra <...>", cid)
+		npcHandler:say("Para provar isto, você precisará derrotar algumas criaturas demoniacas e obter 20 demonic essences e então me trazer-los. Assim irei lhe passar a sua primeira brava missão, além de lhe dar uma recompensa. E então, aceita?", cid)
 		D_CustomNpcModules.addChildKeyword(confirmPattern, node, startFirstMissionCallback, {npcHandler = npcHandler, onlyFocus = true})
 		D_CustomNpcModules.addChildKeyword(negationPattern, node, noCallback, {npcHandler = npcHandler, onlyFocus = true})
 		
 		return true
 	elseif(questStatus == 0) then
-		npcHandler:say("Estava ancioso por sua volta! E então, conseguiu o que te pedi?", cid)
+		npcHandler:say("E então, algum progresso em seu teste?", cid)
 		D_CustomNpcModules.addChildKeyword(confirmPattern, node, finishFirstMissionCallback, {npcHandler = npcHandler, onlyFocus = true})
 		D_CustomNpcModules.addChildKeyword(negationPattern, node, noCallback, {npcHandler = npcHandler, onlyFocus = true})			
 		
@@ -197,13 +198,15 @@ function missionCallback(cid, message, keywords, parameters, node)
 	questStatus = getPlayerStorageValue(cid, QUESTLOG.INQUISITION.MISSION_FIRST_ADDON)
 	
 	if(questStatus == -1) then
-		npcHandler:say("Quer uma novam missão? Oh, eu tenho uma. A presença de um maligno demonio impede que certos rituais sagrados sejam feitos com sucesso, preciso que você o elimine para que possamos continuar o trabalho, aceita?", cid)
+		npcHandler:say("As essencias demoniacas que você me trouxe em seu teste serão uteis na criação de uma arma que nos ajudará a combater toda sombra demoniaca. Mas para que tudo dê certo precisamos enfraquecer esta presença primeiro <...>", cid)
+		npcHandler:say("Para isto será necessario viajar até o continente de Aracura e partir para uma caverna ao sul da cidade, em algum lugar nela resite um antigo demonio chamado Ungreez. <...>", cid)
+		npcHandler:say("Apos encontrar-lo você irá derrotar-lo e então as forças demoniacas estarão significativame mais vulneraveis. Gostaria de cumprir esta perigosa missão?", cid)
 		D_CustomNpcModules.addChildKeyword(confirmPattern, node, startSecondMissionCallback, {npcHandler = npcHandler, onlyFocus = true})
 		D_CustomNpcModules.addChildKeyword(negationPattern, node, noCallback, {npcHandler = npcHandler, onlyFocus = true})			
 		
 		return true	
 	elseif(questStatus == 0) then
-		npcHandler:say("E então, o demonio Ungreez já foi derrotado?", cid)
+		npcHandler:say("E então, o velho demonio Ungreez já foi derrotado?", cid)
 		D_CustomNpcModules.addChildKeyword(confirmPattern, node, finishSecondMissionCallback, {npcHandler = npcHandler, onlyFocus = true})
 		D_CustomNpcModules.addChildKeyword(negationPattern, node, noCallback, {npcHandler = npcHandler, onlyFocus = true})						
 		
@@ -213,14 +216,20 @@ function missionCallback(cid, message, keywords, parameters, node)
 	questStatus = getPlayerStorageValue(cid, QUESTLOG.INQUISITION.MISSION_SHADOW_NEXUS)
 	
 	if(questStatus == -1) then
-		npcHandler:say("Que bom lhe encontrar " .. getCreatureName(cid) .. "! Pois tenho uma ultima missão para você! Com os ingredientes foi possivel criar uma poção de agua sagrada na qual poderá ser usada para ajudar no combate a força demoniaca. <...>", cid)
-		npcHandler:say("Gostaria de aceitar-la?", cid)
+		npcHandler:say("A sua ultima missão será a mais dificil e mais arriscada " .. getCreatureName(cid) .. " e creio que você irá precisar de muita ajuda para concluir-la. Se lembra da arma que falei para você certa vez? <...>", cid)
+		npcHandler:say("Pois bem, é um flasco que contem uma pequena porção do mais divino liquido, extraido de toda essencia demoniaca. Em sua ultima missão você terá de ir ao local onde se origina todas forças demoniacas <...> ", cid)
+		npcHandler:say("Este lugar fica em algum lugar nas profundezas de caverna no continente da cidade de Aaragon e é conhecido como nexo das sombras. Entretanto seu desafio começará muito antes de chegar lá <...> ", cid)
+		npcHandler:say("Para chegar lá você precisará enfrentar antigos e tremendamente poderosos demonios guardiões, já nesta parte de sua missão você precisará de toda ajuda possivel <...> ", cid)
+		npcHandler:say("Quando você conseguir chegar no nexo das sombras precisará derramar o liquido divino em uma barreira magica na qual é a fonte de toda presença demoniaca <...> ", cid)
+		npcHandler:say("Ela inicialmente irá enfraquecer porem voltará a se fortalecer e você precisará enfraquecer-la novamente. Seu objetivo é enfraquecer-la três vezes <...>", cid)
+		npcHandler:say("Fique preparado pois os demonios não deixarão você atacar a fonte de sua existencia passivamente. Eles irão atacar sem piedade você e seus companheiros <...>", cid)
+		npcHandler:say("E então, está preparado para sua ultima missão?", cid)
 		D_CustomNpcModules.addChildKeyword(confirmPattern, node, startThirdMissionCallback, {npcHandler = npcHandler, onlyFocus = true})
 		D_CustomNpcModules.addChildKeyword(negationPattern, node, noCallback, {npcHandler = npcHandler, onlyFocus = true})			
 		
 		return true	
 	elseif(questStatus == 0) then
-		npcHandler:say("E então, o demonio Ungreez já foi derrotado?", cid)
+		npcHandler:say("É bom lhe ver " .. getCreatureName(cid) .. "! Conseguiu completar a sua missão?", cid)
 		D_CustomNpcModules.addChildKeyword(confirmPattern, node, finishSecondMissionCallback, {npcHandler = npcHandler, onlyFocus = true})
 		D_CustomNpcModules.addChildKeyword(negationPattern, node, noCallback, {npcHandler = npcHandler, onlyFocus = true})			
 		

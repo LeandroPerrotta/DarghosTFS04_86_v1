@@ -299,6 +299,9 @@ function missionCallback(cid, message, keywords, parameters, node)
 		return true		
 	end	
 	
+	npcHandler:say("Oh, infelizmente não tenho mais missões para você bravo guerreiro. Mas todos somos muito gratos pela sua grande contribuição no combate as forças demoniacas!", cid)
+	npcHandler:resetNpc()	
+	
 	return true
 end
 

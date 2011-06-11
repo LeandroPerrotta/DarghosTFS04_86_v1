@@ -65,8 +65,6 @@ end
 
 local function completeMission(cid, item)
 
-	wall = getThing(uid.INQ_MWALL)
-
 	if(getPlayerStorageValue(cid, sid.INQ_DONE_MWALL) == 1) then
 		doPlayerSendTextMessage(cid, MESSAGE_EVENT_DEFAULT, "Você ja enfraqueceu a fonte da origem demoniaca o sulficiente.")			
 		return
@@ -94,6 +92,8 @@ local function completeMission(cid, item)
 end
 
 function onUse(cid, item, fromPosition, itemEx, toPosition)
+	
+	wall = getThing(uid.INQ_MWALL)
 	
 	if(itemEx.uid == wall.uid) then
 		if(itemEx.itemid == ITEMS_MAGIC_BARRIER) then

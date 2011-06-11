@@ -183,7 +183,7 @@ function D_CustomNpcModules.inquisitionBless(cid, message, keywords, parameters,
 	local questStatus = getPlayerStorageValue(cid, QUESTLOG.INQUISITION.MISSION_SHADOW_NEXUS)
 	
 	if(questStatus ~= 1) then
-		npcHandler:say('VocÃª precisa completar todas as missÃµes no combate as forÃ§as demoniacas para que eu possa lhe abenÃ§oar.', cid)
+		npcHandler:say('Você precisa completar todas as missões no combate as forças demoniacas para que eu possa lhe abençoar.', cid)
 		npcHandler:resetNpc()
 		
 		return true	
@@ -198,11 +198,11 @@ function D_CustomNpcModules.inquisitionBless(cid, message, keywords, parameters,
 		price = price * 5 * parameters.aditionalCostMultipler
 
 		if(getPlayerBlessing(cid, 1) or getPlayerBlessing(cid, 2) or getPlayerBlessing(cid, 3) or getPlayerBlessing(cid, 4) or getPlayerBlessing(cid, 5)) then
-			npcHandler:say("VocÃª jÃ¡ possui uma ou mais bÃªnÃ§Ãµes, eu somente posso abenÃ§oar quem nÃ£o foi abenÃ§oado por nenhum Deus.", cid)
+			npcHandler:say("Você já possui uma ou maisbenções, eu somente posso abençoar quem não foi abençoado por nenhum Deus.", cid)
 		elseif(not doPlayerRemoveMoney(cid, price)) then
-			npcHandler:say("VocÃª nÃ£o tem dinheiro sulficiente. Em seu level, sÃ£o necessarios " .. price .. " gold coins.", cid)
+			npcHandler:say("Você não tem dinheiro sulficiente. Em seu level, são necessarios " .. price .. " gold coins.", cid)
 		else
-			npcHandler:say("VocÃª recebeu todas as bÃªnÃ§Ãµes! VocÃª estÃ¡ completamente protegido!", cid)
+			npcHandler:say("Você recebeu todas as benções! Vocêesta completamente protegido!", cid)
 			
 			doPlayerAddBlessing(cid, 1)
 			doPlayerAddBlessing(cid, 2)
@@ -211,7 +211,7 @@ function D_CustomNpcModules.inquisitionBless(cid, message, keywords, parameters,
 			doPlayerAddBlessing(cid, 5)
 		end
 	else
-		npcHandler:say('Eu somente posso abenÃ§oar jogadores com uma premium account.', cid)
+		npcHandler:say('Eu somente posso abençoar jogadores com uma premium account.', cid)
 	end
 
 	npcHandler:resetNpc()

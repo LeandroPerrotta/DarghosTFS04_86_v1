@@ -21,5 +21,5 @@ function shadowNexusDemon()
 	local portalPos = demons[rand]
 	
 	local demon = doSummonCreature("demon", portalPos)
-	registerCreatureEvent(demon.uid, "inquisitionReplaceDemons")	
+	registerCreatureEvent(demon, "inquisitionReplaceDemons")	
 end

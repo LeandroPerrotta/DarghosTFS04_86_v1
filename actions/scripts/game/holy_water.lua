@@ -73,7 +73,7 @@ end
 function completeMission(cid, item)
 
 	if(getPlayerStorageValue(cid, sid.INQ_DONE_MWALL) == 1) then
-		doPlayerSendTextMessage(cid, MESSAGE_EVENT_DEFAULT, "VocÃª ja enfraqueceu a fonte da origem demoniaca o sulficiente.")			
+		doPlayerSendTextMessage(cid, MESSAGE_EVENT_DEFAULT, "Vocês ja enfraqueceu a fonte da origem demoniaca o sulficiente.")			
 		return
 	end
 
@@ -92,8 +92,8 @@ function completeMission(cid, item)
 		end
 		
 		doRemoveItem(item.uid)
-		doPlayerSendTextMessage(cid, MESSAGE_EVENT_DEFAULT, "Seu frasco com o liquido sagrado acaba de terminar! Sua missÃ£o aqui estÃ¡ concluida!")
-		doSendMagicEffect(wallPos,CONST_ME_FIREAREA)	
+		doCreatureSay(cid, "Meu frasco com o liquido sagrado acaba de terminar! Minha missão aqui está concluida!", TALKTYPE_ORANGE_1)
+		doSendMagicEffect(getThingPosition(uid.INQ_MWALL), CONST_ME_FIREAREA)	
 		setPlayerStorageValue(cid, sid.INQ_DONE_MWALL, 1)
 	end
 end

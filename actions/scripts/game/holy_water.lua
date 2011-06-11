@@ -19,7 +19,7 @@ local WALL_FULL_FIRE_TIME = 10
 
 local MAX_PLAYERS_CAN_FINISH = 5
 
-local wall = getThing(uid.INQ_MWALL)
+local wall = nil
 local startLastEvent = false
 local replaceEvent = nil
 local finishedTimes = 0
@@ -63,10 +63,12 @@ local function replaceWall(reset)
 	doSendMagicEffect(getThingPosition(wall.uid), CONST_ME_HOLYAREA)
 end
 
-local function completeMission(cid)
+local function completeMission(cid, item)
+
+	wall = getThing(uid.INQ_MWALL)
 
 	if(getPlayerStorageValue(cid, sid.INQ_DONE_MWALL) == 1) then
-		doPlayerSendTextMessage(cid, MESSAGE_EVENT_DEFAULT, "Você ja a enfraqueceu a fonte da origem demoniaca o sulficiente.")			
+		doPlayerSendTextMessage(cid, MESSAGE_EVENT_DEFAULT, "Você ja enfraqueceu a fonte da origem demoniaca o sulficiente.")			
 		return
 	end
 
@@ -84,7 +86,8 @@ local function completeMission(cid)
 			replaceWall(true)
 		end
 		
-		doPlayerSendTextMessage(cid, MESSAGE_EVENT_DEFAULT, "Você conseguiu enfraquecer a fonte da origem demoniaca o sulficiente! Sua missão aqui está concluida!")
+		doRemoveItem(item.uid)
+		doPlayerSendTextMessage(cid, MESSAGE_EVENT_DEFAULT, "Seu frasco com o liquido sagrado acaba de terminar! Sua missão aqui está concluida!")
 		doSendMagicEffect(wallPos,CONST_ME_FIREAREA)	
 		setPlayerStorageValue(cid, sid.INQ_DONE_MWALL, 1)
 	end
@@ -101,7 +104,7 @@ function onUse(cid, item, fromPosition, itemEx, toPosition)
 			replaceWall()
 			scheduleReplaceWall()
 		elseif(itemEx.itemid == ITEMS_FIRE_BARRIER_FULL) then
-			completeMission(cid)
+			completeMission(cid, item)
 		end
 	end
 end

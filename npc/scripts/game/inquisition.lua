@@ -280,7 +280,7 @@ function missionCallback(cid, message, keywords, parameters, node)
 		npcHandler:say("Este lugar fica no coração de onde nascem os demonios, nas profundezas de caverna no continente da cidade de Aaragon e é conhecido como nexo das sombras. Entretanto seu desafio irá começar muito antes de chegar lá <...> ", cid)
 		npcHandler:say("Para chegar lá você irá precisar enfrentar antigos e tremendamente poderosos demonios guardiões, já nesta parte de sua missão você irá precisar de toda ajuda possivel <...> ", cid)
 		npcHandler:say("Quando você conseguir chegar no nexo das sombras irá precisar derramar o liquido divino em uma barreira magica na qual é a fonte de toda força demoniaca <...> ", cid)
-		npcHandler:say("Ela inicialmente irá enfraquecer porem voltará a se fortalecer e você irá precisar enfraquecer-la novamente. Seu objetivo é enfraquecer-la três vezes <...>", cid)
+		npcHandler:say("Ela inicialmente irá enfraquecer porem voltará a se fortalecer e você irá precisar enfraquecer-la novamente até que o liquido em seu frasco se esgote <...>", cid)
 		npcHandler:say("Fique preparado pois os demonios não deixarão você atacar a fonte de sua existencia passivamente. Eles irão atacar sem piedade você e seus companheiros <...>", cid)
 		npcHandler:say("E então, está preparado para sua ultima missão?", cid)
 		

@@ -1,15 +1,13 @@
 function onDeath(cid, corpse, deathList)
 	
-	addEvent(shadowNexusDemon, 1000 * 2, cid)
+	if(getCreatureName(cid) ~= "demon") then
+		addEvent(shadowNexusDemon, 1000 * 2)
+	end
 	
 	return true
 end 
 
-function shadowNexusDemon(cid)
-
-	if(getCreatureName(cid) ~= "demon") then
-		return
-	end
+function shadowNexusDemon()	
 	
 	local demons = {
 		getThingPosition(uid.INQ_DEMON_1),

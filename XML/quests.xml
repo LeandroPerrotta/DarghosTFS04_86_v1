@@ -127,13 +127,13 @@
 		</mission>		
 	
 		<mission name="A primeira missão" storageid="3616" startvalue="0" endvalue="1">	
-			<missionstate id="0" description="É necessario enfraqueçer as forças demoniacas, e para isso Constantino solicitou que você vá a cidade de Aracura e siga para a caverna ao sul. Lá, deça alguns niveis e encontre um antigo demonio chamado Ungreez e o derrote e volte a falar com ele." />
-			<missionstate id="1" description="O antigo demonio Ungreez foi derrotado. Constantino lhe deu como recomensa alguns infeites (1o addon) para a sua roupa de caçador de demonios." />
+			<missionstate id="0" description="Constantino quer enfraquecer as forças demoniacas, e que você vá a cidade de Aracura e siga para a caverna ao sul. Lá encontre um antigo demonio chamado Ungreez e o derrote e volte." />
+			<missionstate id="1" description="O antigo demonio Ungreez foi derrotado. Constantino lhe deu como recomensa o 'demon hunter, 1o addon'." />
 		</mission>		
 		
 		<mission name="Nexos das sombras" storageid="3617" startvalue="0" endvalue="1">	
 			<missionstate id="0" description="Constantino lhe entregou um frasco com um liquido sagrado e quer que você vá ao lugar aonde nasce toda força demoniaca e derrame-o todo na fonte e volte a falar com ele." />
-			<missionstate id="1" description="Você derramou todo sagrado divino na fonte de toda força demoniaca, como recompensa Constantino lhe concedeu mais infeites para sua roupa (2o addon), acesso a sala ao norte e possibilidade de lhe vender todas benções." />
+			<missionstate id="1" description="Você derramou todo sagrado divino na fonte de toda força demoniaca, como recompensa Constantino lhe concedeu o 'demon hunter, 2o addon', acesso a sala ao norte e pode lhe abençoar." />
 		</mission>				
 	</quest>		
 </quests>

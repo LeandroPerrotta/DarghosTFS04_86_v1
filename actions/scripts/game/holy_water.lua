@@ -19,12 +19,11 @@ local WALL_FULL_FIRE_TIME = 10
 
 local MAX_PLAYERS_CAN_FINISH = 5
 
-local wall = nil
 local startLastEvent = false
 local replaceEvent = nil
 local finishedTimes = 0
 
-local function summonDemons()
+function summonDemons()
 	
 	local demons = {
 		getThingPosition(uid.INQ_DEMON_1),
@@ -36,34 +35,35 @@ local function summonDemons()
 	
 	for k,v in pairs(demons) do
 		local demon = doSummonCreature("demon", v)
-		registerCreatureEvent(demon.uid, "CustomMonsterDeath")
+		registerCreatureEvent(demon, "CustomMonsterDeath")
 	end
 end
 
-local function scheduleReplaceWall()
+function scheduleReplaceWall()
 
 	replaceEvent = addEvent(replaceWall, 1000 * WALL_ENERGIZE_TIME)
 end
 
-local function scheduleResetWall()
+function scheduleResetWall()
 
 	replaceEvent = addEvent(repleaceWall, 1000 * WALL_FULL_FIRE_TIME, true)
 end
 
-local function replaceWall(reset)
+function replaceWall(reset)
 
+	local wall = getThing(uid.INQ_MWALL)
 	local newid = (reset) and ITEMS_MAGIC_BARRIER or wall.itemid + 1
 
 	if(reset) then
 		startLastEvent = false
 		finishedTimes = 0
-	end
+	end	
 
 	doTransformItem(wall.uid, newid)
 	doSendMagicEffect(getThingPosition(wall.uid), CONST_ME_HOLYAREA)
 end
 
-local function completeMission(cid, item)
+function completeMission(cid, item)
 
 	if(getPlayerStorageValue(cid, sid.INQ_DONE_MWALL) == 1) then
 		doPlayerSendTextMessage(cid, MESSAGE_EVENT_DEFAULT, "Você ja enfraqueceu a fonte da origem demoniaca o sulficiente.")			
@@ -93,7 +93,7 @@ end
 
 function onUse(cid, item, fromPosition, itemEx, toPosition)
 	
-	wall = getThing(uid.INQ_MWALL)
+	local wall = getThing(uid.INQ_MWALL)
 	
 	if(itemEx.uid == wall.uid) then
 		if(itemEx.itemid == ITEMS_MAGIC_BARRIER) then

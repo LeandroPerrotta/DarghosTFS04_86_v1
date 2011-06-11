@@ -27298,27 +27298,27 @@
     <monster name="Demon" x="19" y="15" z="12" spawntime="60"/>
   </spawn>
   <spawn centerx="2473" centery="1135" centerz="12" radius="30">
-    <monster name="Demon" x="0" y="-8" z="12" spawntime="60"/>
-    <monster name="Fury" x="-6" y="-7" z="12" spawntime="60"/>
-    <monster name="Fury" x="10" y="-6" z="12" spawntime="60"/>
-    <monster name="Juggernaut" x="10" y="-2" z="12" spawntime="60"/>
-    <monster name="Undead Dragon" x="4" y="-1" z="12" spawntime="60"/>
-    <monster name="Demon" x="7" y="1" z="12" spawntime="60"/>
-    <monster name="Juggernaut" x="-9" y="2" z="12" spawntime="60"/>
-    <monster name="Fury" x="0" y="4" z="12" spawntime="60"/>
-    <monster name="Demon" x="-6" y="5" z="12" spawntime="60"/>
-    <monster name="Fury" x="16" y="5" z="12" spawntime="60"/>
-    <monster name="Fury" x="-10" y="6" z="12" spawntime="60"/>
-    <monster name="Juggernaut" x="-4" y="8" z="12" spawntime="60"/>
-    <monster name="Juggernaut" x="10" y="9" z="12" spawntime="60"/>
-    <monster name="Undead Dragon" x="15" y="9" z="12" spawntime="60"/>
-    <monster name="Undead Dragon" x="-2" y="11" z="12" spawntime="60"/>
-    <monster name="Fury" x="4" y="14" z="12" spawntime="60"/>
-    <monster name="Fury" x="-8" y="15" z="12" spawntime="60"/>
-    <monster name="Demon" x="3" y="17" z="12" spawntime="60"/>
-    <monster name="Undead Dragon" x="3" y="20" z="12" spawntime="60"/>
-    <monster name="Fury" x="7" y="22" z="12" spawntime="60"/>
-    <monster name="Demon" x="0" y="23" z="12" spawntime="60"/>
+    <monster name="Demon" x="0" y="-8" z="12" spawntime="180"/>
+    <monster name="Fury" x="-6" y="-7" z="12" spawntime="180"/>
+    <monster name="Fury" x="10" y="-6" z="12" spawntime="180"/>
+    <monster name="Juggernaut" x="10" y="-2" z="12" spawntime="180"/>
+    <monster name="Undead Dragon" x="4" y="-1" z="12" spawntime="180"/>
+    <monster name="Demon" x="7" y="1" z="12" spawntime="180"/>
+    <monster name="Juggernaut" x="-9" y="2" z="12" spawntime="180"/>
+    <monster name="Fury" x="0" y="4" z="12" spawntime="180"/>
+    <monster name="Demon" x="-6" y="5" z="12" spawntime="180"/>
+    <monster name="Fury" x="16" y="5" z="12" spawntime="180"/>
+    <monster name="Fury" x="-10" y="6" z="12" spawntime="180"/>
+    <monster name="Juggernaut" x="-4" y="8" z="12" spawntime="180"/>
+    <monster name="Juggernaut" x="10" y="9" z="12" spawntime="180"/>
+    <monster name="Undead Dragon" x="15" y="9" z="12" spawntime="180"/>
+    <monster name="Undead Dragon" x="-2" y="11" z="12" spawntime="180"/>
+    <monster name="Fury" x="4" y="14" z="12" spawntime="180"/>
+    <monster name="Fury" x="-8" y="15" z="12" spawntime="180"/>
+    <monster name="Demon" x="3" y="17" z="12" spawntime="180"/>
+    <monster name="Undead Dragon" x="3" y="20" z="12" spawntime="180"/>
+    <monster name="Fury" x="7" y="22" z="12" spawntime="180"/>
+    <monster name="Demon" x="0" y="23" z="12" spawntime="180"/>
   </spawn>
   <spawn centerx="1937" centery="1171" centerz="12" radius="5">
     <monster name="Dwarf Miner" x="1" y="-2" z="12" spawntime="60"/>

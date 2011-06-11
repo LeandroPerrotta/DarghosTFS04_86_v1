@@ -123,7 +123,7 @@
 	<quest name="Combate as forças demoniacas" startstorageid="3615" startstoragevalue="0">
 		<mission name="Teste inicial" storageid="3615" startvalue="0" endvalue="1">	
 			<missionstate id="0" description="O NPC Constantino aguarda que você consiga 20 demonic essences e o leve, no andar subterraneo do castelo de Quendor." />
-			<missionstate id="1" description="As 20 demonic essences foram entreguês com sucesso a Constantino. Você obteve a roupa do caçador de demonios como recompensa (demon hunter outfit)" />
+			<missionstate id="1" description="As 20 demonic essences foram entreguês com sucesso a Constantino. Você obteve a roupa do caçador de demonios como recompensa (demon hunter outfit)." />
 		</mission>		
 	
 		<mission name="A primeira missão" storageid="3616" startvalue="0" endvalue="1">	
@@ -132,7 +132,7 @@
 		</mission>		
 		
 		<mission name="Nexos das sombras" storageid="3617" startvalue="0" endvalue="1">	
-			<missionstate id="0" description="Constantino lhe entregou um frasco com um liquido sagrado e quer que você vá ao lugar aonde nasce toda força demoniaca e derrame-o todo na fonte e volte a falar com ele." />
+			<missionstate id="0" description="Constantino lhe entregou um frasco com um liquido sagrado e quer que você vá ao lugar aonde nasce toda força demoniaca em Aaragon e derrame-o todo na fonte e volte a falar com ele." />
 			<missionstate id="1" description="Você derramou todo frasco com o liguido sagrado na fonte de toda força demoniaca, como recompensa Constantino lhe concedeu o 'demon hunter, 2o addon', acesso a sala ao norte e pode lhe abençoar." />
 		</mission>				
 	</quest>		

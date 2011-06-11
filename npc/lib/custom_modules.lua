@@ -168,3 +168,52 @@ function D_CustomNpcModules.pvpBless(cid, message, keywords, parameters, node)
 	npcHandler:resetNpc()
 	return true
 end
+
+function D_CustomNpcModules.inquisitionBless(cid, message, keywords, parameters, node)
+	local npcHandler = parameters.npcHandler
+	if(npcHandler == nil) then
+		print('StdModule.bless called without any npcHandler instance.')
+		return false
+	end
+
+	if(not npcHandler:isFocused(cid)) then
+		return false
+	end
+
+	local questStatus = getPlayerStorageValue(cid, QUESTLOG.INQUISITION.MISSION_SHADOW_NEXUS)
+	
+	if(questStatus ~= 1) then
+		npcHandler:say('Você precisa completar todas as missões no combate as forças demoniacas para que eu possa lhe abençoar.', cid)
+		npcHandler:resetNpc()
+		
+		return true	
+	end
+
+	if(isPlayerPremiumCallback(cid) or not getBooleanFromString(getConfigValue('blessingsOnlyPremium')) or not parameters.premium) then
+		local price = parameters.baseCost
+		if(getPlayerLevel(cid) > parameters.startLevel) then
+			price = (price + ((math.min(parameters.endLevel, getPlayerLevel(cid)) - parameters.startLevel) * parameters.levelCost))
+		end
+		
+		price = price * 5 * parameters.aditionalCostMultipler
+
+		if(getPlayerBlessing(cid, 1) or getPlayerBlessing(cid, 2) or getPlayerBlessing(cid, 3) or getPlayerBlessing(cid, 4) or getPlayerBlessing(cid, 5)) then
+			npcHandler:say("Você já possui uma ou mais bênções, eu somente posso abençoar quem não foi abençoado por nenhum Deus.", cid)
+		elseif(not doPlayerRemoveMoney(cid, price)) then
+			npcHandler:say("Você não tem dinheiro sulficiente. Em seu level, são necessarios " .. price .. " gold coins.", cid)
+		else
+			npcHandler:say("Você recebeu todas as bênções! Você está completamente protegido!", cid)
+			
+			doPlayerAddBlessing(cid, 1)
+			doPlayerAddBlessing(cid, 2)
+			doPlayerAddBlessing(cid, 3)
+			doPlayerAddBlessing(cid, 4)
+			doPlayerAddBlessing(cid, 5)
+		end
+	else
+		npcHandler:say('Eu somente posso abençoar jogadores com uma premium account.', cid)
+	end
+
+	npcHandler:resetNpc()
+	return true
+end

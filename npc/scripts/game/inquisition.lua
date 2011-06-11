@@ -52,7 +52,10 @@ function noCallback(cid, message, keywords, parameters, node)
 	local npcHandler = parameters.npcHandler
 	npcHandler:say(messages[rand], cid)
 	
-	parameters.talkState = TALK_MISSION.NONE
+	if(parameters.talkState ~= nil) then
+		parameters.talkState = TALK_MISSION.NONE
+	end
+	
 	npcHandler:resetNpc()
 	return true
 end
@@ -215,7 +218,8 @@ function finishThirdMissionCallback(cid, message, keywords, parameters, node)
 	
 	npcHandler:say("Bravo guerreiro! Agora a presença demoniaca está mais controlada! Todo nosso reino lhe agradeçe! <...>", cid)
 	npcHandler:say("Como recompensa por sua grande missão lhe concedo mais alguns infeites para a sua roupa de caçador de demonios! Além disto lhe concedo a permissão para acessar a sala seguindo o corredor a norte <...>!", cid)
-	npcHandler:say("Lá você encontrará alguns dos mais poderosos equipamentos e armas conhecidos e poderá escolher uma para você! Esteja atento a sua decisão, pois não poderá! Boa sorte!", cid)
+	npcHandler:say("Lá você encontrará alguns dos mais poderosos equipamentos e armas conhecidos e poderá escolher uma para você! Esteja atento a sua decisão, pois não poderá voltar atraz! <...>", cid)
+	npcHandler:say("Eu também terei prazer em, se necessário, abençoar você com toda as cinco benções de uma vez! Boa sorte!", cid)
 	
 	npcHandler:resetNpc()	
 	return true
@@ -307,4 +311,7 @@ end
 
 local node = keywordHandler:addKeyword({'mission', 'missão', 'missao'}, missionCallback, {npcHandler = npcHandler, onlyFocus = true, talkState = TALK_MISSION.NONE})
 
+local node1 = keywordHandler:addKeyword({'bless', 'benção', 'blessings'}, StdModule.say, {npcHandler = npcHandler, onlyFocus = true, text = 'A bravos guerreiros que tiverem ajudado no combate as forças demoniacas eu posso conceder todas benções de uma vez porem custando um pouco mais caro, você gostaria?'})
+	node1:addChildKeyword(confirmPattern, D_CustomNpcModules.inquisitionBless, {npcHandler = npcHandler, premium = true, baseCost = 2000, aditionalCostMultipler = 110, levelCost = 200, startLevel = 30, endLevel = 120})
+	node1:addChildKeyword(negationPattern, noCallback, {npcHandler = npcHandler, onlyFocus = true})
 npcHandler:addModule(FocusModule:new())

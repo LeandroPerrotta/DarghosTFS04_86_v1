@@ -198,11 +198,11 @@ function D_CustomNpcModules.inquisitionBless(cid, message, keywords, parameters,
 		price = price * 5 * parameters.aditionalCostMultipler
 
 		if(getPlayerBlessing(cid, 1) or getPlayerBlessing(cid, 2) or getPlayerBlessing(cid, 3) or getPlayerBlessing(cid, 4) or getPlayerBlessing(cid, 5)) then
-			npcHandler:say("Você já possui uma ou maisbenções, eu somente posso abençoar quem não foi abençoado por nenhum Deus.", cid)
+			npcHandler:say("Você já possui uma ou mais benções, eu somente posso abençoar quem não foi abençoado por nenhum Deus.", cid)
 		elseif(not doPlayerRemoveMoney(cid, price)) then
 			npcHandler:say("Você não tem dinheiro sulficiente. Em seu level, são necessarios " .. price .. " gold coins.", cid)
 		else
-			npcHandler:say("Você recebeu todas as benções! Vocêesta completamente protegido!", cid)
+			npcHandler:say("Você recebeu todas as benções! Você esta completamente protegido!", cid)
 			
 			doPlayerAddBlessing(cid, 1)
 			doPlayerAddBlessing(cid, 2)

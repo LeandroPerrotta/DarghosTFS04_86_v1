@@ -40,6 +40,21 @@ function onLogin(cid)
 		addAllOufits(cid)
 	end
 	
+	--Give basic itens after death
+	if getPlayerStorageValue(cid, sid.GIVE_ITEMS_AFTER_DEATH) == 1 then
+		if getPlayerSlotItem(cid, CONST_SLOT_BACKPACK).uid == 0 then
+			local item_backpack = doCreateItemEx(1988, 1) -- backpack
+			
+			doAddContainerItem(item_backpack, 2120, 1) -- rope
+			doAddContainerItem(item_backpack, 2554, 1) -- shovel
+			doAddContainerItem(item_backpack, 2666, 4) -- meat
+			doAddContainerItem(item_backpack, CUSTOM_ITEMS.TELEPORT_RUNE, 1) -- teleport rune
+			
+			doPlayerAddItemEx(cid, item_backpack, FALSE, CONST_SLOT_BACKPACK)
+		end
+		setPlayerStorageValue(cid, sid.GIVE_ITEMS_AFTER_DEATH, -1)
+	end			
+	
 	setPlayerStorageValue(cid, sid.TRAINING_SHIELD, 0)
 	setPlayerStorageValue(cid, sid.TELEPORT_RUNE_STATE, STORAGE_NULL)
 	setPlayerStorageValue(cid, sid.HACKS_LIGHT, LIGHT_NONE)

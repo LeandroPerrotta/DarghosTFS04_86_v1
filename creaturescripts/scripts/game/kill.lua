@@ -1,16 +1,16 @@
 function onKill(cid, target, damage, flags)
 		
-	local cName = getCreatureName(target)
+	local cName = string.lower(getCreatureName(target))
 	
-	if(cName == "Ghazran") then
+	if(cName == "ghazran") then
 	
 		onGhazranDie(corpse)
 		
-	elseif(cName == "Lord Vankyner") then
+	elseif(cName == "lord vankyner") then
 	
 		onLordVankynerDie()
 	
-	elseif(cName == "Ungreez") then
+	elseif(cName == "ungreez") then
 	
 		onUngreezDie(cid, target, damage, flags)
 	end

@@ -440,6 +440,15 @@ function movementTileOnStepIn(cid, item, position, fromPosition)
 			doTeleportThing(cid, fromPosition, false)
 			doSendMagicEffect(position, CONST_ME_MAGIC_BLUE)
 		end
+	elseif(item.actionid ~= nil and item.actionid == aid.INQ_UNGREEZ_PORTAL) then
+		
+		local killUngreez = (getPlayerStorageValue(cid, sid.INQ_KILL_UNGREEZ) == 1) and true or false	
+		
+		if(killUngreez) then
+			doPlayerSendCancel(cid, "Você já derrotou o demonio Ungreez.")
+			doTeleportThing(cid, fromPosition, false)
+			doSendMagicEffect(position, CONST_ME_MAGIC_BLUE)
+		end
 	end	
 
 	return false

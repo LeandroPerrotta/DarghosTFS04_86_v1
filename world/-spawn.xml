@@ -27890,6 +27890,9 @@
     <monster name="Fire Elemental" x="1" y="-4" z="12" spawntime="150"/>
     <monster name="Fire Elemental" x="0" y="1" z="12" spawntime="150"/>
   </spawn>
+  <spawn centerx="3442" centery="2164" centerz="12" radius="5">
+    <monster name="ungreez" x="2" y="2" z="12" spawntime="900"/>
+  </spawn>
   <spawn centerx="3408" centery="2170" centerz="12" radius="5">
     <monster name="Fire Elemental" x="1" y="1" z="12" spawntime="60"/>
     <monster name="Demon" x="-3" y="3" z="12" spawntime="180"/>

@@ -20,10 +20,17 @@ local WALL_FULL_FIRE_TIME = 10
 local MAX_PLAYERS_CAN_FINISH = 5
 
 local startLastEvent = false
+local summoningDemons = false
 local replaceEvent = nil
 local finishedTimes = 0
 
 function summonDemons()
+	
+	if(summoningDemons) then
+		return
+	end
+	
+	summoningDemons = true
 	
 	local demons = {
 		getThingPosition(uid.INQ_DEMON_1),
@@ -77,7 +84,7 @@ function completeMission(cid, item)
 		scheduleResetWall()
 	end
 
-	if(finishedTimes >= MAX_PLAYERS_CAN_FINISH) then
+	if(finishedTimes <= MAX_PLAYERS_CAN_FINISH) then
 	
 		if(finishedTimes == MAX_PLAYERS_CAN_FINISH) then
 			stopEvent(replaceEvent)

@@ -35,7 +35,7 @@ function summonDemons()
 	
 	for k,v in pairs(demons) do
 		local demon = doSummonCreature("demon", v)
-		registerCreatureEvent(demon, "CustomMonsterDeath")
+		registerCreatureEvent(demon, "inquisitionReplaceDemons")
 	end
 end
 
@@ -46,7 +46,7 @@ end
 
 function scheduleResetWall()
 
-	replaceEvent = addEvent(repleaceWall, 1000 * WALL_FULL_FIRE_TIME, true)
+	replaceEvent = addEvent(replaceWall, 1000 * WALL_FULL_FIRE_TIME, true)
 end
 
 function replaceWall(reset)

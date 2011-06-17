@@ -41,7 +41,7 @@
 			<item keywords="dwarven;ring" id="2213" buyprice="2000" name="dwarven ring"/>	
 			<item keywords="energy;ring" id="2167" buyprice="2000" name="energy ring"/>	
 			<item keywords="life;ring" id="2168" buyprice="900" name="life ring"/>	
-			<item keywords="might;ring" subtype="20" id="2164" buyprice="10000" name="might ring"/>	
+			<item keywords="might;ring" subtype="20" id="2164" buyprice="5000" name="might ring"/>	
 			<item keywords="ring;of;healing" id="2214" buyprice="2000" name="ring of healing"/>	
 			<item keywords="time;ring" id="2169" buyprice="2000" name="time ring"/>	
 		</itemlist>		

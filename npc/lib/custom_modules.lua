@@ -195,7 +195,7 @@ function D_CustomNpcModules.inquisitionBless(cid, message, keywords, parameters,
 			price = (price + ((math.min(parameters.endLevel, getPlayerLevel(cid)) - parameters.startLevel) * parameters.levelCost))
 		end
 		
-		price = price * 5 * parameters.aditionalCostMultipler
+		price = (price * 5) * parameters.aditionalCostMultipler
 
 		if(getPlayerBlessing(cid, 1) or getPlayerBlessing(cid, 2) or getPlayerBlessing(cid, 3) or getPlayerBlessing(cid, 4) or getPlayerBlessing(cid, 5)) then
 			npcHandler:say("Você já possui uma ou mais benções, eu somente posso abençoar quem não foi abençoado por nenhum Deus.", cid)

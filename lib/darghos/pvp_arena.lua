@@ -39,17 +39,35 @@ function pvpArena:addPlayer(cid, inFirst)
 	end
 	
 	doPlayerSendTextMessage(cid, MESSAGE_STATUS_CONSOLE_BLUE, "Você se juntou a fila para um duelo de arena. Agora você deve aguardar até que apareça algum adversário, isto pode levar de alguns segundos a vários minutos.")
-
-	if(#self.playersQueue >= 2 and self.state == STATE_WAITING) then
-		self:prepareGame()
-	end
+	self:prepareGame()
 end
 
 function pvpArena:getState()
 	return self.state
 end
 
+function pvpArena:finishGame(winner, looser)
+
+	local tmp_player = self:findPlayer(winner)
+	self:teleportPlayerOut(tmp_player)
+	doPlayerSendTextMessage(tmp_player.cid, MESSAGE_STATUS_CONSOLE_BLUE, "Parabens! É um verdadeiro vencedor! Você será levado ao local aonde estava em alguns instantes...")
+	
+	tmp_player = self:findPlayer(looser)
+	self:teleportPlayerOut(tmp_player, true)
+	doPlayerSendTextMessage(tmp_player.cid, MESSAGE_STATUS_CONSOLE_BLUE, "Mas que pena, não foi desta vez! Você será levado ao local aonde estava em alguns instantes...")
+	
+	self.teamOne = nil
+	self.teamTwo = nil
+	
+	self.state = STATE_WAITING
+	self:prepareGame()
+end
+
 function pvpArena:prepareGame()
+
+	if(#self.playersQueue < 2 or self.state ~= STATE_WAITING) then
+		return
+	end
 
 	self.state = STATE_STARTING
 
@@ -179,9 +197,15 @@ function pvpArena:findPlayer(cid)
 	return nil
 end
 
-function pvpArena:teleportPlayerOut(player)
+function pvpArena:teleportPlayerOut(player, instant)
 
-	addEvent(doTeleportThing, 1000 * 2, player.cid, player.oldPos)
+	instant = (instant ~= nil) and instant or false
+	
+	if(instant) then
+		addEvent(doTeleportThing, 1000 * 2, player.cid, player.oldPos)
+	else
+		doTeleportThing(player.cid, player.oldPos)
+	end
 end
 
 function pvpArena:run()
@@ -232,7 +256,7 @@ function pvpArena:run()
 		return false
 	end	
 	
-	self.state = GAME_RUNNING
+	self.state = STATE_RUNNING
 	self:removeGates()	
 	self:broadcastMessage()
 	

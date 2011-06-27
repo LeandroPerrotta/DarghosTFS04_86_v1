@@ -7,8 +7,8 @@ pvpArena = {
 	teamOne = nil,
 	teamTwo = nil,
 	playersQueue = nil,
-	state = nil,
-	bcMsg = nil
+	state = STATE_WAITING,
+	bcMsg = 0
 }
 
 -- Cria uma nova instancia de um scenario PvP
@@ -18,8 +18,6 @@ function pvpArena:new()
 	obj.teamOne = {}
 	obj.teamTwo = {}
 	obj.playersQueue = {}
-	obj.state = STATE_WAITING
-	obj.bcMsg = 0
 	setmetatable(obj, self)
 	self.__index = self
 	return obj
@@ -39,7 +37,7 @@ function pvpArena:addPlayer(cid, inFirst)
 	else
 		table.insert(self.playersQueue, 1, cid)
 	end
-
+	
 	doPlayerSendTextMessage(cid, MESSAGE_STATUS_CONSOLE_BLUE, "Você se juntou a fila para um duelo de arena. Agora você deve aguardar até que apareça algum adversário, isto pode levar de alguns segundos a vários minutos.")
 
 	if(#self.playersQueue >= 2 and self.state == STATE_WAITING) then
@@ -59,22 +57,22 @@ function pvpArena:prepareGame()
 	table.insert(self.teamTwo, {cid = self.playersQueue[2], ready = false})
 	
 	table.remove(self.playersQueue, 1)
-	table.remove(self.playersQueue, 2)
+	table.remove(self.playersQueue, 1)
 	
-	pvpArena:addGates()
-	pvpArena:broadcastMessage()
+	self:addGates()
+	self:broadcastMessage()
 	addEvent(pvpArena.callBroadcastMessage, 1000 * 30, self)
 	addEvent(pvpArena.callBroadcastMessage, 1000 * 45, self)
 	addEvent(pvpArena.callBroadcastMessage, 1000 * 55, self)
 	addEvent(pvpArena.callRun, 1000 * 60, self)
 end
 
-function pvpArena.callRun(pvpArena)
-	pvpArena:run()
+function pvpArena.callRun(instance)
+	instance:run()
 end
 
-function pvpArena.callBroadcastMessage(pvpArena)
-	pvpArena:broadcastMessage()
+function pvpArena.callBroadcastMessage(instance)
+	instance:broadcastMessage()
 end
 
 function pvpArena:addGates()
@@ -99,15 +97,15 @@ function pvpArena:removeGates()
 	local teamOneGates = uid.ARENA_TEAM_ONE_WALLS
 	
 	for k,v in pairs(teamOneGates) do
-		local pos = getThingPos(v)
-		doRemoveItem(getTileItemById(ITEM_GATE, pos))
+		local thing = getTileItemById(getThingPos(v), ITEM_GATE)
+		doRemoveItem(thing.uid)
 	end
 	
-	local teamOneGates = uid.ARENA_TEAM_TWO_WALLS
+	local teamTwoGates = uid.ARENA_TEAM_TWO_WALLS
 	
 	for k,v in pairs(teamTwoGates) do
-		local pos = getThingPos(v)
-		doRemoveItem(getTileItemById(ITEM_GATE, pos))
+		local thing = getTileItemById(getThingPos(v), ITEM_GATE)
+		doRemoveItem(thing.uid)
 	end	
 end
 
@@ -127,16 +125,19 @@ function pvpArena:setPlayerReady(cid)
 	
 	player.ready = true
 	
-	local dest = nil
-	local playerTeam = self:getPlayerTeam(getPlayerTeam)
+	local dest = {}
+	local playerTeam = self:getPlayerTeam(cid)
 	
 	if(playerTeam == 1) then
-		dest = getThingPos(uid.AREAN_TEAM_ONE_RESPAWN)
+		dest = getThingPos(uid.ARENA_TEAM_ONE_RESPAWN)
 	elseif(playerTeam == 2) then
-		dest = getThingPos(uid.AREAN_TEAM_TWO_RESPAWN)
+		dest = getThingPos(uid.ARENA_TEAM_TWO_RESPAWN)
 	else
-		-- algum alerta?
+		print("pvpArena:setPlayerReady -> Não foi possivel localizar o time do jogador.")
+		return
 	end
+	
+	print(table.show(dest))
 	
 	player.oldPos = getCreaturePosition(cid)
 	doTeleportThing(cid, dest)
@@ -152,56 +153,6 @@ function pvpArena:getPlayerReady(cid)
 	end
 	
 	return player.ready
-end
-
-function pvpArena:run()
-
-	if(not self.teamOne[1].ready and self.teamTwo[1].ready) then
-		-- o segundo jogador estava pronto, enquanto o primeiro não...
-		doPlayerSendTextMessage(self.teamOne[1].cid, MESSAGE_STATUS_CONSOLE_BLUE, "Você não compareceu a batalha... Assim ela foi cancelada.")
-		self.teamOne[1] = nil
-		
-		doPlayerSendTextMessage(self.teamTwo[1].cid, MESSAGE_STATUS_CONSOLE_BLUE, "O seu adversário não compareceu a batalha... Aguarde outro adversário.")
-		self:addPlayer(self.teamTwo[1].cid, true)
-		self.teamTwo[1] = nil
-		
-		self.state = STATE_WAITING
-		self.bcMsg = 0
-		return false
-	end
-	
-	if(self.teamOne[1].ready and not self.teamTwo[1].ready) then
-		-- o primeiro jogador estava pronto, enquanto o segundo não...
-		doPlayerSendTextMessage(self.teamTwo[1].cid, MESSAGE_STATUS_CONSOLE_BLUE, "Você não compareceu a batalha... Assim ela foi cancelada.")
-		self.teamTwo[1] = nil
-		
-		doPlayerSendTextMessage(self.teamOne[1].cid, MESSAGE_STATUS_CONSOLE_BLUE, "O seu adversário não compareceu a batalha... Aguarde outro adversário.")		
-		self:addPlayer(self.teamOne[1].cid, true)
-		self.teamOne[1] = nil
-		
-		self.state = STATE_WAITING
-		self.bcMsg = 0		
-		return false
-	end
-
-	if(not self.teamOne[1].ready and not self.teamTwo[1].ready) then
-		-- nenhum dos dois jogadores estavam prontos...
-		doPlayerSendTextMessage(self.teamOne[1].cid, MESSAGE_STATUS_CONSOLE_BLUE, "Você não compareceu a batalha... Assim ela foi cancelada.")
-		self.teamOne[1] = nil
-		
-		doPlayerSendTextMessage(self.teamTwo[1].cid, MESSAGE_STATUS_CONSOLE_BLUE, "Você não compareceu a batalha... Assim ela foi cancelada.")
-		self.teamTwo[1] = nil
-		
-		self.state = STATE_WAITING
-		self.bcMsg = 0		
-		return false
-	end	
-	
-	self.state = GAME_RUNNING
-	self:removeGates()	
-	pvpArena:broadcastMessage()
-	
-	return true
 end
 
 function pvpArena:getPlayerTeam(cid)
@@ -228,6 +179,66 @@ function pvpArena:findPlayer(cid)
 	return nil
 end
 
+function pvpArena:teleportPlayerOut(player)
+
+	addEvent(doTeleportThing, 1000 * 2, player.cid, player.oldPos)
+end
+
+function pvpArena:run()
+
+	if(not self.teamOne[1].ready and self.teamTwo[1].ready) then
+		-- o segundo jogador estava pronto, enquanto o primeiro não...
+		doPlayerSendTextMessage(self.teamOne[1].cid, MESSAGE_STATUS_CONSOLE_BLUE, "Você não compareceu a batalha... Assim ela foi cancelada.")
+		self.teamOne[1] = nil
+		
+		local temp_cid = self.teamTwo[1].cid
+		doPlayerSendTextMessage(temp_cid, MESSAGE_STATUS_CONSOLE_BLUE, "O seu adversário não compareceu a batalha... Aguarde outro adversário.")
+		self:teleportPlayerOut(self.teamTwo[1])
+		
+		self.teamTwo[1] = nil
+		self:addPlayer(temp_cid, true)
+		
+		self.state = STATE_WAITING
+		self.bcMsg = 0
+		return false
+	end
+	
+	if(self.teamOne[1].ready and not self.teamTwo[1].ready) then
+		-- o primeiro jogador estava pronto, enquanto o segundo não...
+		doPlayerSendTextMessage(self.teamTwo[1].cid, MESSAGE_STATUS_CONSOLE_BLUE, "Você não compareceu a batalha... Assim ela foi cancelada.")
+		self.teamTwo[1] = nil
+		
+		local temp_cid = self.teamOne[1].cid
+		doPlayerSendTextMessage(temp_cid, MESSAGE_STATUS_CONSOLE_BLUE, "O seu adversário não compareceu a batalha... Aguarde outro adversário.")		
+		self:teleportPlayerOut(self.teamOne[1])
+		self.teamOne[1] = nil
+		self:addPlayer(temp_cid, true)		
+		
+		self.state = STATE_WAITING
+		self.bcMsg = 0		
+		return false
+	end
+
+	if(not self.teamOne[1].ready and not self.teamTwo[1].ready) then
+		-- nenhum dos dois jogadores estavam prontos...
+		doPlayerSendTextMessage(self.teamOne[1].cid, MESSAGE_STATUS_CONSOLE_BLUE, "Você não compareceu a batalha... Assim ela foi cancelada.")
+		self.teamOne[1] = nil
+		
+		doPlayerSendTextMessage(self.teamTwo[1].cid, MESSAGE_STATUS_CONSOLE_BLUE, "Você não compareceu a batalha... Assim ela foi cancelada.")
+		self.teamTwo[1] = nil
+		
+		self.state = STATE_WAITING
+		self.bcMsg = 0		
+		return false
+	end	
+	
+	self.state = GAME_RUNNING
+	self:removeGates()	
+	self:broadcastMessage()
+	
+	return true
+end
+
 function pvpArena:broadcastTeam(team, text, mustBeReady)
 
 	for k,v in pairs(team) do
@@ -248,11 +259,11 @@ function pvpArena:broadcastMessage()
 		mustBeReady = false
 	elseif(self.bcMsg == 1) then
 		text = "A batalha irá começar em 30 segundos."
-	elseif(self.bcMsg == 3) then
+	elseif(self.bcMsg == 2) then
 		text = "A batalha irá começar em 15 segundos."		
-	elseif(self.bcMsg == 4) then
+	elseif(self.bcMsg == 3) then
 		text = "A batalha irá começar em 5 segundos."		
-	elseif(self.bcMsg == 5) then
+	elseif(self.bcMsg == 4) then
 		text = "A batalha foi iniciada. Boa sorte!"					
 	end
 	

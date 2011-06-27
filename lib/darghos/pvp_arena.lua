@@ -81,14 +81,14 @@ function pvpArena:addGates()
 
 	local teamOneGates = uid.ARENA_TEAM_ONE_WALLS
 	
-	for k,v in pais(teamOneGates) do
+	for k,v in pairs(teamOneGates) do
 		local pos = getThingPos(v)
 		doCreateItem(ITEM_GATE, pos)
 	end
 	
 	local teamTwoGates = uid.ARENA_TEAM_TWO_WALLS
 	
-	for k,v in pais(teamTwoGates) do
+	for k,v in pairs(teamTwoGates) do
 		local pos = getThingPos(v)
 		doCreateItem(ITEM_GATE, pos)
 	end	
@@ -98,14 +98,14 @@ function pvpArena:removeGates()
 
 	local teamOneGates = uid.ARENA_TEAM_ONE_WALLS
 	
-	for k,v in pais(teamOneGates) do
+	for k,v in pairs(teamOneGates) do
 		local pos = getThingPos(v)
 		doRemoveItem(getTileItemById(ITEM_GATE, pos))
 	end
 	
 	local teamOneGates = uid.ARENA_TEAM_TWO_WALLS
 	
-	for k,v in pais(teamTwoGates) do
+	for k,v in pairs(teamTwoGates) do
 		local pos = getThingPos(v)
 		doRemoveItem(getTileItemById(ITEM_GATE, pos))
 	end	

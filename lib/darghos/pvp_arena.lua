@@ -63,10 +63,10 @@ function pvpArena:prepareGame()
 	
 	pvpArena:addGates()
 	pvpArena:broadcastMessage()
-	addEvent(pvpArena.callBroadcastMessage, 1000 * 30, pvpArena)
-	addEvent(pvpArena.callBroadcastMessage, 1000 * 45, pvpArena)
-	addEvent(pvpArena.callBroadcastMessage, 1000 * 55, pvpArena)
-	addEvent(pvpArena.callRun, 1000 * 60, pvpArena)
+	addEvent(pvpArena.callBroadcastMessage, 1000 * 30, self)
+	addEvent(pvpArena.callBroadcastMessage, 1000 * 45, self)
+	addEvent(pvpArena.callBroadcastMessage, 1000 * 55, self)
+	addEvent(pvpArena.callRun, 1000 * 60, self)
 end
 
 function pvpArena.callRun(pvpArena)

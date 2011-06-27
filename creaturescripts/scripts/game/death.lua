@@ -4,7 +4,7 @@ function onDeath(cid, corpse, deathList)
 		
 		Dungeons.onPlayerDeath(cid)
 		setPlayerStorageValue(cid, sid.GIVE_ITEMS_AFTER_DEATH, 1)
-	end
+	end	
 	
 	return true
 end 

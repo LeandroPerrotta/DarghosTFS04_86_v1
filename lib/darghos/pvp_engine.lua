@@ -5,7 +5,7 @@ pvpEngine = {
 pvpEngine.scenariosList = {
 }
 
-function pvp.Engine.init()
+function pvpEngine.init()
 
 	-- capture the flag
 	local scenario = pvpScenario:new(SCENARIO_TYPE_CAPTURE_THE_FLAG)

@@ -17,7 +17,7 @@ end
 
 function luaGlobal.setVar(var, value)
 
-	local result = db.getResult("SELECT `value` FROM `lua_global` WHERE `var` = '" .. name .. "';")
+	local result = db.getResult("SELECT `value` FROM `lua_global` WHERE `var` = '" .. var .. "';")
 
 	local json = require("json")
 	value = json.encode(value)		

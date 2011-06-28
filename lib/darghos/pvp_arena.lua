@@ -52,14 +52,14 @@ function pvpArena:getFromQueue(pos)
 	return self.playersQueue[pos]
 end
 
-function removeFromQueue(pos)
+function pvpArena:removeFromQueue(pos)
 	self:importQueue()
 	pos = pos or 1
 	table.remove(self.playersQueue, pos)
 	self:updateQueue()
 end
 
-function getQueueSize()
+function pvpArena:getQueueSize()
 	self:importQueue()
 	return #self.playersQueue
 end

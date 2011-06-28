@@ -4,7 +4,7 @@ function onSay(cid, words, param)
 		instancePvpArena:addPlayer(cid)
 	elseif(param == "leave") then
 	elseif(param == "ready") then
-		instancePvpArena:setPlayerReady(cid)
+		instancePvpArena:onPlayerReady(cid)
 	else
 		doPlayerSendTextMessage(cid, MESSAGE_STATUS_CONSOLE_BLUE, "Você precisa digitar um parametro, as opções são:")
 		doPlayerSendTextMessage(cid, MESSAGE_STATUS_CONSOLE_BLUE, "!pvp join -> Entra na fila para começar uma arena.")

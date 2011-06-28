@@ -1,11 +1,11 @@
 local STATE_WAITING, STATE_STARTING, STATE_RUNNING, STATE_PAUSED = 1, 2, 3, 4
+local TEAM_ONE, TEAM_TWO = 1, 2
 
 local ITEM_GATE = 9532
 
 --- Private vars
 pvpArena = {
-	teamOne = nil,
-	teamTwo = nil,
+	teams = nil,
 	playersQueue = nil,
 	state = STATE_WAITING,
 	bcMsg = 0
@@ -15,13 +15,180 @@ pvpArena = {
 function pvpArena:new()
 	local obj = {}
 	
-	obj.teamOne = {}
-	obj.teamTwo = {}
+	obj.teams = {[TEAM_ONE] = {}, [TEAM_TWO] = {}}
 	obj.playersQueue = {}
 	setmetatable(obj, self)
 	self.__index = self
 	return obj
 end
+
+----------------------
+-- QUEUE HANDLER -----
+----------------------
+
+function pvpArena:updateQueue()
+	luaGlobal.setVar("pvp_queue", self.playersQueue)
+end
+
+function pvpArena:importQueue()
+	self.playersQueue = luaGlobal.getVar("pvp_queue")
+end
+
+function pvpArena:addToQueue(cid, pos)
+	pos = pos or false
+	
+	if(not pos) then
+		table.insert(self.playersQueue, cid)
+	else
+		table.insert(self.playersQueue, pos, cid)
+	end
+	
+	self:updateQueue()
+end
+
+function pvpArena:getFromQueue(pos)
+	self:importQueue()
+	pos = pos or 1
+	return self.playersQueue[pos]
+end
+
+function removeFromQueue(pos)
+	self:importQueue()
+	pos = pos or 1
+	table.remove(self.playersQueue, pos)
+	self:updateQueue()
+end
+
+function getQueueSize()
+	self:importQueue()
+	return #self.playersQueue
+end
+
+----------------------
+-- TEAMS HANDLER -----
+----------------------
+function pvpArena:updateTeams()
+	luaGlobal.setVar("pvp_teams", self.teams)
+end
+
+function pvpArena:importTeams()
+	self.teams = luaGlobal.getVar("pvp_teams")
+end
+
+function pvpArena:addToTeam(team, cid)
+	self:importTeams()
+	local t = {cid = cid, ready = false, oldPos = {}}
+	table.insert(self.teams[team], t)
+	self:updateTeams()
+end
+
+function pvpArena:getTeams()
+	self:importTeams()
+	return self.teams
+end
+
+function pvpArena:clearTeams()
+	self.teams = {[TEAM_ONE] = {}, [TEAM_TWO] = {}}
+	self:updateTeams()
+end
+
+function pvpArena:getPlayerReady(cid)
+
+	local player = self:findPlayer(cid)
+
+	if(player == nil) then
+		return nil
+	end
+	
+	return player.ready
+end
+
+function pvpArena:getPlayerTeam(cid)
+
+	local team = nil
+	for tk,tv in pairs(self:getTeams()) do	
+		team = tk
+		
+		for pk,pv in pairs(tv) do	
+			if(pv.cid == cid) then
+				return team
+			end	
+		end
+	end
+	
+	return nil
+end
+
+function pvpArena:findPlayer(cid)
+
+	for tk,tv in pairs(self:getTeams()) do	
+		for pk,pv in pairs(tv) do	
+			if(pv.cid == cid) then
+				return pk
+			end	
+		end
+	end
+	
+	return nil
+end
+
+function pvpArena:removePlayer(cid)
+
+	local team, key = nil, nil
+	local teams = self:getTeams()
+
+	for tk,tv in pairs(teams) do	
+		team = tk
+		for pk,pv in pairs(tv) do	
+			if(pv.cid == cid) then
+				key = pk
+			end	
+		end
+	end
+	
+	teams[team][key] = nil
+	self:updateTeams()
+end
+
+function pvpArena:setPlayerIsReady(player)
+	player.ready = true
+	self:updateTeams()
+end
+
+function pvpArena:getPlayerOldPos(player)
+	return player.oldPos
+end
+
+function pvpArena:setPlayerOldPos(player, pos)
+	player.oldPos = pos
+	self:updateTeams()
+end
+
+----------------------
+-- STATE HANDLER -----
+----------------------
+
+function pvpArena:updateState()
+	luaGlobal.setVar("pvp_state", self.state)
+end
+
+function pvpArena:importState()
+	self.state = luaGlobal.getVar("pvp_state")
+end
+
+function pvpArena:getState()
+	self:importState()
+	return self.state
+end
+
+function pvpArena:setState(state)
+	self.state = state
+	self:updateState()
+end
+
+-------------------------
+-- FUNCTIONS SECTOR -----
+-------------------------
 
 function pvpArena:addPlayer(cid, inFirst)
 
@@ -33,17 +200,13 @@ function pvpArena:addPlayer(cid, inFirst)
 	end	
 
 	if(not inFirst) then
-		table.insert(self.playersQueue, cid)
+		self:addToQueue(cid)
 	else
-		table.insert(self.playersQueue, 1, cid)
+		self:addToQueue(cid, 1)
 	end
 	
 	doPlayerSendTextMessage(cid, MESSAGE_STATUS_CONSOLE_BLUE, "Você se juntou a fila para um duelo de arena. Agora você deve aguardar até que apareça algum adversário, isto pode levar de alguns segundos a vários minutos.")
 	self:prepareGame()
-end
-
-function pvpArena:getState()
-	return self.state
 end
 
 function pvpArena:finishGame(winner, looser)
@@ -56,26 +219,26 @@ function pvpArena:finishGame(winner, looser)
 	self:teleportPlayerOut(tmp_player, true)
 	doPlayerSendTextMessage(tmp_player.cid, MESSAGE_STATUS_CONSOLE_BLUE, "Mas que pena, não foi desta vez! Você será levado ao local aonde estava em alguns instantes...")
 	
-	self.teamOne = nil
-	self.teamTwo = nil
+	self:clearTeams()
 	
-	self.state = STATE_WAITING
+	self:setState(STATE_WAITING)
 	self:prepareGame()
 end
 
 function pvpArena:prepareGame()
 
-	if(#self.playersQueue < 2 or self.state ~= STATE_WAITING) then
+	if(self:getQueueSize() < 2 or self:getState() ~= STATE_WAITING) then
 		return
 	end
 
-	self.state = STATE_STARTING
+	self:setState(STATE_STARTING)
 
-	table.insert(self.teamOne, {cid = self.playersQueue[1], ready = false})
-	table.insert(self.teamTwo, {cid = self.playersQueue[2], ready = false})
+	self:addToTeam(TEAM_ONE, self:getFromQueue(1))
+	self:addToTeam(TEAM_TWO, self:getFromQueue(2))
 	
-	table.remove(self.playersQueue, 1)
-	table.remove(self.playersQueue, 1)
+	-- duas vezes para remover os dois primeiros
+	self:removeFromQueue()
+	self:removeFromQueue()
 	
 	self:addGates()
 	self:broadcastMessage()
@@ -83,14 +246,6 @@ function pvpArena:prepareGame()
 	addEvent(pvpArena.callBroadcastMessage, 1000 * 45, self)
 	addEvent(pvpArena.callBroadcastMessage, 1000 * 55, self)
 	addEvent(pvpArena.callRun, 1000 * 60, self)
-end
-
-function pvpArena.callRun(instance)
-	instance:run()
-end
-
-function pvpArena.callBroadcastMessage(instance)
-	instance:broadcastMessage()
 end
 
 function pvpArena:addGates()
@@ -127,7 +282,7 @@ function pvpArena:removeGates()
 	end	
 end
 
-function pvpArena:setPlayerReady(cid)
+function pvpArena:onPlayerReady(cid)
 
 	local player = self:findPlayer(cid)
 	
@@ -141,60 +296,24 @@ function pvpArena:setPlayerReady(cid)
 		return
 	end	
 	
-	player.ready = true
+	self:setPlayerIsReady(player)
 	
 	local dest = {}
 	local playerTeam = self:getPlayerTeam(cid)
 	
-	if(playerTeam == 1) then
+	if(playerTeam == TEAM_ONE) then
 		dest = getThingPos(uid.ARENA_TEAM_ONE_RESPAWN)
-	elseif(playerTeam == 2) then
+	elseif(playerTeam == TEAM_TWO) then
 		dest = getThingPos(uid.ARENA_TEAM_TWO_RESPAWN)
 	else
 		print("pvpArena:setPlayerReady -> Não foi possivel localizar o time do jogador.")
 		return
 	end
 	
-	print(table.show(dest))
-	
-	player.oldPos = getCreaturePosition(cid)
+	self:setPlayerOldPos(player, getCreaturePosition(cid))
+
 	doTeleportThing(cid, dest)
 	registerCreatureEvent(cid, "pvpArena_onKill")
-end
-
-function pvpArena:getPlayerReady(cid)
-
-	local player = self:findPlayer(cid)
-
-	if(player == nil) then
-		return nil
-	end
-	
-	return player.ready
-end
-
-function pvpArena:getPlayerTeam(cid)
-	if(self.teamOne[1].cid == cid) then
-		return 1
-	end
-	
-	if(self.teamTwo[1].cid == cid) then
-		return 2
-	end		
-	
-	return nil
-end
-
-function pvpArena:findPlayer(cid)
-	if(self.teamOne[1].cid == cid) then
-		return self.teamOne[1]
-	end
-	
-	if(self.teamTwo[1].cid == cid) then
-		return self.teamTwo[1]
-	end	
-	
-	return nil
 end
 
 function pvpArena:teleportPlayerOut(player, instant)
@@ -210,65 +329,67 @@ end
 
 function pvpArena:run()
 
-	if(not self.teamOne[1].ready and self.teamTwo[1].ready) then
+	local teams = self.getTeams()
+	local team_one, team_two = teams[TEAM_ONE], teams[TEAM_TWO]
+
+	if(not team_one[1].ready and team_two[1].ready) then
 		-- o segundo jogador estava pronto, enquanto o primeiro não...
-		doPlayerSendTextMessage(self.teamOne[1].cid, MESSAGE_STATUS_CONSOLE_BLUE, "Você não compareceu a batalha... Assim ela foi cancelada.")
-		self.teamOne[1] = nil
+		doPlayerSendTextMessage(team_one[1].cid, MESSAGE_STATUS_CONSOLE_BLUE, "Você não compareceu a batalha... Assim ela foi cancelada.")
 		
-		local temp_cid = self.teamTwo[1].cid
+		local temp_cid = team_two[1].cid
 		doPlayerSendTextMessage(temp_cid, MESSAGE_STATUS_CONSOLE_BLUE, "O seu adversário não compareceu a batalha... Aguarde outro adversário.")
-		self:teleportPlayerOut(self.teamTwo[1])
+		self:teleportPlayerOut(team_two[1])
 		
-		self.teamTwo[1] = nil
+		self:clearTeams()
 		self:addPlayer(temp_cid, true)
 		
-		self.state = STATE_WAITING
+		self:setState(STATE_WAITING)
 		self.bcMsg = 0
 		return false
 	end
 	
-	if(self.teamOne[1].ready and not self.teamTwo[1].ready) then
+	if(team_one[1].ready and not team_two[1].ready) then
 		-- o primeiro jogador estava pronto, enquanto o segundo não...
-		doPlayerSendTextMessage(self.teamTwo[1].cid, MESSAGE_STATUS_CONSOLE_BLUE, "Você não compareceu a batalha... Assim ela foi cancelada.")
-		self.teamTwo[1] = nil
+		doPlayerSendTextMessage(team_two[1].cid, MESSAGE_STATUS_CONSOLE_BLUE, "Você não compareceu a batalha... Assim ela foi cancelada.")
 		
-		local temp_cid = self.teamOne[1].cid
+		local temp_cid = team_one[1].cid
 		doPlayerSendTextMessage(temp_cid, MESSAGE_STATUS_CONSOLE_BLUE, "O seu adversário não compareceu a batalha... Aguarde outro adversário.")		
-		self:teleportPlayerOut(self.teamOne[1])
-		self.teamOne[1] = nil
+		self:teleportPlayerOut(team_one[1])
+		
+		self:clearTeams()
 		self:addPlayer(temp_cid, true)		
 		
-		self.state = STATE_WAITING
+		self:setState(STATE_WAITING)
 		self.bcMsg = 0		
 		return false
 	end
 
-	if(not self.teamOne[1].ready and not self.teamTwo[1].ready) then
+	if(not team_one[1].ready and not team_two[1].ready) then
 		-- nenhum dos dois jogadores estavam prontos...
-		doPlayerSendTextMessage(self.teamOne[1].cid, MESSAGE_STATUS_CONSOLE_BLUE, "Você não compareceu a batalha... Assim ela foi cancelada.")
-		self.teamOne[1] = nil
+		doPlayerSendTextMessage(team_one[1].cid, MESSAGE_STATUS_CONSOLE_BLUE, "Você não compareceu a batalha... Assim ela foi cancelada.")
+		doPlayerSendTextMessage(team_two[1].cid, MESSAGE_STATUS_CONSOLE_BLUE, "Você não compareceu a batalha... Assim ela foi cancelada.")
+		self:clearTeams()
 		
-		doPlayerSendTextMessage(self.teamTwo[1].cid, MESSAGE_STATUS_CONSOLE_BLUE, "Você não compareceu a batalha... Assim ela foi cancelada.")
-		self.teamTwo[1] = nil
-		
-		self.state = STATE_WAITING
+		self:setState(STATE_WAITING)
 		self.bcMsg = 0		
 		return false
 	end	
 	
-	self.state = STATE_RUNNING
+	self:setState(STATE_RUNNING)
 	self:removeGates()	
 	self:broadcastMessage()
 	
 	return true
 end
 
-function pvpArena:broadcastTeam(team, text, mustBeReady)
+function pvpArena:broadcastTeams(text, mustBeReady)
 
-	for k,v in pairs(team) do
-		if(not mustBeReady or (mustBeReady and v.ready)) then
-			local cid = v.cid
-			doPlayerSendTextMessage(cid, MESSAGE_STATUS_CONSOLE_BLUE, text)
+	for tk,tv in pairs(self:getTeams()) do	
+		for pk,pv in pairs(tv) do
+			if(not mustBeReady or (mustBeReady and pv.ready)) then
+				local cid = v.cid
+				doPlayerSendTextMessage(pv.cid, MESSAGE_STATUS_CONSOLE_BLUE, text)
+			end			
 		end
 	end
 end
@@ -293,8 +414,23 @@ function pvpArena:broadcastMessage()
 	
 	self.bcMsg = self.bcMsg + 1
 	
-	self:broadcastTeam(self.teamOne, text, mustBeReady)
-	self:broadcastTeam(self.teamTwo, text, mustBeReady)
+	self:broadcastTeams(text, mustBeReady)
 end
 
+-------------------------
+-- EVENT CALLERS 	-----
+-- isso é um hack!! -----
+-------------------------
+
+function pvpArena.callRun(instance)
+	instance:run()
+end
+
+function pvpArena.callBroadcastMessage(instance)
+	instance:broadcastMessage()
+end
+
+-------------------------
+-- SINGLETON INSTANCE ---
+-------------------------
 instancePvpArena = pvpArena:new()

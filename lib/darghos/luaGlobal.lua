@@ -23,7 +23,7 @@ function luaGlobal.setVar(var, value)
 	value = json.encode(value)		
 	
 	if(result:getID() ~= -1) then
-		db.executeQuery("UPDATE `lua_global` SET `value` = '" .. value .. "' WHERE `var` = " .. var .. ";")
+		db.executeQuery("UPDATE `lua_global` SET `value` = '" .. value .. "' WHERE `var` = '" .. var .. "';")
 	else
 		db.executeQuery("INSERT INTO `lua_global` VALUES ('" .. var .. "', '" .. value .. "');")
 	end

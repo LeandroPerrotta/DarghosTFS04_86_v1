@@ -52,7 +52,7 @@ function teleportRune.onUse(cid, item, frompos, item2, topos)
 
 	local onIsland = (getPlayerStorageValue(cid, sid.IS_ON_TRAINING_ISLAND) == 1) and true or false
 	
-	if(onIsland or teleportScrollIsLocked()) then
+	if(onIsland or teleportScrollIsLocked(cid)) then
 		doPlayerSendCancel(cid, "Você não pode usar este item neste lugar!")
 		return true
 	end

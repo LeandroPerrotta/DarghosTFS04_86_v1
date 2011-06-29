@@ -19,14 +19,11 @@ end
 
 function luaGlobal.setVar(var, value)
 	
-	--print(table.show(value))
 	local result = db.getResult("SELECT `value` FROM `lua_global` WHERE `var` = '" .. var .. "';")
 	
 	
 	local json = require("json")	
 	value = json.encode(value)		
-	
-	print("setVar: " .. value)
 	
 	if(result:getID() ~= -1) then
 		result:free()

@@ -3,6 +3,17 @@ local TEAM_ONE, TEAM_TWO = 1, 2
 
 local ITEM_GATE = 9532
 
+local ARENA_STAGES = {
+	{ from = 1, to = 19 },
+	{ from = 20, to = 39 },
+	{ from = 40, to = 59 },
+	{ from = 60, to = 79 },
+	{ from = 80, to = 99 },
+	{ from = 100, to = 139 },
+	{ from = 140, to = 179 },
+	{ from = 180, to = nil },
+}
+
 --- Private vars
 pvpArena = {
 	teams = nil,
@@ -181,6 +192,11 @@ function pvpArena:addPlayer(cid, inFirst)
 
 	inFirst = inFirst or false
 
+	if(getGameState() == GAMESTATE_CLOSING) then
+		doPlayerSendTextMessage(cid, MESSAGE_STATUS_CONSOLE_BLUE, "A arena está desativada por enquanto, tente novamente mais tarde.")
+		return			
+	end
+
 	if(hasCondition(cid, CONDITION_INFIGHT)) then
 		doPlayerSendTextMessage(cid, MESSAGE_STATUS_CONSOLE_BLUE, "Você está em condição de combate. Fique alguns instantes sem entrar em combate e tente novamente.")
 		return
@@ -189,7 +205,7 @@ function pvpArena:addPlayer(cid, inFirst)
 	pvpQueue.load()
 	
 	if(pvpQueue.getPlayerPosByCid(cid) ~= nil) then
-		doPlayerSendTextMessage(cid, MESSAGE_STATUS_CONSOLE_BLUE, "Você ja se está na fila para participar de alguma arena, continue aguardando...")
+		doPlayerSendTextMessage(cid, MESSAGE_STATUS_CONSOLE_BLUE, "Você ja está na fila para participar de alguma arena, continue aguardando...")
 		return	
 	end
 
@@ -208,8 +224,7 @@ end
 function pvpArena:finishGame(winner)
 
 	if(winner ~= nil) then
-		local event_id = luaGlobal.getVar("pvp_timeoutEvent")
-		stopEvent(event_id)
+		luaGlobal.setVar("pvp_ended", true)
 	end
 
 	local teams = self:getTeams()
@@ -219,10 +234,10 @@ function pvpArena:finishGame(winner)
 	
 		for pk, pv in pairs(team) do
 			local tmp_player = pv
-			doPlayerRemveDoubleDamage(tmp_player.cid)			
+			doPlayerRemoveDoubleDamage(tmp_player.cid)			
 			
 			if(winner ~= nil) then
-				if(player.cid == winner) then		
+				if(tmp_player.cid == winner) then		
 					self:teleportPlayerOut(tmp_player)
 					unregisterCreatureEvent(tmp_player.cid, "pvpArena_onKill")
 					doPlayerSendTextMessage(tmp_player.cid, MESSAGE_STATUS_CONSOLE_BLUE, "Parabens! É um verdadeiro vencedor! Você será levado ao local aonde estava em alguns instantes...")	
@@ -238,29 +253,67 @@ function pvpArena:finishGame(winner)
 			end
 		end
 	end
+end
+
+function pvpArena:buildTeams()
+
+	for k,v in pairs(pvpQueue.getQueue()) do
 	
-	self:clearTeams()
+		local player = v
+		local player_level = getPlayerLevel(player)
+		
+		local opponentLevelRange = self:getOpponentLevelRange(player_level)
+		local opponent = self:findOpponent(opponentLevelRange)
+		
+		if(player ~= opponent and opponent ~= nil) then
+			self:addToTeam(TEAM_ONE, player)
+			self:addToTeam(TEAM_TWO, opponent)
+
+			pvpQueue.removePlayerByCid(player)
+			pvpQueue.removePlayerByCid(opponent)
+			return true		
+		end
+	end	
 	
-	self:setState(STATE_WAITING)
-	self:prepareGame()
+	return false
+end
+
+function pvpArena:findOpponent(level_range)
+	
+	for k,v in pairs(pvpQueue.getQueue()) do
+	
+		local player = v
+		local player_level = getPlayerLevel(player)
+		
+		if(level_range.to == nil and player_level > level_range.from) then
+			return player
+		elseif(player_level >= level_range.from and player_level <= level_range.to) then
+			return player
+		end
+	end		
+	
+	return nil
+end
+
+function pvpArena:getOpponentLevelRange(level)
+
+	for k,v in pairs(ARENA_STAGES) do
+		
+		if(v.to == nil or level <= v.to) then
+			return v
+		end
+	end
 end
 
 function pvpArena:prepareGame()
 
 	pvpQueue.load()
 
-	if(pvpQueue.size() < 2 or self:getState() ~= STATE_WAITING) then
+	if(pvpQueue.size() < 2 or self:getState() ~= STATE_WAITING or not self:buildTeams()) then
 		return
 	end
 
 	self:setState(STATE_STARTING)
-
-	self:addToTeam(TEAM_ONE, pvpQueue.getPlayer(1))
-	self:addToTeam(TEAM_TWO, pvpQueue.getPlayer(2))
-	
-	-- duas vezes para remover os dois primeiros
-	pvpQueue.remove()
-	pvpQueue.remove()
 	
 	self:addGates()
 	self:broadcastMessage()
@@ -294,11 +347,17 @@ function pvpArena:onPlayerReady(cid)
 		return
 	end	
 	
-	if(self.getPlayerReady(player)) then
+	if(self:getPlayerReady(player)) then
 		doPlayerSendTextMessage(cid, MESSAGE_STATUS_CONSOLE_BLUE, "Você ja está na arena! A batalha começará em poucos instantes, aguarde!")
 		return	
 	end
 	
+	if(getGameState() == GAMESTATE_CLOSING) then
+		doPlayerSendTextMessage(cid, MESSAGE_STATUS_CONSOLE_BLUE, "A arena está desativada por enquanto, tente novamente mais tarde.")
+		return			
+	end
+	
+	player = self:findPlayer(cid)
 	self:setPlayerIsReady(player)
 	
 	local dest = {}
@@ -317,16 +376,17 @@ function pvpArena:onPlayerReady(cid)
 	self:setPlayerOldPos(player, getCreaturePosition(cid))
 
 	doTeleportThing(cid, dest)
+	lockTeleportScroll(cid)
 	registerCreatureEvent(cid, "pvpArena_onKill")
 	unregisterCreatureEvent(cid, "pvpArena_onLogout")
-	
-	print(table.show(self.teams))
 end
 
 function pvpArena:teleportPlayerOut(player, instant)
 
 	instant = (instant ~= nil) and instant or false
 	
+	unregisterCreatureEvent(player.cid, "pvpArena_onKill")
+	unlockTeleportScroll(player.cid)
 	doCreatureAddHealth(player.cid, getCreatureMaxHealth(player.cid) - getCreatureHealth(player.cid))
 	
 	if(not instant) then
@@ -386,12 +446,12 @@ function pvpArena:run()
 		return false
 	end	
 	
+	luaGlobal.unsetVar("pvp_ended")
 	self:setAllPlayersDoubleDamage()
 	self:setState(STATE_RUNNING)
 	self:broadcastMessage()
 	
-	local event_id = addEvent(pvpArena.eventTimeRunningOut, 1000 * 60 * 4, self)
-	luaGlobal.setVar("pvp_timeoutEvent", event_id)
+	addEvent(pvpArena.eventTimeRunningOut, 1000 * 60 * 4, self)
 	
 	return true
 end
@@ -483,15 +543,30 @@ end
 
 function pvpArena.eventTimeRunningOut(instance)
 
-	local text = "Restam 1 minuto para o fim da partida, se o resultado persistir será proclamado empate!"
+	local value = luaGlobal.getVar("pvp_ended")
+	
+	if(value ~= nil and value) then
+		pvpArena.eventTimeOut(instance)
+		return
+	end
+
+	local text = "Restam 1 minuto para o fim da partida..."
 	instance:broadcastTeams(text, true)
 	
-	local event_id = addEvent(pvpArena.eventTimeOut, 1000 * 60, instance)
-	luaGlobal.setVar("pvp_timeoutEvent", event_id)	
+	addEvent(pvpArena.eventTimeOut, 1000 * 60, instance)
 end
 
 function pvpArena.eventTimeOut(instance)
-	instance:finishGame()
+	
+	local value = luaGlobal.getVar("pvp_ended")
+	
+	if(value == nil or not value) then
+		instance:finishGame()
+	end	
+
+	instance:clearTeams()
+	instance:setState(STATE_WAITING)
+	instance:prepareGame()	
 end
 
 -------------------------

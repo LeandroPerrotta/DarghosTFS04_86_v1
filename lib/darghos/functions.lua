@@ -52,7 +52,7 @@ function teleportRune.onUse(cid, item, frompos, item2, topos)
 
 	local onIsland = (getPlayerStorageValue(cid, sid.IS_ON_TRAINING_ISLAND) == 1) and true or false
 	
-	if(onIsland) then
+	if(onIsland or teleportScrollIsLocked()) then
 		doPlayerSendCancel(cid, "Você não pode usar este item neste lugar!")
 		return true
 	end
@@ -139,6 +139,21 @@ function teleportRune.thirdStep(cid)
 	
 	setPlayerStorageValue(cid, sid.TELEPORT_RUNE_STATE, teleportRune.STATE_NONE)
 	setPlayerStorageValue(cid, sid.TELEPORT_RUNE_LAST_USAGE, os.time())
+end
+
+function lockTeleportScroll(cid)
+
+	setPlayerStorageValue(cid, sid.TELEPORT_RUNE_LOCK, 1)
+end
+
+function unlockTeleportScroll(cid)
+
+	setPlayerStorageValue(cid, sid.TELEPORT_RUNE_LOCK, -1)
+end
+
+function teleportScrollIsLocked(cid)
+	
+	return (getPlayerStorageValue(cid, sid.TELEPORT_RUNE_LOCK) == 1) and true or false
 end
 
 unholySword = {}

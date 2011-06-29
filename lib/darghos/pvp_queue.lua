@@ -25,6 +25,15 @@ function pvpQueue.save()
 	end
 end
 
+function pvpQueue.getQueue()
+	if(not pvpQueue.loaded) then
+		error("Tentativa de acessar a fila sem sincronia.")
+		return
+	end
+
+	return pvpQueue.queue
+end
+
 function pvpQueue.size()
 	if(not pvpQueue.loaded) then
 		error("Tentativa de inserir jogador em uma fila não sincronizada.")

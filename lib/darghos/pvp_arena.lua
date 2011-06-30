@@ -202,6 +202,11 @@ function pvpArena:addPlayer(cid, inFirst)
 		return
 	end	
 
+	if(getPlayerTown(cid) == getTownIdByName("Island of Peace")) then
+		doPlayerSendTextMessage(cid, MESSAGE_STATUS_CONSOLE_BLUE, "Jogadores que moram em Island of Peace são muito passivos para participarem de sanguinarias batalhas de Arena.")
+		return		
+	end
+
 	pvpQueue.load()
 	
 	if(pvpQueue.getPlayerPosByCid(cid) ~= nil) then
@@ -356,6 +361,13 @@ function pvpArena:onPlayerReady(cid)
 		doPlayerSendTextMessage(cid, MESSAGE_STATUS_CONSOLE_BLUE, "A arena está desativada por enquanto, tente novamente mais tarde.")
 		return			
 	end
+	
+	local onIsland = (getPlayerStorageValue(cid, sid.IS_ON_TRAINING_ISLAND) == 1) and true or false
+	
+	if(onIsland) then
+		doPlayerSendCancel(cid, "Para entrar na Arena você deve sair da Ilha de Treinamento.")
+		return
+	end		
 	
 	player = self:findPlayer(cid)
 	self:setPlayerIsReady(player)

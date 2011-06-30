@@ -28,7 +28,7 @@ end
 
 function autoBroadcast()
 
-	local message = "<Novo Sistema> VocÃª gosta de pvp? duelos? EntÃ£o nÃ£o deixe de conhecer o PvP Arena. Para saber mais acesse: http://www.darghos.com.br/index.php?ref=darghopedia.pvp_arenas"
+	local message = "<Novo Sistema> Você gosta de pvp? duelos? Então mão deixe de conhecer o novo PvP Arena. Para saber mais acesse: http://www.darghos.com.br/index.php?ref=darghopedia.pvp_arenas"
 	doBroadcastMessage(message, MESSAGE_TYPES["blue"])
 	addEvent(autoBroadcast, 1000 * 60 * 60)
 end

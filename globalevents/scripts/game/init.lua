@@ -21,8 +21,16 @@ function onStartup()
 	end
 	
 	db.executeQuery("UPDATE `players` SET `afk` = 0 WHERE `world_id` = " .. getConfigValue('worldId') .. " AND `afk` > 0;")
+	addEvent(autoBroadcast, 1000 * 60 * 30)
 	
 	return true
+end
+
+function autoBroadcast()
+
+	local message = "<Novo Sistema> Você gosta de pvp? duelos? Então não deixe de conhecer o PvP Arena. Para saber mais acesse: http://www.darghos.com.br/index.php?ref=darghopedia.pvp_arenas"
+	doBroadcastMessage(message, MESSAGE_TYPES["blue"])
+	addEvent(autoBroadcast, 1000 * 60 * 60)
 end
 
 function dbManutention()

@@ -287,7 +287,7 @@ function pvpArena:buildTeams()
 			pvpQueue.removePlayerByCid(player)
 			pvpQueue.removePlayerByCid(opponent)
 			
-			pvpArena.log(T_LOG_ALL, "pvpArena:buildTeams", "Novo time para arena disponivel.", {player = getCreatureName(player), opponent = getCreatureName(player)})
+			pvpArena.log(T_LOG_ALL, "pvpArena:buildTeams", "Novo time para arena disponivel.", {player = getCreatureName(player), opponent = getCreatureName(opponent)})
 			
 			return true		
 		end

@@ -57,12 +57,12 @@
 	<monster name="Marksman Target W" file="darghos/marksman target w.xml" />
 	<monster name="Hitdoll S" file="darghos/hitdoll s.xml" />
 	<monster name="Hitdoll W" file="darghos/hitdoll w.xml" />	
-	<monster name="Boss" file="darghos/timegame/boss_time.xml"/>
-	<monster name="Catapult" file="darghos/timegame/catapultleft_time.xml"/>
-	<monster name="Catapult" file="darghos/timegame/catapultright_time.xml"/>
-	<monster name="Stone" file="darghos/timegame/stone_time.xml"/>
-	<monster name="Stone Wall" file="darghos/timegame/stonewall_time.xml"/>
-	<monster name="Pillar" file="darghos/timegame/stonepillar_time.xml"/>	
+	<monster name="Boss" file="darghos/timegame/boss.xml"/>
+	<monster name="Catapult L" file="darghos/timegame/catapult l.xml"/>
+	<monster name="Catapult R" file="darghos/timegame/catapult r.xml"/>
+	<monster name="Stone" file="darghos/timegame/stone.xml"/>
+	<monster name="Stone Wall" file="darghos/timegame/stone wall.xml"/>
+	<monster name="Pillar" file="darghos/timegame/pillar.xml"/>	
 
 	<!-- Amazons -->
 	<monster name="Amazon" file="amazons/amazon.xml"/>

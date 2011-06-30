@@ -41,5 +41,3 @@ end
 function luaGlobal.truncate()
 	db.executeQuery("TRUNCATE `lua_global`;")
 end
-
-luaGlobal.truncate()

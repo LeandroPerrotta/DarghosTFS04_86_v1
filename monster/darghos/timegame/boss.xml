@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<monster name="Elemental Flame Boss" nameDescription="a Elemental Fire Lord" race="fire" experience="2" speed="0" manacost="0">
-  <health now="1000000" max="1000000"/>
-  <look type="243" corpse="6324"/>
+<monster name="Comander" nameDescription="a Comander" race="fire" experience="2" speed="0" manacost="0">
+  <health now="100000" max="100000"/>
+  <look type="335" head="114" body="94" legs="114" feet="94" addons="3" corpse="6324"/>
   <targetchange interval="5000" chance="10"/>
   <strategy attack="100" defense="0"/>
   <flags>

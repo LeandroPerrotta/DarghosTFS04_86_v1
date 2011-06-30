@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <monster name="Stone" nameDescription="stone" race="undead" experience="1" speed="0" manacost="0">
-  <health now="50000" max="50000"/>
+  <health now="60000" max="60000"/>
   <look typeex="1304" corpse="383"/>
   <targetchange interval="5000" chance="8"/>
   <strategy attack="100" defense="0"/>

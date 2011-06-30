@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <monster name="Stone Wall" nameDescription="wall" race="undead" experience="200" speed="0" manacost="0">
-  <health now="1000000" max="1000000"/>
+  <health now="80000" max="80000"/>
   <look typeex="1050" corpse="2256"/>
   <targetchange interval="5000" chance="8"/>
   <strategy attack="100" defense="0"/>

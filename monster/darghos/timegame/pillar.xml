@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <monster name="Warrior" nameDescription="Warrior" race="undead" experience="1" speed="0" manacost="0">
-  <health now="95000" max="95000"/>
+  <health now="60000" max="60000"/>
   <look type="335" head="114" body="94" legs="114" feet="94" addons="2" corpse="2256"/>
   <targetchange interval="5000" chance="8"/>
   <strategy attack="100" defense="0"/>

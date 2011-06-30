@@ -192,7 +192,7 @@ function pvpArena:addPlayer(cid, inFirst)
 
 	inFirst = inFirst or false
 
-	if(getGameState() == GAMESTATE_CLOSING) then
+	if(getGameState() == GAMESTATE_CLOSING or self:getState() == STATE_PAUSED) then
 		doPlayerSendTextMessage(cid, MESSAGE_STATUS_CONSOLE_BLUE, "A arena está desativada por enquanto, tente novamente mais tarde.")
 		return			
 	end
@@ -365,7 +365,7 @@ function pvpArena:onPlayerReady(cid)
 	local onIsland = (getPlayerStorageValue(cid, sid.IS_ON_TRAINING_ISLAND) == 1) and true or false
 	
 	if(onIsland) then
-		doPlayerSendCancel(cid, "Para entrar na Arena você deve sair da Ilha de Treinamento.")
+		doPlayerSendTextMessage(cid, MESSAGE_STATUS_CONSOLE_BLUE, "Para entrar na Arena você deve sair da ilha de treinamento.")
 		return
 	end		
 	

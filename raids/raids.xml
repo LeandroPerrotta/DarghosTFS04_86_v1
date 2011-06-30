@@ -64,10 +64,10 @@
 		<raid name="behemoth_king" file="bosses/behemoth_king.xml" interval2="9999999" margin="0"/>
 		
 		-- POI BOSSES
-		<raid name="poi_dracola" file="bosses/poi_dracola.xml" interval2="8640" margin="720"/>
-		<raid name="poi_massacre" file="bosses/poi_massacre.xml" interval2="8640" margin="720"/>
-		<raid name="poi_mr_punish" file="bosses/poi_mr_punish.xml" interval2="8640" margin="720"/>			
-		<raid name="poi_the_handmaiden" file="bosses/poi_the_handmaiden.xml" interval2="8640" margin="720"/>	
-		<raid name="poi_the_imperor" file="bosses/poi_the_imperor.xml" interval2="8640" margin="720"/>	
-		<raid name="poi_the_plasmother" file="bosses/poi_the_plasmother.xml" interval2="8640" margin="720"/>		
+		<raid name="poi_dracola" file="bosses/poi_dracola.xml" interval2="8640" margin="0"/>
+		<raid name="poi_massacre" file="bosses/poi_massacre.xml" interval2="8640" margin="0"/>
+		<raid name="poi_mr_punish" file="bosses/poi_mr_punish.xml" interval2="8640" margin="0"/>			
+		<raid name="poi_the_handmaiden" file="bosses/poi_the_handmaiden.xml" interval2="8640" margin="0"/>	
+		<raid name="poi_the_imperor" file="bosses/poi_the_imperor.xml" interval2="8640" margin="0"/>	
+		<raid name="poi_the_plasmother" file="bosses/poi_the_plasmother.xml" interval2="8640" margin="0"/>		
 </raids>

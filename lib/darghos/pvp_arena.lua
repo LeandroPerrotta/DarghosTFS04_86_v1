@@ -223,16 +223,22 @@ function pvpArena:addPlayer(cid, inFirst)
 	registerCreatureEvent(cid, "pvpArena_onLogout")
 	
 	doPlayerSendTextMessage(cid, MESSAGE_STATUS_CONSOLE_BLUE, "Você se juntou a fila para um duelo de arena. Agora você deve aguardar até que apareça algum adversário, isto pode levar de alguns segundos a vários minutos.")
+	pvpArena.log(T_LOG_ALL, "pvpArena:addPlayer", "Jogador engressou na fila", {name=getCreatureName(cid)})
 	self:prepareGame()
 end
 
 function pvpArena:finishGame(winner)
 
+	local log = {pvpended = false}
+
 	if(winner ~= nil) then
+		log.pvpended = true
 		luaGlobal.setVar("pvp_ended", true)
 	end
 
 	local teams = self:getTeams()
+	
+	log.teams = teams
 	
 	for tk, tv in pairs(teams) do
 		local team = tv
@@ -243,6 +249,7 @@ function pvpArena:finishGame(winner)
 			
 			if(winner ~= nil) then
 				if(tmp_player.cid == winner) then		
+					log.winner = getCreatureName(tmp_player.cid)
 					self:teleportPlayerOut(tmp_player)
 					unregisterCreatureEvent(tmp_player.cid, "pvpArena_onKill")
 					doPlayerSendTextMessage(tmp_player.cid, MESSAGE_STATUS_CONSOLE_BLUE, "Parabens! É um verdadeiro vencedor! Você será levado ao local aonde estava em alguns instantes...")	
@@ -252,12 +259,15 @@ function pvpArena:finishGame(winner)
 					doPlayerSendTextMessage(tmp_player.cid, MESSAGE_STATUS_CONSOLE_BLUE, "Mas que pena, não foi desta vez! Você será levado ao local aonde estava em alguns instantes...")					
 				end
 			else
+				log.winner = "none"
 				self:teleportPlayerOut(tmp_player)
 				unregisterCreatureEvent(tmp_player.cid, "pvpArena_onKill")
 				doPlayerSendTextMessage(tmp_player.cid, MESSAGE_STATUS_CONSOLE_BLUE, "A batalha foi encerrada! Como o resultado persistiu durante 5 minutos é declarado empate!")			
 			end
 		end
 	end
+	
+	pvpArena.log(T_LOG_ALL, "pvpArena:finishGame", "Arena finalizada.", log)
 end
 
 function pvpArena:buildTeams()
@@ -272,10 +282,13 @@ function pvpArena:buildTeams()
 		
 		if(player ~= opponent and opponent ~= nil) then
 			self:addToTeam(TEAM_ONE, player)
-			self:addToTeam(TEAM_TWO, opponent)
+			self:addToTeam(TEAM_TWO, c)
 
 			pvpQueue.removePlayerByCid(player)
 			pvpQueue.removePlayerByCid(opponent)
+			
+			pvpArena.log(T_LOG_ALL, "pvpArena:buildTeams", "Novo time para arena disponivel.", {player = getCreatureName(player), opponent = getCreatureName(player)})
+			
 			return true		
 		end
 	end	
@@ -391,6 +404,7 @@ function pvpArena:onPlayerReady(cid)
 	lockTeleportScroll(cid)
 	registerCreatureEvent(cid, "pvpArena_onKill")
 	unregisterCreatureEvent(cid, "pvpArena_onLogout")
+	pvpArena.log(T_LOG_ALL, "pvpArena:onPlayerReady", "Jogador está preparado para a arena.", {player = getCreatureName(cid)})
 end
 
 function pvpArena:teleportPlayerOut(player, instant)
@@ -428,6 +442,8 @@ function pvpArena:run()
 		
 		self:setState(STATE_WAITING)
 		self.bcMsg = 0
+		
+		pvpArena.log(T_LOG_ALL, "pvpArena:run", "Jogador faltou a arena.", {player = getCreatureName(team_one[1].cid)})
 		return false
 	end
 	
@@ -444,6 +460,8 @@ function pvpArena:run()
 		
 		self:setState(STATE_WAITING)
 		self.bcMsg = 0		
+		
+		pvpArena.log(T_LOG_ALL, "pvpArena:run", "Jogador faltou a arena.", {player = getCreatureName(team_two[1].cid)})
 		return false
 	end
 
@@ -455,6 +473,8 @@ function pvpArena:run()
 		
 		self:setState(STATE_WAITING)
 		self.bcMsg = 0		
+		
+		pvpArena.log(T_LOG_ALL, "pvpArena:run", "Jogador faltou a arena.", {player = getCreatureName(team_two[1].cid), opponent = getCreatureName(team_one[1].cid)})
 		return false
 	end	
 	
@@ -464,11 +484,14 @@ function pvpArena:run()
 	self:broadcastMessage()
 	
 	addEvent(pvpArena.eventTimeRunningOut, 1000 * 60 * 4, self)
+	pvpArena.log(T_LOG_ALL, "pvpArena:run", "Arena iniciou.")
 	
 	return true
 end
 
 function pvpArena:addGates()
+
+	pvpArena.log(T_LOG_ALL, "pvpArena:addGates", "Adicionados portões.")
 
 	local teamOneGates = uid.ARENA_TEAM_ONE_WALLS
 	
@@ -486,6 +509,8 @@ function pvpArena:addGates()
 end
 
 function pvpArena:removeGates()
+
+	pvpArena.log(T_LOG_ALL, "pvpArena:addGates", "Removidos portões.")
 
 	local teamOneGates = uid.ARENA_TEAM_ONE_WALLS
 	
@@ -581,6 +606,43 @@ function pvpArena.eventTimeOut(instance)
 	instance:prepareGame()	
 end
 
+function pvpArena.log(type, caller, string, params)
+	local out = os.date("%X") .. " | [" .. type .. "] " .. caller .. " | " .. string
+	
+	if(params ~= nil) then
+		out = out .. " | Params: {"
+		
+		local isFirst = true	
+		
+		for k,v in pairs(params) do
+			
+			if(not isFirst) then
+				out = out .. ", "
+			end
+			
+			out = out .. "[" .. k .. "] = " .. v
+			
+			isFirst = false
+		end
+		
+		out = out .. "}"
+	end
+	
+	local printTypes = { T_LOG_ALL }
+	
+	if(isInArray(printTypes, type) == TRUE or printTypes[1] == T_LOG_ALL) then
+	
+		local date = os.date("*t")
+		local fileStr = date.day .. "-" .. date.month .. ".log"
+		local patch = getDataDir() .. "logs/arenas/"
+		local file = io.open(patch .. fileStr, "a+")
+		
+		file:write(out .. "\n")
+		file:close()
+		
+		--debugPrint(out)
+	end
+end
 -------------------------
 -- SINGLETON INSTANCE ---
 -------------------------

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<monster name="Stone Wall" nameDescription="wall" race="undead" experience="1" speed="0" manacost="0">
+<monster name="Warrior" nameDescription="Warrior" race="undead" experience="1" speed="0" manacost="0">
   <health now="95000" max="95000"/>
-  <look typeex="8539" corpse="2256"/>
+  <look type="335" head="114" body="94" legs="114" feet="94" addons="2" corpse="2256"/>
   <targetchange interval="5000" chance="8"/>
   <strategy attack="100" defense="0"/>
   <flags>
@@ -18,7 +18,7 @@
     <flag runonhealth="10"/>
   </flags>
   <attacks>
-    <attack name="melee" interval="500" skill="1" attack="1"/>
+    <attack name="melee" interval="500" skill="30" attack="100"/>
   </attacks>
   <defenses armor="17" defense="14"/>
   <immunities>

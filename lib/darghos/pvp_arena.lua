@@ -282,7 +282,7 @@ function pvpArena:buildTeams()
 		
 		if(player ~= opponent and opponent ~= nil) then
 			self:addToTeam(TEAM_ONE, player)
-			self:addToTeam(TEAM_TWO, c)
+			self:addToTeam(TEAM_TWO, opponent)
 
 			pvpQueue.removePlayerByCid(player)
 			pvpQueue.removePlayerByCid(opponent)

@@ -229,10 +229,10 @@ end
 
 function pvpArena:finishGame(winner)
 
-	local log = {pvpended = false}
+	local log = {pvpended = "false"}
 
 	if(winner ~= nil) then
-		log.pvpended = true
+		log.pvpended = "true"
 		luaGlobal.setVar("pvp_ended", true)
 	end
 

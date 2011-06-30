@@ -610,10 +610,10 @@ function pvpArena.log(type, caller, string, params)
 	local out = os.date("%X") .. " | [" .. type .. "] " .. caller .. " | " .. string
 	
 	if(params ~= nil) then
-		out = out .. " | Params: {"
+		out = out .. " | Params:"
 		
 		local json = require("json")
-		out = out .. json.encode(value)
+		out = out .. json.encode(params)
 	end
 	
 	local printTypes = { T_LOG_ALL }

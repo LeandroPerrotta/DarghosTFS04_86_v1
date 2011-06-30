@@ -612,20 +612,8 @@ function pvpArena.log(type, caller, string, params)
 	if(params ~= nil) then
 		out = out .. " | Params: {"
 		
-		local isFirst = true	
-		
-		for k,v in pairs(params) do
-			
-			if(not isFirst) then
-				out = out .. ", "
-			end
-			
-			out = out .. "[" .. k .. "] = " .. v
-			
-			isFirst = false
-		end
-		
-		out = out .. "}"
+		local json = require("json")
+		out = out .. json.encode(value)
 	end
 	
 	local printTypes = { T_LOG_ALL }

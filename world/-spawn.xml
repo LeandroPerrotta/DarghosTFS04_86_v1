@@ -15343,6 +15343,50 @@
     <monster name="Tortoise" x="1" y="20" z="8" spawntime="60"/>
     <monster name="Toad" x="1" y="24" z="8" spawntime="60"/>
   </spawn>
+  <spawn centerx="2385" centery="2682" centerz="8" radius="5">
+    <monster name="stonewall_time" x="-1" y="-3" z="8" spawntime="60"/>
+    <monster name="stonewall_time" x="0" y="-3" z="8" spawntime="60"/>
+    <monster name="stonewall_time" x="1" y="-3" z="8" spawntime="60"/>
+    <monster name="stonewall_time" x="2" y="-3" z="8" spawntime="60"/>
+    <monster name="stonepillar_time" x="-1" y="-2" z="8" spawntime="60"/>
+    <monster name="stonepillar_time" x="2" y="-2" z="8" spawntime="60"/>
+    <monster name="catapultleft_time" x="-2" y="-1" z="8" spawntime="60"/>
+    <monster name="stonepillar_time" x="2" y="-1" z="8" spawntime="60"/>
+    <monster name="catapultright_time" x="3" y="-1" z="8" spawntime="60"/>
+    <monster name="stonepillar_time" x="1" y="0" z="8" spawntime="60"/>
+    <monster name="catapultleft_time" x="-2" y="1" z="8" spawntime="60"/>
+    <monster name="stonepillar_time" x="0" y="1" z="8" spawntime="60"/>
+    <monster name="catapultright_time" x="3" y="1" z="8" spawntime="60"/>
+    <monster name="stonepillar_time" x="-1" y="2" z="8" spawntime="60"/>
+    <monster name="catapultleft_time" x="-2" y="3" z="8" spawntime="60"/>
+    <monster name="stonepillar_time" x="1" y="3" z="8" spawntime="60"/>
+    <monster name="catapultright_time" x="3" y="3" z="8" spawntime="60"/>
+    <monster name="stonepillar_time" x="2" y="4" z="8" spawntime="60"/>
+    <monster name="catapultleft_time" x="-2" y="5" z="8" spawntime="60"/>
+    <monster name="catapultright_time" x="3" y="5" z="8" spawntime="60"/>
+  </spawn>
+  <spawn centerx="2385" centery="2692" centerz="8" radius="5">
+    <monster name="catapultleft_time" x="-2" y="-3" z="8" spawntime="60"/>
+    <monster name="stonepillar_time" x="2" y="-3" z="8" spawntime="60"/>
+    <monster name="catapultright_time" x="3" y="-3" z="8" spawntime="60"/>
+    <monster name="stonepillar_time" x="1" y="-2" z="8" spawntime="60"/>
+    <monster name="catapultleft_time" x="-2" y="-1" z="8" spawntime="60"/>
+    <monster name="stonepillar_time" x="0" y="-1" z="8" spawntime="60"/>
+    <monster name="catapultright_time" x="3" y="-1" z="8" spawntime="60"/>
+    <monster name="stonepillar_time" x="-1" y="0" z="8" spawntime="60"/>
+    <monster name="catapultleft_time" x="-2" y="1" z="8" spawntime="60"/>
+    <monster name="stonepillar_time" x="1" y="1" z="8" spawntime="60"/>
+    <monster name="catapultright_time" x="3" y="1" z="8" spawntime="60"/>
+    <monster name="stonepillar_time" x="2" y="2" z="8" spawntime="60"/>
+    <monster name="catapultleft_time" x="-2" y="3" z="8" spawntime="60"/>
+    <monster name="stonepillar_time" x="-1" y="3" z="8" spawntime="60"/>
+    <monster name="stonepillar_time" x="1" y="3" z="8" spawntime="60"/>
+    <monster name="catapultright_time" x="3" y="3" z="8" spawntime="60"/>
+    <monster name="stonewall_time" x="-1" y="4" z="8" spawntime="60"/>
+    <monster name="stonewall_time" x="0" y="4" z="8" spawntime="60"/>
+    <monster name="stonewall_time" x="1" y="4" z="8" spawntime="60"/>
+    <monster name="stonewall_time" x="2" y="4" z="8" spawntime="60"/>
+  </spawn>
   <spawn centerx="2655" centery="2705" centerz="8" radius="27">
     <monster name="Thornback Tortoise" x="-8" y="-18" z="8" spawntime="60"/>
     <monster name="Toad" x="10" y="-18" z="8" spawntime="60"/>
@@ -20248,6 +20292,9 @@
     <monster name="Giant Spider" x="-1" y="3" z="9" spawntime="60"/>
     <monster name="Giant Spider" x="4" y="3" z="9" spawntime="60"/>
   </spawn>
+  <spawn centerx="2387" centery="2663" centerz="9" radius="5">
+    <monster name="stone_time" x="0" y="1" z="9" spawntime="60"/>
+  </spawn>
   <spawn centerx="2769" centery="2669" centerz="9" radius="27">
     <monster name="Tortoise" x="-21" y="-16" z="9" spawntime="60"/>
     <monster name="Thornback Tortoise" x="-14" y="-16" z="9" spawntime="60"/>
@@ -24688,6 +24735,9 @@
     <monster name="Scarab" x="-1" y="4" z="10" spawntime="33554432"/>
     <monster name="Scarab" x="0" y="4" z="10" spawntime="33554432"/>
     <monster name="Scarab" x="1" y="4" z="10" spawntime="60"/>
+  </spawn>
+  <spawn centerx="2383" centery="2654" centerz="10" radius="5">
+    <monster name="boss_time" x="2" y="-1" z="10" spawntime="60"/>
   </spawn>
   <spawn centerx="2693" centery="2665" centerz="10" radius="27">
     <monster name="Tortoise" x="-10" y="-5" z="10" spawntime="60"/>

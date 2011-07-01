@@ -365,7 +365,7 @@ function pvpArena:onPlayerReady(cid)
 		return
 	end	
 	
-	if(self:getPlayerReady(player)) then
+	if(self:getPlayerReady(cid)) then
 		doPlayerSendTextMessage(cid, MESSAGE_STATUS_CONSOLE_BLUE, "Você ja está na arena! A batalha começará em poucos instantes, aguarde!")
 		return	
 	end

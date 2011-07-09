@@ -597,7 +597,6 @@ LTLIBOBJS
 SQLITE_LIBS
 PGSQL_LIBS
 MYSQL_LIBS
-OPTIONAL_FLAGS
 LUA_LIBS
 LUA_CFLAGS
 PKG_CONFIG_LIBDIR
@@ -621,6 +620,7 @@ USE_PGSQL_TRUE
 USE_MYSQL_FALSE
 USE_MYSQL_TRUE
 DEBUG_FLAGS
+OPTIONAL_FLAGS
 OT_ADMIN_FALSE
 OT_ADMIN_TRUE
 LOGIN_SERVER_FALSE
@@ -1356,19 +1356,19 @@ Optional Features:
   --enable-FEATURE[=ARG]  include FEATURE [ARG=yes]
   --disable-dependency-tracking  speeds up one-time build
   --enable-dependency-tracking   do not reject slow dependency extractors
-  --enable-server-diag              enable server diagnostic
-  --enable-login-server            enable login server mode
-  --enable-ot-admin            enable OTAdmin protocol
-  --enable-otserv-allocator    enable otserv custom allocator
-  --enable-homedir-conf            enable home directory configuration
-  --enable-root-permission      enable running on root user
+  --enable-server-diag		enable server diagnostic
+  --enable-login-server		enable login server mode
+  --enable-ot-admin		enable OTAdmin protocol
+  --enable-otserv-allocator	enable otserv custom allocator
+  --enable-homedir-conf		enable home directory configuration
+  --enable-root-permission	enable running on root user
   --enable-login-server  enable running in a login server mode
-  --enable-luajit                enable luajit instead of lua
-  --enable-debug          enable debuging
-  --enable-mysql          enable MySQL support
-  --enable-pgsql          enable PostgreSQL support
-  --enable-sqlite                enable SQLite support
-  --enable-profiler            enable profiler support
+  --enable-luajit		enable luajit instead of lua
+  --enable-debug		enable debuging
+  --enable-mysql		enable MySQL support
+  --enable-pgsql		enable PostgreSQL support
+  --enable-sqlite		enable SQLite support
+  --enable-profiler		enable profiler support
   --disable-xmltest       Do not try to compile and run a test LIBXML program
 
 Optional Packages:
@@ -3567,16 +3567,15 @@ ac_compile='$CXX -c $CXXFLAGS $CPPFLAGS conftest.$ac_ext >&5'
 ac_link='$CXX -o conftest$ac_exeext $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
 ac_compiler_gnu=$ac_cv_cxx_compiler_gnu
 
-
+# add own flags in here
 OPTIONAL_FLAGS=""
-DEBUG_FLAGS="-O2 -fomit-frame-pointer"
 
 # check if we want server diag enabled
 serverDiag=no
 # Check whether --enable-server-diag was given.
 if test "${enable_server_diag+set}" = set; then :
   enableval=$enable_server_diag; OPTIONAL_FLAGS="$OPTIONAL_FLAGS -D__ENABLE_SERVER_DIAGNOSTIC__"
-        serverDiag=yes
+	serverDiag=yes
 
 fi
 
@@ -3594,7 +3593,7 @@ loginServer=no
 # Check whether --enable-login-server was given.
 if test "${enable_login_server+set}" = set; then :
   enableval=$enable_login_server; OPTIONAL_FLAGS="$OPTIONAL_FLAGS -D__LOGIN_SERVER__"
-         if true; then
+	 if true; then
   LOGIN_SERVER_TRUE=
   LOGIN_SERVER_FALSE='#'
 else
@@ -3602,7 +3601,7 @@ else
   LOGIN_SERVER_FALSE=
 fi
 
-        loginServer=yes
+	loginServer=yes
 
 fi
 
@@ -3620,7 +3619,7 @@ otAdmin=no
 # Check whether --enable-ot-admin was given.
 if test "${enable_ot_admin+set}" = set; then :
   enableval=$enable_ot_admin; OPTIONAL_FLAGS="$OPTIONAL_FLAGS -D__OTADMIN__"
-         if true; then
+	 if true; then
   OT_ADMIN_TRUE=
   OT_ADMIN_FALSE='#'
 else
@@ -3628,7 +3627,7 @@ else
   OT_ADMIN_FALSE=
 fi
 
-        otAdmin=yes
+	otAdmin=yes
 
 fi
 
@@ -3638,7 +3637,7 @@ otservAllocator=no
 # Check whether --enable-otserv-allocator was given.
 if test "${enable_otserv_allocator+set}" = set; then :
   enableval=$enable_otserv_allocator; OPTIONAL_FLAGS="$OPTIONAL_FLAGS -D__OTSERV_ALLOCATOR__"
-        otservAllocator=yes
+	otservAllocator=yes
 
 fi
 
@@ -3648,7 +3647,7 @@ homedirConf=no
 # Check whether --enable-homedir-conf was given.
 if test "${enable_homedir_conf+set}" = set; then :
   enableval=$enable_homedir_conf; OPTIONAL_FLAGS="$OPTIONAL_FLAGS -D__HOMEDIR_CONF__"
-        homedirConf=yes
+	homedirConf=yes
 
 fi
 
@@ -3658,7 +3657,7 @@ rootPermission=no
 # Check whether --enable-root-permission was given.
 if test "${enable_root_permission+set}" = set; then :
   enableval=$enable_root_permission; OPTIONAL_FLAGS="$OPTIONAL_FLAGS -D__ROOT_PERMISSION__"
-        rootPermission=yes
+	rootPermission=yes
 
 fi
 
@@ -3668,7 +3667,7 @@ loginServer=no
 # Check whether --enable-login-server was given.
 if test "${enable_login_server+set}" = set; then :
   enableval=$enable_login_server; OPTIONAL_FLAGS="$OPTIONAL_FLAGS -D__LOGIN_SERVER__"
-        loginServer=yes
+	loginServer=yes
 
 fi
 
@@ -3678,9 +3677,10 @@ luaJIT=no
 # Check whether --enable-luajit was given.
 if test "${enable_luajit+set}" = set; then :
   enableval=$enable_luajit; OPTIONAL_FLAGS="$OPTIONAL_FLAGS -D__LUAJIT__"
-        luaJIT=yes
+	luaJIT=yes
 
 fi
+
 
 
 # check if we want a debug build
@@ -3688,8 +3688,12 @@ debugBuild=no
 # Check whether --enable-debug was given.
 if test "${enable_debug+set}" = set; then :
   enableval=$enable_debug; DEBUG_FLAGS="-D__DEBUG__ -D__DEBUG_MOVESYS__ -D__DEBUG_CHAT__ -D__DEBUG_EXCEPTION_REPORT__ -D__DEBUG_HOUSES__ -D__DEBUG_LUASCRIPTS__ -D__DEBUG_MAILBOX__ -D__DEBUG_NET__ -D__DEBUG_NET_DETAIL__ -D__DEBUG_RAID__ -D__DEBUG_SCHEDULER__ -D__DEBUG_SPAWN__ -D__SQL_QUERY_DEBUG__ -O0 -g3"
-        debugBuild=yes
+	debugBuild=yes
 
+fi
+
+if test "$debugBuild" = "no" ; then
+	DEBUG_FLAGS="-O2 -fomit-frame-pointer" # disable all kinds of debugging
 fi
 
 
@@ -3726,7 +3730,7 @@ useSQLite=no
 # Check whether --enable-mysql was given.
 if test "${enable_mysql+set}" = set; then :
   enableval=$enable_mysql;
-         if true; then
+	 if true; then
   USE_MYSQL_TRUE=
   USE_MYSQL_FALSE='#'
 else
@@ -3734,9 +3738,9 @@ else
   USE_MYSQL_FALSE=
 fi
 
-        MYSQL_FLAGS=-D__USE_MYSQL__
+	MYSQL_FLAGS=-D__USE_MYSQL__
 
-        useMySQL=yes
+	useMySQL=yes
 
 fi
 
@@ -3745,7 +3749,7 @@ fi
 # Check whether --enable-pgsql was given.
 if test "${enable_pgsql+set}" = set; then :
   enableval=$enable_pgsql;
-         if true; then
+	 if true; then
   USE_PGSQL_TRUE=
   USE_PGSQL_FALSE='#'
 else
@@ -3753,9 +3757,9 @@ else
   USE_PGSQL_FALSE=
 fi
 
-        PGSQL_FLAGS="-D__USE_PGSQL__ -I`pg_config --includedir`"
+	PGSQL_FLAGS="-D__USE_PGSQL__ -I`pg_config --includedir`"
 
-        usePostgreSQL=yes
+	usePostgreSQL=yes
 
 fi
 
@@ -3764,7 +3768,7 @@ fi
 # Check whether --enable-sqlite was given.
 if test "${enable_sqlite+set}" = set; then :
   enableval=$enable_sqlite;
-         if true; then
+	 if true; then
   USE_SQLITE_TRUE=
   USE_SQLITE_FALSE='#'
 else
@@ -3772,9 +3776,9 @@ else
   USE_SQLITE_FALSE=
 fi
 
-        SQLITE_FLAGS=-D__USE_SQLITE__
+	SQLITE_FLAGS=-D__USE_SQLITE__
 
-        useSQLite=yes
+	useSQLite=yes
 
 fi
 
@@ -5046,6 +5050,69 @@ rm -f core conftest.err conftest.$ac_objext \
 
 LIBS="$LIBS $XML_LIBS"
 
+# check for gmp
+for ac_header in gmp.h
+do :
+  ac_fn_cxx_check_header_mongrel "$LINENO" "gmp.h" "ac_cv_header_gmp_h" "$ac_includes_default"
+if test "x$ac_cv_header_gmp_h" = x""yes; then :
+  cat >>confdefs.h <<_ACEOF
+#define HAVE_GMP_H 1
+_ACEOF
+
+else
+  as_fn_error $? "\"gmp header not found.\"" "$LINENO" 5
+fi
+
+done
+
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for __gmpz_init2 in -lgmp" >&5
+$as_echo_n "checking for __gmpz_init2 in -lgmp... " >&6; }
+if test "${ac_cv_lib_gmp___gmpz_init2+set}" = set; then :
+  $as_echo_n "(cached) " >&6
+else
+  ac_check_lib_save_LIBS=$LIBS
+LIBS="-lgmp  $LIBS"
+cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+/* Override any GCC internal prototype to avoid an error.
+   Use char because int might match the return type of a GCC
+   builtin and then its argument prototype would still apply.  */
+#ifdef __cplusplus
+extern "C"
+#endif
+char __gmpz_init2 ();
+int
+main ()
+{
+return __gmpz_init2 ();
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_cxx_try_link "$LINENO"; then :
+  ac_cv_lib_gmp___gmpz_init2=yes
+else
+  ac_cv_lib_gmp___gmpz_init2=no
+fi
+rm -f core conftest.err conftest.$ac_objext \
+    conftest$ac_exeext conftest.$ac_ext
+LIBS=$ac_check_lib_save_LIBS
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_gmp___gmpz_init2" >&5
+$as_echo "$ac_cv_lib_gmp___gmpz_init2" >&6; }
+if test "x$ac_cv_lib_gmp___gmpz_init2" = x""yes; then :
+  cat >>confdefs.h <<_ACEOF
+#define HAVE_LIBGMP 1
+_ACEOF
+
+  LIBS="-lgmp $LIBS"
+
+else
+  as_fn_error $? "\"Linking against gmp library failed.\"" "$LINENO" 5
+fi
+
+
 # check for zlib
 for ac_header in zlib.h
 do :
@@ -5143,7 +5210,7 @@ _ACEOF
 
 else
 
-        { $as_echo "$as_me:${as_lineno-$LINENO}: checking for main in -lboost_thread-mt" >&5
+	{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for main in -lboost_thread-mt" >&5
 $as_echo_n "checking for main in -lboost_thread-mt... " >&6; }
 if test "${ac_cv_lib_boost_thread_mt_main+set}" = set; then :
   $as_echo_n "(cached) " >&6
@@ -5182,7 +5249,7 @@ _ACEOF
 
 else
 
-                { $as_echo "$as_me:${as_lineno-$LINENO}: checking for main in -lboost_thread" >&5
+		{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for main in -lboost_thread" >&5
 $as_echo_n "checking for main in -lboost_thread... " >&6; }
 if test "${ac_cv_lib_boost_thread_main+set}" = set; then :
   $as_echo_n "(cached) " >&6
@@ -5221,7 +5288,7 @@ _ACEOF
 
 else
 
-                        as_fn_error $? "\"Linking against boost::thread library failed.\"" "$LINENO" 5
+			as_fn_error $? "\"Linking against boost::thread library failed.\"" "$LINENO" 5
 
 fi
 
@@ -5271,7 +5338,7 @@ _ACEOF
 
 else
 
-        { $as_echo "$as_me:${as_lineno-$LINENO}: checking for main in -lboost_regex-mt" >&5
+	{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for main in -lboost_regex-mt" >&5
 $as_echo_n "checking for main in -lboost_regex-mt... " >&6; }
 if test "${ac_cv_lib_boost_regex_mt_main+set}" = set; then :
   $as_echo_n "(cached) " >&6
@@ -5310,7 +5377,7 @@ _ACEOF
 
 else
 
-                { $as_echo "$as_me:${as_lineno-$LINENO}: checking for main in -lboost_regex" >&5
+		{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for main in -lboost_regex" >&5
 $as_echo_n "checking for main in -lboost_regex... " >&6; }
 if test "${ac_cv_lib_boost_regex_main+set}" = set; then :
   $as_echo_n "(cached) " >&6
@@ -5349,7 +5416,7 @@ _ACEOF
 
 else
 
-                        as_fn_error $? "\"Linking against boost::regex library failed.\"" "$LINENO" 5
+			as_fn_error $? "\"Linking against boost::regex library failed.\"" "$LINENO" 5
 
 fi
 
@@ -5399,7 +5466,7 @@ _ACEOF
 
 else
 
-        { $as_echo "$as_me:${as_lineno-$LINENO}: checking for main in -lboost_system-mt" >&5
+	{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for main in -lboost_system-mt" >&5
 $as_echo_n "checking for main in -lboost_system-mt... " >&6; }
 if test "${ac_cv_lib_boost_system_mt_main+set}" = set; then :
   $as_echo_n "(cached) " >&6
@@ -5438,7 +5505,7 @@ _ACEOF
 
 else
 
-                { $as_echo "$as_me:${as_lineno-$LINENO}: checking for main in -lboost_system" >&5
+		{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for main in -lboost_system" >&5
 $as_echo_n "checking for main in -lboost_system... " >&6; }
 if test "${ac_cv_lib_boost_system_main+set}" = set; then :
   $as_echo_n "(cached) " >&6
@@ -5477,7 +5544,7 @@ _ACEOF
 
 else
 
-                        as_fn_error $? "\"Linking against boost::system library failed.\"" "$LINENO" 5
+			as_fn_error $? "\"Linking against boost::system library failed.\"" "$LINENO" 5
 
 fi
 
@@ -5527,7 +5594,7 @@ _ACEOF
 
 else
 
-        { $as_echo "$as_me:${as_lineno-$LINENO}: checking for main in -lboost_date_time-mt" >&5
+	{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for main in -lboost_date_time-mt" >&5
 $as_echo_n "checking for main in -lboost_date_time-mt... " >&6; }
 if test "${ac_cv_lib_boost_date_time_mt_main+set}" = set; then :
   $as_echo_n "(cached) " >&6
@@ -5566,7 +5633,7 @@ _ACEOF
 
 else
 
-                { $as_echo "$as_me:${as_lineno-$LINENO}: checking for main in -lboost_date_time" >&5
+		{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for main in -lboost_date_time" >&5
 $as_echo_n "checking for main in -lboost_date_time... " >&6; }
 if test "${ac_cv_lib_boost_date_time_main+set}" = set; then :
   $as_echo_n "(cached) " >&6
@@ -5605,7 +5672,7 @@ _ACEOF
 
 else
 
-                        as_fn_error $? "\"Linking against boost::date-time library failed.\"" "$LINENO" 5
+			as_fn_error $? "\"Linking against boost::date-time library failed.\"" "$LINENO" 5
 
 fi
 
@@ -5655,7 +5722,7 @@ _ACEOF
 
 else
 
-        { $as_echo "$as_me:${as_lineno-$LINENO}: checking for main in -lboost_filesystem-mt" >&5
+	{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for main in -lboost_filesystem-mt" >&5
 $as_echo_n "checking for main in -lboost_filesystem-mt... " >&6; }
 if test "${ac_cv_lib_boost_filesystem_mt_main+set}" = set; then :
   $as_echo_n "(cached) " >&6
@@ -5694,7 +5761,7 @@ _ACEOF
 
 else
 
-                { $as_echo "$as_me:${as_lineno-$LINENO}: checking for main in -lboost_filesystem" >&5
+		{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for main in -lboost_filesystem" >&5
 $as_echo_n "checking for main in -lboost_filesystem... " >&6; }
 if test "${ac_cv_lib_boost_filesystem_main+set}" = set; then :
   $as_echo_n "(cached) " >&6
@@ -5733,7 +5800,7 @@ _ACEOF
 
 else
 
-                        as_fn_error $? "\"Linking against boost::filesystem library failed.\"" "$LINENO" 5
+			as_fn_error $? "\"Linking against boost::filesystem library failed.\"" "$LINENO" 5
 
 fi
 
@@ -5742,6 +5809,22 @@ fi
 
 
 fi
+
+
+# check for boost::asio
+for ac_header in boost/asio.hpp
+do :
+  ac_fn_cxx_check_header_mongrel "$LINENO" "boost/asio.hpp" "ac_cv_header_boost_asio_hpp" "$ac_includes_default"
+if test "x$ac_cv_header_boost_asio_hpp" = x""yes; then :
+  cat >>confdefs.h <<_ACEOF
+#define HAVE_BOOST_ASIO_HPP 1
+_ACEOF
+
+else
+  as_fn_error $? "\"boost::asio header not found.\"" "$LINENO" 5
+fi
+
+done
 
 
 # check for boost::unordered_set
@@ -5754,7 +5837,7 @@ if test "x$ac_cv_header_boost_tr1_unordered_set_hpp" = x""yes; then :
 _ACEOF
 
 else
-  as_fn_error $? "\"boost::unordered_set header not found. Please update your boost to at least 1.40.\"" "$LINENO" 5
+  as_fn_error $? "\"boost::unordered_set header not found.\"" "$LINENO" 5
 fi
 
 done
@@ -5818,67 +5901,7 @@ else
 fi
 
 
-# check for OpenSSL
-for ac_header in openssl/rsa.h openssl/bn.h openssl/err.h
-do :
-  as_ac_Header=`$as_echo "ac_cv_header_$ac_header" | $as_tr_sh`
-ac_fn_cxx_check_header_mongrel "$LINENO" "$ac_header" "$as_ac_Header" "$ac_includes_default"
-if eval test \"x\$"$as_ac_Header"\" = x"yes"; then :
-  cat >>confdefs.h <<_ACEOF
-#define `$as_echo "HAVE_$ac_header" | $as_tr_cpp` 1
-_ACEOF
-
-else
-  as_fn_error $? "\"Required OpenSSL headers not found.\"" "$LINENO" 5
-fi
-
-done
-
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for main in -lcrypto" >&5
-$as_echo_n "checking for main in -lcrypto... " >&6; }
-if test "${ac_cv_lib_crypto_main+set}" = set; then :
-  $as_echo_n "(cached) " >&6
-else
-  ac_check_lib_save_LIBS=$LIBS
-LIBS="-lcrypto  $LIBS"
-cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-
-
-int
-main ()
-{
-return main ();
-  ;
-  return 0;
-}
-_ACEOF
-if ac_fn_cxx_try_link "$LINENO"; then :
-  ac_cv_lib_crypto_main=yes
-else
-  ac_cv_lib_crypto_main=no
-fi
-rm -f core conftest.err conftest.$ac_objext \
-    conftest$ac_exeext conftest.$ac_ext
-LIBS=$ac_check_lib_save_LIBS
-fi
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_crypto_main" >&5
-$as_echo "$ac_cv_lib_crypto_main" >&6; }
-if test "x$ac_cv_lib_crypto_main" = x""yes; then :
-  cat >>confdefs.h <<_ACEOF
-#define HAVE_LIBCRYPTO 1
-_ACEOF
-
-  LIBS="-lcrypto $LIBS"
-
-else
-  as_fn_error $? "\"Linking against OpenSSL library failed\"" "$LINENO" 5
-fi
-
-
-
 # check for Lua
-if test "$luaJIT" = "yes" ; then
 
 
 
@@ -6007,272 +6030,6 @@ if test -n "$LUA_CFLAGS"; then
     pkg_cv_LUA_CFLAGS="$LUA_CFLAGS"
  elif test -n "$PKG_CONFIG"; then
     if test -n "$PKG_CONFIG" && \
-    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"luajit\""; } >&5
-  ($PKG_CONFIG --exists --print-errors "luajit") 2>&5
-  ac_status=$?
-  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
-  test $ac_status = 0; }; then
-  pkg_cv_LUA_CFLAGS=`$PKG_CONFIG --cflags "luajit" 2>/dev/null`
-else
-  pkg_failed=yes
-fi
- else
-    pkg_failed=untried
-fi
-if test -n "$LUA_LIBS"; then
-    pkg_cv_LUA_LIBS="$LUA_LIBS"
- elif test -n "$PKG_CONFIG"; then
-    if test -n "$PKG_CONFIG" && \
-    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"luajit\""; } >&5
-  ($PKG_CONFIG --exists --print-errors "luajit") 2>&5
-  ac_status=$?
-  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
-  test $ac_status = 0; }; then
-  pkg_cv_LUA_LIBS=`$PKG_CONFIG --libs "luajit" 2>/dev/null`
-else
-  pkg_failed=yes
-fi
- else
-    pkg_failed=untried
-fi
-
-
-
-if test $pkg_failed = yes; then
-   	{ $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
-$as_echo "no" >&6; }
-
-if $PKG_CONFIG --atleast-pkgconfig-version 0.20; then
-        _pkg_short_errors_supported=yes
-else
-        _pkg_short_errors_supported=no
-fi
-        if test $_pkg_short_errors_supported = yes; then
-	        LUA_PKG_ERRORS=`$PKG_CONFIG --short-errors --print-errors "luajit" 2>&1`
-        else
-	        LUA_PKG_ERRORS=`$PKG_CONFIG --print-errors "luajit" 2>&1`
-        fi
-	# Put the nasty error message in config.log where it belongs
-	echo "$LUA_PKG_ERRORS" >&5
-
-
-                for ac_header in luajit-2.0/lua.hpp
-do :
-  ac_fn_cxx_check_header_mongrel "$LINENO" "luajit-2.0/lua.hpp" "ac_cv_header_luajit_2_0_lua_hpp" "$ac_includes_default"
-if test "x$ac_cv_header_luajit_2_0_lua_hpp" = x""yes; then :
-  cat >>confdefs.h <<_ACEOF
-#define HAVE_LUAJIT_2_0_LUA_HPP 1
-_ACEOF
-
-else
-  as_fn_error $? "\"LuaJIT header not found.\"" "$LINENO" 5
-fi
-
-done
-
-                { $as_echo "$as_me:${as_lineno-$LINENO}: checking for main in -lluajit" >&5
-$as_echo_n "checking for main in -lluajit... " >&6; }
-if test "${ac_cv_lib_luajit_main+set}" = set; then :
-  $as_echo_n "(cached) " >&6
-else
-  ac_check_lib_save_LIBS=$LIBS
-LIBS="-lluajit  $LIBS"
-cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-
-
-int
-main ()
-{
-return main ();
-  ;
-  return 0;
-}
-_ACEOF
-if ac_fn_cxx_try_link "$LINENO"; then :
-  ac_cv_lib_luajit_main=yes
-else
-  ac_cv_lib_luajit_main=no
-fi
-rm -f core conftest.err conftest.$ac_objext \
-    conftest$ac_exeext conftest.$ac_ext
-LIBS=$ac_check_lib_save_LIBS
-fi
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_luajit_main" >&5
-$as_echo "$ac_cv_lib_luajit_main" >&6; }
-if test "x$ac_cv_lib_luajit_main" = x""yes; then :
-  cat >>confdefs.h <<_ACEOF
-#define HAVE_LIBLUAJIT 1
-_ACEOF
-
-  LIBS="-lluajit $LIBS"
-
-else
-
-                        { $as_echo "$as_me:${as_lineno-$LINENO}: checking for main in -lluajit-5.1" >&5
-$as_echo_n "checking for main in -lluajit-5.1... " >&6; }
-if test "${ac_cv_lib_luajit_5_1_main+set}" = set; then :
-  $as_echo_n "(cached) " >&6
-else
-  ac_check_lib_save_LIBS=$LIBS
-LIBS="-lluajit-5.1  $LIBS"
-cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-
-
-int
-main ()
-{
-return main ();
-  ;
-  return 0;
-}
-_ACEOF
-if ac_fn_cxx_try_link "$LINENO"; then :
-  ac_cv_lib_luajit_5_1_main=yes
-else
-  ac_cv_lib_luajit_5_1_main=no
-fi
-rm -f core conftest.err conftest.$ac_objext \
-    conftest$ac_exeext conftest.$ac_ext
-LIBS=$ac_check_lib_save_LIBS
-fi
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_luajit_5_1_main" >&5
-$as_echo "$ac_cv_lib_luajit_5_1_main" >&6; }
-if test "x$ac_cv_lib_luajit_5_1_main" = x""yes; then :
-  cat >>confdefs.h <<_ACEOF
-#define HAVE_LIBLUAJIT_5_1 1
-_ACEOF
-
-  LIBS="-lluajit-5.1 $LIBS"
-
-else
-  as_fn_error $? "\"Linking against LuaJIT library failed.\"" "$LINENO" 5
-fi
-
-
-fi
-
-
-elif test $pkg_failed = untried; then
-     	{ $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
-$as_echo "no" >&6; }
-
-                for ac_header in luajit-2.0/lua.hpp
-do :
-  ac_fn_cxx_check_header_mongrel "$LINENO" "luajit-2.0/lua.hpp" "ac_cv_header_luajit_2_0_lua_hpp" "$ac_includes_default"
-if test "x$ac_cv_header_luajit_2_0_lua_hpp" = x""yes; then :
-  cat >>confdefs.h <<_ACEOF
-#define HAVE_LUAJIT_2_0_LUA_HPP 1
-_ACEOF
-
-else
-  as_fn_error $? "\"LuaJIT header not found.\"" "$LINENO" 5
-fi
-
-done
-
-                { $as_echo "$as_me:${as_lineno-$LINENO}: checking for main in -lluajit" >&5
-$as_echo_n "checking for main in -lluajit... " >&6; }
-if test "${ac_cv_lib_luajit_main+set}" = set; then :
-  $as_echo_n "(cached) " >&6
-else
-  ac_check_lib_save_LIBS=$LIBS
-LIBS="-lluajit  $LIBS"
-cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-
-
-int
-main ()
-{
-return main ();
-  ;
-  return 0;
-}
-_ACEOF
-if ac_fn_cxx_try_link "$LINENO"; then :
-  ac_cv_lib_luajit_main=yes
-else
-  ac_cv_lib_luajit_main=no
-fi
-rm -f core conftest.err conftest.$ac_objext \
-    conftest$ac_exeext conftest.$ac_ext
-LIBS=$ac_check_lib_save_LIBS
-fi
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_luajit_main" >&5
-$as_echo "$ac_cv_lib_luajit_main" >&6; }
-if test "x$ac_cv_lib_luajit_main" = x""yes; then :
-  cat >>confdefs.h <<_ACEOF
-#define HAVE_LIBLUAJIT 1
-_ACEOF
-
-  LIBS="-lluajit $LIBS"
-
-else
-
-                        { $as_echo "$as_me:${as_lineno-$LINENO}: checking for main in -lluajit-5.1" >&5
-$as_echo_n "checking for main in -lluajit-5.1... " >&6; }
-if test "${ac_cv_lib_luajit_5_1_main+set}" = set; then :
-  $as_echo_n "(cached) " >&6
-else
-  ac_check_lib_save_LIBS=$LIBS
-LIBS="-lluajit-5.1  $LIBS"
-cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-
-
-int
-main ()
-{
-return main ();
-  ;
-  return 0;
-}
-_ACEOF
-if ac_fn_cxx_try_link "$LINENO"; then :
-  ac_cv_lib_luajit_5_1_main=yes
-else
-  ac_cv_lib_luajit_5_1_main=no
-fi
-rm -f core conftest.err conftest.$ac_objext \
-    conftest$ac_exeext conftest.$ac_ext
-LIBS=$ac_check_lib_save_LIBS
-fi
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_luajit_5_1_main" >&5
-$as_echo "$ac_cv_lib_luajit_5_1_main" >&6; }
-if test "x$ac_cv_lib_luajit_5_1_main" = x""yes; then :
-  cat >>confdefs.h <<_ACEOF
-#define HAVE_LIBLUAJIT_5_1 1
-_ACEOF
-
-  LIBS="-lluajit-5.1 $LIBS"
-
-else
-  as_fn_error $? "\"Linking against LuaJIT library failed.\"" "$LINENO" 5
-fi
-
-
-fi
-
-
-else
-	LUA_CFLAGS=$pkg_cv_LUA_CFLAGS
-	LUA_LIBS=$pkg_cv_LUA_LIBS
-        { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
-$as_echo "yes" >&6; }
-
-fi
-else
-
-pkg_failed=no
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for LUA" >&5
-$as_echo_n "checking for LUA... " >&6; }
-
-if test -n "$LUA_CFLAGS"; then
-    pkg_cv_LUA_CFLAGS="$LUA_CFLAGS"
- elif test -n "$PKG_CONFIG"; then
-    if test -n "$PKG_CONFIG" && \
     { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"lua5.1 >= 5.1\""; } >&5
   ($PKG_CONFIG --exists --print-errors "lua5.1 >= 5.1") 2>&5
   ac_status=$?
@@ -6322,23 +6079,12 @@ fi
 	echo "$LUA_PKG_ERRORS" >&5
 
 
-		for ac_header in lua.h
+	for ac_header in lua.hpp
 do :
-  ac_fn_cxx_check_header_mongrel "$LINENO" "lua.h" "ac_cv_header_lua_h" "$ac_includes_default"
-if test "x$ac_cv_header_lua_h" = x""yes; then :
+  ac_fn_cxx_check_header_mongrel "$LINENO" "lua.hpp" "ac_cv_header_lua_hpp" "$ac_includes_default"
+if test "x$ac_cv_header_lua_hpp" = x""yes; then :
   cat >>confdefs.h <<_ACEOF
-#define HAVE_LUA_H 1
-_ACEOF
-
-else
-
-			OPTIONAL_FLAGS="$OPTIONAL_FLAGS -D__ALT_LUA_PATH__"
-			for ac_header in lua5.1/lua.h
-do :
-  ac_fn_cxx_check_header_mongrel "$LINENO" "lua5.1/lua.h" "ac_cv_header_lua5_1_lua_h" "$ac_includes_default"
-if test "x$ac_cv_header_lua5_1_lua_h" = x""yes; then :
-  cat >>confdefs.h <<_ACEOF
-#define HAVE_LUA5_1_LUA_H 1
+#define HAVE_LUA_HPP 1
 _ACEOF
 
 else
@@ -6347,12 +6093,7 @@ fi
 
 done
 
-
-fi
-
-done
-
-		{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for main in -llua" >&5
+	{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for main in -llua" >&5
 $as_echo_n "checking for main in -llua... " >&6; }
 if test "${ac_cv_lib_lua_main+set}" = set; then :
   $as_echo_n "(cached) " >&6
@@ -6390,49 +6131,7 @@ _ACEOF
   LIBS="-llua $LIBS"
 
 else
-
-			{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for main in -llua5.1" >&5
-$as_echo_n "checking for main in -llua5.1... " >&6; }
-if test "${ac_cv_lib_lua5_1_main+set}" = set; then :
-  $as_echo_n "(cached) " >&6
-else
-  ac_check_lib_save_LIBS=$LIBS
-LIBS="-llua5.1  $LIBS"
-cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-
-
-int
-main ()
-{
-return main ();
-  ;
-  return 0;
-}
-_ACEOF
-if ac_fn_cxx_try_link "$LINENO"; then :
-  ac_cv_lib_lua5_1_main=yes
-else
-  ac_cv_lib_lua5_1_main=no
-fi
-rm -f core conftest.err conftest.$ac_objext \
-    conftest$ac_exeext conftest.$ac_ext
-LIBS=$ac_check_lib_save_LIBS
-fi
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_lua5_1_main" >&5
-$as_echo "$ac_cv_lib_lua5_1_main" >&6; }
-if test "x$ac_cv_lib_lua5_1_main" = x""yes; then :
-  cat >>confdefs.h <<_ACEOF
-#define HAVE_LIBLUA5_1 1
-_ACEOF
-
-  LIBS="-llua5.1 $LIBS"
-
-else
   as_fn_error $? "\"Linking against Lua library failed.\"" "$LINENO" 5
-fi
-
-
 fi
 
 
@@ -6440,23 +6139,12 @@ elif test $pkg_failed = untried; then
      	{ $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
 $as_echo "no" >&6; }
 
-		for ac_header in lua.h
+	for ac_header in lua.hpp
 do :
-  ac_fn_cxx_check_header_mongrel "$LINENO" "lua.h" "ac_cv_header_lua_h" "$ac_includes_default"
-if test "x$ac_cv_header_lua_h" = x""yes; then :
+  ac_fn_cxx_check_header_mongrel "$LINENO" "lua.hpp" "ac_cv_header_lua_hpp" "$ac_includes_default"
+if test "x$ac_cv_header_lua_hpp" = x""yes; then :
   cat >>confdefs.h <<_ACEOF
-#define HAVE_LUA_H 1
-_ACEOF
-
-else
-
-			OPTIONAL_FLAGS="$OPTIONAL_FLAGS -D__ALT_LUA_PATH__"
-			for ac_header in lua5.1/lua.h
-do :
-  ac_fn_cxx_check_header_mongrel "$LINENO" "lua5.1/lua.h" "ac_cv_header_lua5_1_lua_h" "$ac_includes_default"
-if test "x$ac_cv_header_lua5_1_lua_h" = x""yes; then :
-  cat >>confdefs.h <<_ACEOF
-#define HAVE_LUA5_1_LUA_H 1
+#define HAVE_LUA_HPP 1
 _ACEOF
 
 else
@@ -6465,12 +6153,7 @@ fi
 
 done
 
-
-fi
-
-done
-
-		{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for main in -llua" >&5
+	{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for main in -llua" >&5
 $as_echo_n "checking for main in -llua... " >&6; }
 if test "${ac_cv_lib_lua_main+set}" = set; then :
   $as_echo_n "(cached) " >&6
@@ -6508,49 +6191,7 @@ _ACEOF
   LIBS="-llua $LIBS"
 
 else
-
-			{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for main in -llua5.1" >&5
-$as_echo_n "checking for main in -llua5.1... " >&6; }
-if test "${ac_cv_lib_lua5_1_main+set}" = set; then :
-  $as_echo_n "(cached) " >&6
-else
-  ac_check_lib_save_LIBS=$LIBS
-LIBS="-llua5.1  $LIBS"
-cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-
-
-int
-main ()
-{
-return main ();
-  ;
-  return 0;
-}
-_ACEOF
-if ac_fn_cxx_try_link "$LINENO"; then :
-  ac_cv_lib_lua5_1_main=yes
-else
-  ac_cv_lib_lua5_1_main=no
-fi
-rm -f core conftest.err conftest.$ac_objext \
-    conftest$ac_exeext conftest.$ac_ext
-LIBS=$ac_check_lib_save_LIBS
-fi
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_lua5_1_main" >&5
-$as_echo "$ac_cv_lib_lua5_1_main" >&6; }
-if test "x$ac_cv_lib_lua5_1_main" = x""yes; then :
-  cat >>confdefs.h <<_ACEOF
-#define HAVE_LIBLUA5_1 1
-_ACEOF
-
-  LIBS="-llua5.1 $LIBS"
-
-else
   as_fn_error $? "\"Linking against Lua library failed.\"" "$LINENO" 5
-fi
-
-
 fi
 
 
@@ -6561,15 +6202,12 @@ else
 $as_echo "yes" >&6; }
 
 fi
-fi
-
-
 
 
 
 # check for mysql if it is enabled
 if test -n "$MYSQL_FLAGS"; then
-        for ac_header in mysql/mysql.h
+	for ac_header in mysql/mysql.h
 do :
   ac_fn_cxx_check_header_mongrel "$LINENO" "mysql/mysql.h" "ac_cv_header_mysql_mysql_h" "$ac_includes_default"
 if test "x$ac_cv_header_mysql_mysql_h" = x""yes; then :
@@ -6583,7 +6221,7 @@ fi
 
 done
 
-        { $as_echo "$as_me:${as_lineno-$LINENO}: checking for main in -lmysqlclient" >&5
+	{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for main in -lmysqlclient" >&5
 $as_echo_n "checking for main in -lmysqlclient... " >&6; }
 if test "${ac_cv_lib_mysqlclient_main+set}" = set; then :
   $as_echo_n "(cached) " >&6
@@ -6621,110 +6259,15 @@ _ACEOF
   LIBS="-lmysqlclient $LIBS"
 
 else
-
-                if test -d /usr/lib64/mysql ; then
-                        echo "NOTICE -- Copying mysqlclient files into the /usr/lib64 directory."
-                        echo "NOTICE -- If mysqlclient is not found, please re-run the configure script."
-                        cp -Rsf /usr/lib64/mysql/libmysqlclient* /usr/lib64
-                        { $as_echo "$as_me:${as_lineno-$LINENO}: checking for main in -lmysqlclient" >&5
-$as_echo_n "checking for main in -lmysqlclient... " >&6; }
-if test "${ac_cv_lib_mysqlclient_main+set}" = set; then :
-  $as_echo_n "(cached) " >&6
-else
-  ac_check_lib_save_LIBS=$LIBS
-LIBS="-lmysqlclient  $LIBS"
-cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-
-
-int
-main ()
-{
-return main ();
-  ;
-  return 0;
-}
-_ACEOF
-if ac_fn_cxx_try_link "$LINENO"; then :
-  ac_cv_lib_mysqlclient_main=yes
-else
-  ac_cv_lib_mysqlclient_main=no
+  as_fn_error $? "\"Linking against mysql-client failed.\"" "$LINENO" 5
 fi
-rm -f core conftest.err conftest.$ac_objext \
-    conftest$ac_exeext conftest.$ac_ext
-LIBS=$ac_check_lib_save_LIBS
-fi
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_mysqlclient_main" >&5
-$as_echo "$ac_cv_lib_mysqlclient_main" >&6; }
-if test "x$ac_cv_lib_mysqlclient_main" = x""yes; then :
-  cat >>confdefs.h <<_ACEOF
-#define HAVE_LIBMYSQLCLIENT 1
-_ACEOF
-
-  LIBS="-lmysqlclient $LIBS"
-
-else
-  as_fn_error $? "\"Linking against mysqlclient failed.\"" "$LINENO" 5
-fi
-
-                elif test -d /usr/lib/mysql ; then
-                        echo "NOTICE -- Copying mysqlclient files into the /usr/lib directory."
-                        echo "NOTICE -- If mysqlclient is not found, please re-run the configure script."
-                        cp -Rsf /usr/lib/mysql/libmysqlclient* /usr/lib
-                        { $as_echo "$as_me:${as_lineno-$LINENO}: checking for main in -lmysqlclient" >&5
-$as_echo_n "checking for main in -lmysqlclient... " >&6; }
-if test "${ac_cv_lib_mysqlclient_main+set}" = set; then :
-  $as_echo_n "(cached) " >&6
-else
-  ac_check_lib_save_LIBS=$LIBS
-LIBS="-lmysqlclient  $LIBS"
-cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-
-
-int
-main ()
-{
-return main ();
-  ;
-  return 0;
-}
-_ACEOF
-if ac_fn_cxx_try_link "$LINENO"; then :
-  ac_cv_lib_mysqlclient_main=yes
-else
-  ac_cv_lib_mysqlclient_main=no
-fi
-rm -f core conftest.err conftest.$ac_objext \
-    conftest$ac_exeext conftest.$ac_ext
-LIBS=$ac_check_lib_save_LIBS
-fi
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_mysqlclient_main" >&5
-$as_echo "$ac_cv_lib_mysqlclient_main" >&6; }
-if test "x$ac_cv_lib_mysqlclient_main" = x""yes; then :
-  cat >>confdefs.h <<_ACEOF
-#define HAVE_LIBMYSQLCLIENT 1
-_ACEOF
-
-  LIBS="-lmysqlclient $LIBS"
-
-else
-  as_fn_error $? "\"Linking against mysqlclient failed.\"" "$LINENO" 5
-fi
-
-                else
-                        as_fn_error $? "\"Linking against mysql-client failed.\"" "$LINENO" 5
-                fi
-
-fi
-
 
 
 fi
 
 # check for postgresql if it is enabled
 if test -n "$PGSQL_FLAGS"; then
-        for ac_header in `pg_config --includedir`/libpq-fe.h
+	for ac_header in `pg_config --includedir`/libpq-fe.h
 do :
   as_ac_Header=`$as_echo "ac_cv_header_$ac_header" | $as_tr_sh`
 ac_fn_cxx_check_header_mongrel "$LINENO" "$ac_header" "$as_ac_Header" "$ac_includes_default"
@@ -6739,7 +6282,7 @@ fi
 
 done
 
-        { $as_echo "$as_me:${as_lineno-$LINENO}: checking for main in -lpq" >&5
+	{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for main in -lpq" >&5
 $as_echo_n "checking for main in -lpq... " >&6; }
 if test "${ac_cv_lib_pq_main+set}" = set; then :
   $as_echo_n "(cached) " >&6
@@ -6785,7 +6328,7 @@ fi
 
 # check for sqlite if it is enabled
 if test -n "$SQLITE_FLAGS"; then
-        for ac_header in sqlite3.h
+	for ac_header in sqlite3.h
 do :
   ac_fn_cxx_check_header_mongrel "$LINENO" "sqlite3.h" "ac_cv_header_sqlite3_h" "$ac_includes_default"
 if test "x$ac_cv_header_sqlite3_h" = x""yes; then :
@@ -6799,7 +6342,7 @@ fi
 
 done
 
-        { $as_echo "$as_me:${as_lineno-$LINENO}: checking for main in -lsqlite3" >&5
+	{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for main in -lsqlite3" >&5
 $as_echo_n "checking for main in -lsqlite3... " >&6; }
 if test "${ac_cv_lib_sqlite3_main+set}" = set; then :
   $as_echo_n "(cached) " >&6
@@ -6844,24 +6387,14 @@ fi
 fi
 
 if test "$useMySQL" = "no" ; then
-        if test "$useSQLite" = "no" ; then
-                if test "$usePostgreSQL" = "no" ; then
-                         if true; then
-  USE_SQLITE_TRUE=
-  USE_SQLITE_FALSE='#'
-else
-  USE_SQLITE_TRUE='#'
-  USE_SQLITE_FALSE=
-fi
-
-                        SQLITE_FLAGS=-D__USE_SQLITE__
-
-                        useSQLite=yes
-
-                        echo WARNING: Any of available database drivers was enabled, using SQLite as default. To enable a database driver, configure with --enable-\<driver\> \(example: --enable-mysql\)
-                        echo
-                fi
-        fi
+	if test "$useSQLite" = "no" ; then
+		if test "$usePostgreSQL" = "no" ; then
+			echo Error: no database driver was enabled! To enable a database driver, configure with --enable-\<dbdriver\> \(example: --enable-mysql\).
+			echo
+			exit 1
+			return 1
+		fi
+	fi
 fi
 ac_config_files="$ac_config_files Makefile"
 
@@ -7013,10 +6546,6 @@ Usually this means the macro was only invoked conditionally." "$LINENO" 5
 fi
 if test -z "${USE_PGSQL_TRUE}" && test -z "${USE_PGSQL_FALSE}"; then
   as_fn_error $? "conditional \"USE_PGSQL\" was never defined.
-Usually this means the macro was only invoked conditionally." "$LINENO" 5
-fi
-if test -z "${USE_SQLITE_TRUE}" && test -z "${USE_SQLITE_FALSE}"; then
-  as_fn_error $? "conditional \"USE_SQLITE\" was never defined.
 Usually this means the macro was only invoked conditionally." "$LINENO" 5
 fi
 if test -z "${USE_SQLITE_TRUE}" && test -z "${USE_SQLITE_FALSE}"; then

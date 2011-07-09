@@ -131,7 +131,7 @@ struct DeathLessThan
 typedef std::vector<DeathEntry> DeathList;
 typedef std::list<CreatureEvent*> CreatureEventList;
 typedef std::list<Condition*> ConditionList;
-typedef std::map<std::string, std::string> StorageMap;
+typedef std::map<uint32_t, std::string> StorageMap;
 
 class Map;
 class Tile;
@@ -206,7 +206,7 @@ class Creature : public AutoId, virtual public Thing
 
 		virtual bool canSee(const Position& pos) const;
 		virtual bool canSeeCreature(const Creature* creature) const;
-		virtual bool canWalkthrough(const Creature* creature) const;
+		virtual bool canWalkthrough(const Creature* creature) const {return creature->isWalkable() || creature->isGhost() || isGhost();}
 
 		Direction getDirection() const {return direction;}
 		void setDirection(Direction dir) {direction = dir;}
@@ -337,9 +337,9 @@ class Creature : public AutoId, virtual public Thing
 		virtual void changeMana(int32_t manaChange);
 		void changeMaxMana(uint32_t manaChange) {manaMax = manaChange;}
 
-		virtual bool getStorage(const std::string& key, std::string& value) const;
-		virtual bool setStorage(const std::string& key, const std::string& value);
-		virtual void eraseStorage(const std::string& key) {storageMap.erase(key);}
+		virtual bool getStorage(const uint32_t key, std::string& value) const;
+		virtual bool setStorage(const uint32_t key, const std::string& value);
+		virtual void eraseStorage(const uint32_t key) {storageMap.erase(key);}
 
 		inline StorageMap::const_iterator getStorageBegin() const {return storageMap.begin();}
 		inline StorageMap::const_iterator getStorageEnd() const {return storageMap.end();}
@@ -384,7 +384,7 @@ class Creature : public AutoId, virtual public Thing
 		virtual void onIdleStatus();
 
 		virtual void getCreatureLight(LightInfo& light) const;
-		virtual void resetLight();
+		virtual void setNormalCreatureLight();
 		void setCreatureLight(LightInfo& light) {internalLight = light;}
 
 		virtual void onThink(uint32_t interval);
@@ -399,7 +399,7 @@ class Creature : public AutoId, virtual public Thing
 		virtual void onUpdateTile(const Tile*, const Position&) {}
 
 		virtual void onCreatureAppear(const Creature* creature);
-		virtual void onCreatureDisappear(const Creature* creature, bool) {internalCreatureDisappear(creature, true);}
+		virtual void onCreatureDisappear(const Creature* creature, bool isLogout);
 		virtual void onCreatureMove(const Creature* creature, const Tile* newTile, const Position& newPos,
 			const Tile* oldTile, const Position& oldPos, bool teleport);
 
@@ -548,8 +548,6 @@ class Creature : public AutoId, virtual public Thing
 		void updateTileCache(const Tile* tile, int32_t dx, int32_t dy);
 		void updateTileCache(const Tile* tile, const Position& pos);
 
-		void internalCreatureDisappear(const Creature* creature, bool isLogout);
-
 		virtual bool hasExtraSwing() {return false;}
 
 		virtual uint16_t getLookCorpse() const {return 0;}
@@ -564,6 +562,7 @@ class Creature : public AutoId, virtual public Thing
 		virtual void dropCorpse(DeathList deathList);
 
 		virtual void doAttacking(uint32_t) {}
+		void internalCreatureDisappear(const Creature* creature, bool isLogout);
 
 		friend class Game;
 		friend class Map;

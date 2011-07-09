@@ -633,7 +633,7 @@ ReturnValue Tile::__queryAdd(int32_t, const Thing* thing, uint32_t,
 				if(ground)
 				{
 					const ItemType& iType = Item::items[ground->getID()];
-					if(ground->isBlocking(creature) && (!iType.movable || (ground->isLoadedFromMap() &&
+					if(ground->isBlocking(creature) && (!iType.moveable || (ground->isLoadedFromMap() &&
 						(ground->getUniqueId() || (ground->getActionId() && ground->getContainer())))))
 						return RET_NOTPOSSIBLE;
 				}
@@ -643,7 +643,7 @@ ReturnValue Tile::__queryAdd(int32_t, const Thing* thing, uint32_t,
 					for(ItemVector::const_iterator it = items->begin(); it != items->end(); ++it)
 					{
 						const ItemType& iType = Item::items[(*it)->getID()];
-						if((*it)->isBlocking(creature) && (!iType.movable || ((*it)->isLoadedFromMap() &&
+						if((*it)->isBlocking(creature) && (!iType.moveable || ((*it)->isLoadedFromMap() &&
 							((*it)->getUniqueId() || ((*it)->getActionId() && (*it)->getContainer())))))
 							return RET_NOTPOSSIBLE;
 					}
@@ -739,7 +739,7 @@ ReturnValue Tile::__queryRemove(const Thing* thing, uint32_t count, uint32_t fla
 
 	const Item* item = thing->getItem();
 	if(!item || !count || (item->isStackable() && count > item->getItemCount())
-		|| (!item->isMovable() && !hasBitSet(FLAG_IGNORENOTMOVABLE, flags)))
+		|| (!item->isMoveable() && !hasBitSet(FLAG_IGNORENOTMOVEABLE, flags)))
 		return RET_NOTPOSSIBLE;
 
 	return RET_NOERROR;
@@ -898,17 +898,20 @@ void Tile::__addThing(Creature* actor, int32_t, Thing* thing)
 	{
 		if(ground)
 		{
+			const ItemType& oldType = Item::items[ground->getID()];
 			int32_t oldGroundIndex = __getIndexOfThing(ground);
 			Item* oldGround = ground;
+
+			ground->setParent(NULL);
+			g_game.freeThing(ground);
 			ground = item;
 
-			oldGround->setParent(NULL);
 			updateTileFlags(oldGround, true);
 			updateTileFlags(item, false);
 
-			onUpdateTile();
-			g_game.freeThing(oldGround);
+			onUpdateTileItem(oldGround, oldType, item, Item::items[item->getID()]);
 			postRemoveNotification(actor, oldGround, NULL, oldGroundIndex, true);
+			onUpdateTile();
 		}
 		else
 		{

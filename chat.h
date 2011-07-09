@@ -43,8 +43,11 @@ class ChatChannel
 			const std::string& conditionMessage = "", VocationMap* vocationMap = NULL);
 		virtual ~ChatChannel()
 		{
-			delete m_condition;
-			delete m_vocationMap;
+			if(m_condition)
+				delete m_condition;
+
+			if(m_vocationMap)
+				delete m_vocationMap;
 		}
 		static uint16_t staticFlags;
 
@@ -54,7 +57,7 @@ class ChatChannel
 
 		int32_t getConditionId() const {return m_conditionId;}
 		const std::string& getConditionMessage() const {return m_conditionMessage;}
-		const UsersMap& getUsers() const {return m_users;}
+		const UsersMap& getUsers() {return m_users;}
 
 		uint32_t getLevel() const {return m_level;}
 		uint32_t getAccess() const {return m_access;}

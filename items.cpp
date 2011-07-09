@@ -36,9 +36,9 @@ ItemType::ItemType()
 {
 	group = ITEM_GROUP_NONE;
 	type = ITEM_TYPE_NONE;
-	stackable = usable = alwaysOnTop = lookThrough = pickupable = rotable = hasHeight = forceSerialize = false;
+	stackable = useable = alwaysOnTop = lookThrough = pickupable = rotable = hasHeight = forceSerialize = false;
 	blockSolid = blockProjectile = blockPathFind = allowPickupable = false;
-	movable = walkStack = true;
+	moveable = walkStack = true;
 	alwaysOnTopOrder = 0;
 	rotateTo = 0;
 
@@ -74,9 +74,8 @@ ItemType::ItemType()
 	isVertical = isHorizontal = isHangable = false;
 	lightLevel = lightColor = 0;
 
-	maxTextLength = 0;
+	maxTextLen = 0;
 	canReadText = canWriteText = false;
-	date = 0;
 	writeOnceItemId = 0;
 
 	transformEquipTo = transformDeEquipTo = 0;
@@ -88,7 +87,7 @@ ItemType::ItemType()
 	condition = NULL;
 	combatType = COMBAT_NONE;
 
-	replacable = true;
+	replaceable = true;
 	worth = 0;
 
 	bedPartnerDir = NORTH;
@@ -178,7 +177,7 @@ int32_t Items::loadFromOtb(std::string file)
 		std::clog << "[Error - Items::loadFromOtb] New version detected, an older version of items.otb is required." << std::endl;
 		return ERROR_INVALID_FORMAT;
 	}
-	else if(Items::dwMinorVersion != CLIENT_VERSION_861)
+	else if(Items::dwMinorVersion != CLIENT_VERSION_860)
 	{
 		std::clog << "[Error - Items::loadFromOtb] Another (client) version of items.otb is required." << std::endl;
 		return ERROR_INVALID_FORMAT;
@@ -231,9 +230,9 @@ int32_t Items::loadFromOtb(std::string file)
 		iType->blockProjectile = hasBitSet(FLAG_BLOCK_PROJECTILE, flags);
 		iType->blockPathFind = hasBitSet(FLAG_BLOCK_PATHFIND, flags);
 		iType->hasHeight = hasBitSet(FLAG_HAS_HEIGHT, flags);
-		iType->usable = hasBitSet(FLAG_USABLE, flags);
+		iType->useable = hasBitSet(FLAG_USEABLE, flags);
 		iType->pickupable = hasBitSet(FLAG_PICKUPABLE, flags);
-		iType->movable = hasBitSet(FLAG_MOVABLE, flags);
+		iType->moveable = hasBitSet(FLAG_MOVEABLE, flags);
 		iType->stackable = hasBitSet(FLAG_STACKABLE, flags);
 
 		iType->alwaysOnTop = hasBitSet(FLAG_ALWAYSONTOP, flags);
@@ -573,40 +572,6 @@ void Items::parseItemNode(xmlNodePtr itemNode, uint32_t id)
 				if(readXMLString(itemAttributesNode, "value", strValue))
 					it.pluralName = strValue;
 			}
-			else if(tmpStrValue == "clientid")
-			{
-				if(readXMLInteger(itemAttributesNode, "value", intValue))
-				{
-					it.clientId = intValue;
-					if(it.group == ITEM_GROUP_DEPRECATED)
-						it.group = ITEM_GROUP_NONE;
-				}
-			}
-			else if(tmpStrValue == "blocksolid" || tmpStrValue == "blocking")
-			{
-				if(readXMLInteger(itemAttributesNode, "value", intValue))
-					it.blockSolid = (intValue != 0);
-			}
-			else if(tmpStrValue == "blockprojectile")
-			{
-				if(readXMLInteger(itemAttributesNode, "value", intValue))
-					it.blockProjectile = (intValue != 0);
-			}
-			else if(tmpStrValue == "blockpathfind" || tmpStrValue == "blockpathing" || tmpStrValue == "blockpath")
-			{
-				if(readXMLInteger(itemAttributesNode, "value", intValue))
-					it.blockPathFind = (intValue != 0);
-			}
-			else if(tmpStrValue == "lightlevel")
-			{
-				if(readXMLInteger(itemAttributesNode, "value", intValue))
-					it.lightLevel = intValue;
-			}
-			else if(tmpStrValue == "lightcolor")
-			{
-				if(readXMLInteger(itemAttributesNode, "value", intValue))
-					it.lightColor = intValue;
-			}
 			else if(tmpStrValue == "description")
 			{
 				if(readXMLString(itemAttributesNode, "value", strValue))
@@ -662,15 +627,15 @@ void Items::parseItemNode(xmlNodePtr itemNode, uint32_t id)
 				if(readXMLInteger(itemAttributesNode, "value", intValue))
 					it.rotateTo = intValue;
 			}
-			else if(tmpStrValue == "movable" || tmpStrValue == "moveable")
+			else if(tmpStrValue == "moveable" || tmpStrValue == "movable")
 			{
 				if(readXMLInteger(itemAttributesNode, "value", intValue))
-					it.movable = (intValue != 0);
+					it.moveable = (intValue != 0);
 			}
-			else if(tmpStrValue == "pickupable")
+			else if(tmpStrValue == "blockprojectile")
 			{
 				if(readXMLInteger(itemAttributesNode, "value", intValue))
-					it.pickupable = (intValue != 0);
+					it.blockProjectile = (intValue != 0);
 			}
 			else if(tmpStrValue == "allowpickupable")
 			{
@@ -755,22 +720,7 @@ void Items::parseItemNode(xmlNodePtr itemNode, uint32_t id)
 			else if(tmpStrValue == "maxtextlen" || tmpStrValue == "maxtextlength")
 			{
 				if(readXMLInteger(itemAttributesNode, "value", intValue))
-					it.maxTextLength = intValue;
-			}
-			else if(tmpStrValue == "text")
-			{
-				if(readXMLString(itemAttributesNode, "value", strValue))
-					it.text = strValue;
-			}
-			else if(tmpStrValue == "author" || tmpStrValue == "writer")
-			{
-				if(readXMLString(itemAttributesNode, "value", strValue))
-					it.writer = strValue;
-			}
-			else if(tmpStrValue == "date")
-			{
-				if(readXMLInteger(itemAttributesNode, "value", intValue))
-					it.date = intValue;
+					it.maxTextLen = intValue;
 			}
 			else if(tmpStrValue == "writeonceitemid")
 			{
@@ -924,12 +874,12 @@ void Items::parseItemNode(xmlNodePtr itemNode, uint32_t id)
 				if(readXMLInteger(itemAttributesNode, "value", intValue))
 					it.decayTo = intValue;
 			}
-			else if(tmpStrValue == "transformequipto" || tmpStrValue == "onequipto")
+			else if(tmpStrValue == "transformequipto")
 			{
 				if(readXMLInteger(itemAttributesNode, "value", intValue))
 					it.transformEquipTo = intValue;
 			}
-			else if(tmpStrValue == "transformdeequipto" || tmpStrValue == "ondeequipto")
+			else if(tmpStrValue == "transformdeequipto")
 			{
 				if(readXMLInteger(itemAttributesNode, "value", intValue))
 					it.transformDeEquipTo = intValue;
@@ -1723,10 +1673,10 @@ void Items::parseItemNode(xmlNodePtr itemNode, uint32_t id)
 					it.abilities.elementType = COMBAT_UNDEFINEDDAMAGE;
 				}
 			}
-			else if(tmpStrValue == "replacable" || tmpStrValue == "replaceable")
+			else if(tmpStrValue == "replaceable" || tmpStrValue == "replacable")
 			{
 				if(readXMLInteger(itemAttributesNode, "value", intValue))
-					it.replacable = (intValue != 0);
+					it.replaceable = (intValue != 0);
 			}
 			else if(tmpStrValue == "partnerdirection")
 			{

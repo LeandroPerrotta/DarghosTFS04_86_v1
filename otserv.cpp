@@ -29,10 +29,6 @@
 #endif
 #include <boost/config.hpp>
 
-#include <openssl/rsa.h>
-#include <openssl/bn.h>
-#include <openssl/err.h>
-
 #include "server.h"
 #ifdef __LOGIN_SERVER__
 #include "gameservers.h"
@@ -42,6 +38,7 @@
 #include "game.h"
 #include "chat.h"
 #include "tools.h"
+#include "rsa.h"
 
 #include "protocollogin.h"
 #include "protocolgame.h"
@@ -85,7 +82,7 @@ inline void boost::throw_exception(std::exception const & e)
 }
 #endif
 
-RSA* g_RSA;
+RSA g_RSA;
 ConfigManager g_config;
 Game g_game;
 Chat g_chat;
@@ -125,11 +122,11 @@ bool argumentsHandler(StringVec args)
 			return false;
 		}
 
-		if((*it) == "--version" || (*it) == "-V")
+		if((*it) == "--version")
 		{
 			std::clog << SOFTWARE_NAME << ", version " << SOFTWARE_VERSION << " (" << SOFTWARE_CODENAME << ")\n"
 			"Compiled with " << BOOST_COMPILER << " at " << __DATE__ << ", " << __TIME__ << ".\n"
-			"A server developed by Elf, Talaturen, Stian, Slawkens, KaczooH  and Kornholijo.\n"
+			"A server developed by Elf, Talaturen, KaczooH, Stian and Kornholijo.\n"
 			"Visit our forum for updates, support and resources: http://otland.net.\n";
 			return false;
 		}
@@ -300,7 +297,6 @@ int main(int argc, char* argv[])
 	Dispatcher::getInstance().addTask(createTask(boost::bind(otserv, args, &servicer)));
 
 	g_loaderSignal.wait(g_loaderUniqueLock);
-	boost::this_thread::sleep(boost::posix_time::milliseconds(10000));
 	if(servicer.isRunning())
 	{
 		std::clog << ">> " << g_config.getString(ConfigManager::SERVER_NAME) << " server Online!" << std::endl << std::endl;
@@ -336,7 +332,7 @@ void otserv(StringVec, ServiceManager* services)
 
 	std::clog << SOFTWARE_NAME << ", version " << SOFTWARE_VERSION << " (" << SOFTWARE_CODENAME << ")" << std::endl
 		<< "Compiled with " << BOOST_COMPILER << " at " << __DATE__ << ", " << __TIME__ << "." << std::endl
-		<< "A server developed by Elf, Talaturen, Stian, Slawkens, KaczooH  and Kornholijo." << std::endl
+		<< "A server developed by Elf, Talaturen, KaczooH, Stian and Kornholijo." << std::endl
 		<< "Visit our forum for updates, support and resources: http://otland.net." << std::endl << std::endl;
 	std::stringstream ss;
 #ifdef __DEBUG__
@@ -394,7 +390,7 @@ void otserv(StringVec, ServiceManager* services)
 	path = g_config.getString(ConfigManager::LOGS_DIRECTORY);
 	g_config.setString(ConfigManager::LOGS_DIRECTORY, path.erase(path.find_last_not_of("/") + 1) + "/");
 
-	std::clog << "> Opening logs" << std::endl;
+	std::clog << ">> Opening logs" << std::endl;
 	Logger::getInstance()->open();
 
 	IntegerVec cores = vectorAtoi(explodeString(g_config.getString(ConfigManager::CORES_USED), ","));
@@ -543,27 +539,13 @@ void otserv(StringVec, ServiceManager* services)
 		std::clog << "failed - could not parse remote file (are you connected to any network?)" << std::endl;
 
 	std::clog << ">> Loading RSA key" << std::endl;
-	g_RSA = RSA_new();
+	const char* p("14299623962416399520070177382898895550795403345466153217470516082934737582776038882967213386204600674145392845853859217990626450972452084065728686565928113");
+	const char* q("7630979195970404721891201847792002125535401292779123937207447574596692788513647179235335529307251350570728407373705564708871762033017096809910315212884101");
+	const char* d("46730330223584118622160180015036832148732986808519344675210555262940258739805766860224610646919605860206328024326703361630109888417839241959507572247284807035235569619173792292786907845791904955103601652822519121908367187885509270025388641700821735345222087940578381210879116823013776808975766851829020659073");
 
-	BN_dec2bn(&g_RSA->p, g_config.getString(ConfigManager::RSA_PRIME1).c_str());
-	BN_dec2bn(&g_RSA->q, g_config.getString(ConfigManager::RSA_PRIME2).c_str());
-	BN_dec2bn(&g_RSA->d, g_config.getString(ConfigManager::RSA_PRIVATE).c_str());
-	BN_dec2bn(&g_RSA->n, g_config.getString(ConfigManager::RSA_MODULUS).c_str());
-	BN_dec2bn(&g_RSA->e, g_config.getString(ConfigManager::RSA_PUBLIC).c_str());
-	// TODO: dmp1, dmq1, iqmp?
-	
-	// This check will verify keys set in config.lua
-	if(!RSA_check_key(g_RSA))
-	{
-		std::stringstream s;
-		s << "OpenSSL failed - ";
-	
-		ERR_load_crypto_strings();
-		s << ERR_error_string(ERR_get_error(), NULL);
-		startupErrorMessage(s.str());
-	}
-	
+	g_RSA.initialize(p, q, d);
 	std::clog << ">> Starting SQL connection" << std::endl;
+
 	Database* db = Database::getInstance();
 	if(db && db->isConnected())
 	{
@@ -697,7 +679,7 @@ void otserv(StringVec, ServiceManager* services)
 		uint32_t resolvedIp = inet_addr(ip.c_str());
 		if(resolvedIp == INADDR_NONE)
 		{
-			struct hostent* host = gethostbyname(ip.c_str());
+			hostent* host = gethostbyname(ip.c_str());
 			if(!host)
 			{
 				std::clog << "..." << std::endl;
@@ -715,38 +697,36 @@ void otserv(StringVec, ServiceManager* services)
 	}
 
 	ipList.push_back(boost::asio::ip::address_v4(INADDR_LOOPBACK));
-	if(!g_config.getBool(ConfigManager::BIND_ONLY_GLOBAL_ADDRESS))
+	bool owned = false;
+
+	char hostName[128];
+	if(!gethostname(hostName, 128))
 	{
-		char hostName[128];
-		if(!gethostname(hostName, 128))
+		if(hostent* host = gethostbyname(hostName))
 		{
-			if(hostent* host = gethostbyname(hostName))
+			std::clog << "> Local IP address(es): ";
+			for(uint8_t** addr = (uint8_t**)host->h_addr_list; addr[0]; addr++)
 			{
-				std::stringstream s;
-				for(uint8_t** addr = (uint8_t**)host->h_addr_list; addr[0] != NULL; addr++)
-				{
-					uint32_t resolved = swap_uint32(*(uint32_t*)(*addr));
-					if(m_ip.to_v4().to_ulong() == resolved)
-						continue;
+				std::clog << (int32_t)(addr[0][0]) << "." << (int32_t)(addr[0][1]) << "."
+					<< (int32_t)(addr[0][2]) << "." << (int32_t)(addr[0][3]) << "\t";
 
-					ipList.push_back(boost::asio::ip::address_v4(resolved));
-					serverIps.push_front(std::make_pair(*(uint32_t*)(*addr), 0x0000FFFF));
+				ipList.push_back(boost::asio::ip::address_v4(*(uint32_t*)(*addr)));
+				if(ipList.back() == m_ip)
+					owned = true; // fuck yeah
 
-					s << (int32_t)(addr[0][0]) << "." << (int32_t)(addr[0][1]) << "."
-						<< (int32_t)(addr[0][2]) << "." << (int32_t)(addr[0][3]) << "\t";
-				}
-
-				if(s.str().size())
-					std::clog << "> Local IP address(es): " << s.str() << std::endl;
+				serverIps.push_front(std::make_pair(*(uint32_t*)(*addr), 0x0000FFFF));
 			}
-		}
 
-		serverIps.push_front(std::make_pair(LOCALHOST, 0xFFFFFFFF));
-		if(m_ip.to_v4().to_ulong() != LOCALHOST)
-			ipList.push_back(boost::asio::ip::address_v4(LOCALHOST));
+			std::clog << std::endl;
+		}
 	}
-	else if(ipList.size() < 2)
-		startupErrorMessage("Unable to bind any IP address! You may want to disable \"bindOnlyGlobalAddress\" setting in config.lua");
+
+	serverIps.push_front(std::make_pair(LOCALHOST, 0xFFFFFFFF)); // we gotta check it!
+	if(ip.size() && !owned)
+	{
+		ipList.clear();
+		ipList.push_back(boost::asio::ip::address_v4(INADDR_ANY));
+	}
 
 	services->add<ProtocolStatus>(g_config.getNumber(ConfigManager::STATUS_PORT), ipList);
 	services->add<ProtocolManager>(g_config.getNumber(ConfigManager::MANAGER_PORT), ipList);
@@ -776,7 +756,7 @@ void otserv(StringVec, ServiceManager* services)
 		std::clog << (*it) << "\t";
 
 	std::clog << std::endl << ">> Everything smells good, server is starting up..." << std::endl;
-	g_game.start(services);
 	g_game.setGameState(g_config.getBool(ConfigManager::START_CLOSED) ? GAMESTATE_CLOSED : GAMESTATE_NORMAL);
+	g_game.start(services);
 	g_loaderSignal.notify_all();
 }

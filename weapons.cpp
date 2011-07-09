@@ -309,41 +309,23 @@ int32_t Weapon::playerWeaponCheck(Player* player, Creature* target) const
 	if(!vocWeaponMap.empty() && vocWeaponMap.find(player->getVocationId()) == vocWeaponMap.end())
 		return 0;
 
-	int32_t modifier = 100;
+	int32_t damageModifier = 100;
 	if(player->getLevel() < getReqLevel())
-	{
-		if(!isWieldedUnproperly())
-			return 0;
-
-		double penalty = (getReqLevel() - player->getLevel()) * 0.02;
-		if(penalty > 0.5)
-			penalty = 0.5;
-
-		modifier -= (int32_t)(modifier * penalty);
-	}
+		damageModifier = (isWieldedUnproperly() ? damageModifier / 2 : 0);
 
 	if(player->getMagicLevel() < getReqMagLv())
-	{
-		if(isWieldedUnproperly())
-			return 0;
+		damageModifier = (isWieldedUnproperly() ? damageModifier / 2 : 0);
 
-		double penalty = (getReqMagLv() - player->getMagicLevel()) * 0.02;
-		if(penalty > 0.5)
-			penalty = 0.5;
-
-		modifier -= (int32_t)(modifier * penalty);
-	}
-
-	return modifier;
+	return damageModifier;
 }
 
 bool Weapon::useWeapon(Player* player, Item* item, Creature* target) const
 {
-	int32_t modifier = playerWeaponCheck(player, target);
-	if(!modifier)
+	int32_t damageModifier = playerWeaponCheck(player, target);
+	if(!damageModifier)
 		return false;
 
-	return internalUseWeapon(player, item, target, modifier);
+	return internalUseWeapon(player, item, target, damageModifier);
 }
 
 bool Weapon::useFist(Player* player, Creature* target)
@@ -382,7 +364,7 @@ bool Weapon::useFist(Player* player, Creature* target)
 	return true;
 }
 
-bool Weapon::internalUseWeapon(Player* player, Item* item, Creature* target, int32_t modifier) const
+bool Weapon::internalUseWeapon(Player* player, Item* item, Creature* target, int32_t damageModifier) const
 {
 	if(isScripted())
 	{
@@ -393,7 +375,7 @@ bool Weapon::internalUseWeapon(Player* player, Item* item, Creature* target, int
 	}
 	else
 	{
-		int32_t damage = (getWeaponDamage(player, target, item) * modifier) / 100;
+		int32_t damage = (getWeaponDamage(player, target, item) * damageModifier) / 100;
 		Combat::doCombatHealth(player, target, damage, damage, params);
 	}
 
@@ -427,7 +409,7 @@ void Weapon::onUsedWeapon(Player* player, Item* item, Tile*) const
 	if(!player->hasFlag(PlayerFlag_NotGainSkill))
 	{
 		skills_t skillType;
-		uint64_t skillPoint = 0;
+		uint32_t skillPoint = 0;
 		if(getSkillType(player, item, skillType, skillPoint))
 			player->addSkillAdvance(skillType, skillPoint);
 	}
@@ -572,20 +554,21 @@ bool WeaponMelee::useWeapon(Player* player, Item* item, Creature* target) const
 }
 
 bool WeaponMelee::getSkillType(const Player* player, const Item* item,
-	skills_t& skill, uint64_t& skillPoint) const
+	skills_t& skill, uint32_t& skillpoint) const
 {
-	skillPoint = 0;
+	skillpoint = 0;
 	if(player->getAddAttackSkill())
 	{
 		switch(player->getLastAttackBlockType())
 		{
 			case BLOCK_ARMOR:
 			case BLOCK_NONE:
-				skillPoint = 1;
+				skillpoint = 1;
 				break;
 
 			case BLOCK_DEFENSE:
 			default:
+				skillpoint = 0;
 				break;
 		}
 	}
@@ -715,8 +698,8 @@ int32_t WeaponDistance::playerWeaponCheck(Player* player, Creature* target) cons
 
 bool WeaponDistance::useWeapon(Player* player, Item* item, Creature* target) const
 {
-	int32_t modifier = playerWeaponCheck(player, target);
-	if(!modifier)
+	int32_t damageModifier = playerWeaponCheck(player, target);
+	if(!damageModifier)
 		return false;
 
 	int32_t chance = hitChance;
@@ -866,7 +849,7 @@ bool WeaponDistance::useWeapon(Player* player, Item* item, Creature* target) con
 		Weapon::internalUseWeapon(player, item, destTile);
 	}
 	else
-		Weapon::internalUseWeapon(player, item, target, modifier);
+		Weapon::internalUseWeapon(player, item, target, damageModifier);
 
 	return true;
 }
@@ -922,28 +905,29 @@ int32_t WeaponDistance::getWeaponDamage(const Player* player, const Creature* ta
 }
 
 bool WeaponDistance::getSkillType(const Player* player, const Item*,
-	skills_t& skill, uint64_t& skillPoint) const
+	skills_t& skill, uint32_t& skillpoint) const
 {
 	skill = SKILL_DIST;
-	skillPoint = 0;
+	skillpoint = 0;
+
 	if(player->getAddAttackSkill())
 	{
 		switch(player->getLastAttackBlockType())
 		{
 			case BLOCK_NONE:
-				skillPoint = 2;
+				skillpoint = 2;
 				break;
 
 			case BLOCK_ARMOR:
-				skillPoint = 1;
+				skillpoint = 1;
 				break;
 
 			case BLOCK_DEFENSE:
 			default:
+				skillpoint = 0;
 				break;
 		}
 	}
-
 	return true;
 }
 

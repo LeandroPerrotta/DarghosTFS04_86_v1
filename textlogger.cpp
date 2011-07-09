@@ -44,7 +44,7 @@ void Logger::open()
 
 void Logger::close()
 {
-	m_loaded = false;
+    m_loaded = false;
 	for(uint8_t i = 0; i <= LOGFILE_LAST; i++)
 	{
 		if(m_files[i])
@@ -84,8 +84,8 @@ void Logger::internal(FILE* file, std::string output, bool newLine)
 
 void Logger::log(const char* func, LogType_t type, std::string message, std::string channel/* = ""*/, bool newLine/* = true*/)
 {
-	if(!m_loaded)
-		return;
+    if(!m_loaded)
+        return;
 
 	std::stringstream ss;
 	ss << "[" << formatDate() << "]" << " (";
@@ -149,8 +149,9 @@ std::streambuf::int_type OutputHandler::overflow(std::streambuf::int_type c/* = 
 
 		s.write(m_cache.c_str(), m_cache.size());
 		Logger::getInstance()->iFile(LOGFILE_OUTPUT, s.str(), false);
-		/*if(g_game.isRunning())
-			Manager::getInstance()->output(m_cache);*/
+
+		if(g_game.isRunning())
+            Manager::getInstance()->output(m_cache);
 	}
 
 	m_cache.clear();

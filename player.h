@@ -159,7 +159,7 @@ class Player : public Creature, public Cylinder
 
 		void manageAccount(const std::string& text);
 		bool isAccountManager() const {return (accountManager != MANAGER_NONE);}
-		void kick(bool displayEffect, bool forceLogout);
+		void kickPlayer(bool displayEffect, bool forceLogout);
 
 		void setGUID(uint32_t _guid) {guid = _guid;}
 		uint32_t getGUID() const {return guid;}
@@ -176,16 +176,8 @@ class Player : public Creature, public Cylinder
 
 		static uint64_t getExpForLevel(uint32_t lv)
 		{
-			static std::map<uint32_t, uint64_t> cache;
 			lv--;
-
-			std::map<uint32_t, uint64_t>::iterator it = cache.find(lv);
-			if(it != cache.end())
-				return it->second;
-
-			uint64_t exp = ((50ULL * lv * lv * lv) - (150ULL * lv * lv) + (400ULL * lv)) / 3ULL;
-			cache[lv] = exp;
-			return exp;
+			return ((50ULL * lv * lv * lv) - (150ULL * lv * lv) + (400ULL * lv)) / 3ULL;
 		}
 
 		uint32_t getPromotionLevel() const {return promotionLevel;}
@@ -254,8 +246,8 @@ class Player : public Creature, public Cylinder
 		void addContainer(uint32_t cid, Container* container);
 		void closeContainer(uint32_t cid);
 
-		virtual bool setStorage(const std::string& key, const std::string& value);
-		virtual void eraseStorage(const std::string& key);
+		virtual bool setStorage(const uint32_t key, const std::string& value);
+		virtual void eraseStorage(const uint32_t key);
 
 		void generateReservedStorage();
 		bool transferMoneyTo(const std::string& name, uint64_t amount);
@@ -475,7 +467,7 @@ class Player : public Creature, public Cylinder
 		void addExperience(uint64_t exp);
 		void removeExperience(uint64_t exp, bool updateStats = true);
 		void addManaSpent(uint64_t amount, bool useMultiplier = true);
-		void addSkillAdvance(skills_t skill, uint64_t count, bool useMultiplier = true);
+		void addSkillAdvance(skills_t skill, uint32_t count, bool useMultiplier = true);
 		bool addUnjustifiedKill(const Player* attacked, bool countNow);
 
 		virtual int32_t getArmor() const;
@@ -749,6 +741,12 @@ class Player : public Creature, public Cylinder
 		bool getAfkState();
 		#endif
 
+		#ifdef __DARGHOS_CUSTOM__
+		void setDoubleDamage();
+		void removeDoubleDamage();
+		bool isDoubleDamage();
+		#endif
+
 	protected:
 		void checkTradeState(const Item* item);
 
@@ -824,7 +822,7 @@ class Player : public Creature, public Cylinder
 		virtual uint64_t getLostExperience() const;
 
 		virtual void getPathSearchParams(const Creature* creature, FindPathParams& fpp) const;
-		static uint16_t getPercentLevel(uint64_t count, uint64_t nextLevelCount);
+		static uint32_t getPercentLevel(uint64_t count, uint64_t nextLevelCount);
 
 		bool isPromoted(uint32_t pLevel = 1) const {return promotionLevel >= pLevel;}
 		bool hasCapacity(const Item* item, uint32_t count) const;
@@ -841,6 +839,10 @@ class Player : public Creature, public Cylinder
 
         #ifdef __REMOVE_AFK_FROM_STATUS__
         bool isAfk;
+        #endif
+
+        #ifdef __DARGHOS_CUSTOM__
+        bool doubleDamage;
         #endif
 
 		OperatingSystem_t operatingSystem;
@@ -884,10 +886,12 @@ class Player : public Creature, public Cylinder
 		uint32_t damageImmunities;
 		uint32_t conditionImmunities;
 		uint32_t conditionSuppressions;
+		uint32_t condition; //?
 		uint32_t nextStepEvent;
 		uint32_t actionTaskEvent;
 		uint32_t walkTaskEvent;
 		uint32_t lossPercent[LOSS_LAST + 1];
+		uint32_t skills[SKILL_LAST + 1][3];
 		uint32_t guid;
 		uint32_t editListId;
 		uint32_t windowTextId;
@@ -907,7 +911,6 @@ class Player : public Creature, public Cylinder
 		uint64_t experience;
 		uint64_t manaSpent;
 		uint64_t lastAttack;
-		uint64_t skills[SKILL_LAST + 1][3];
 
 		double inventoryWeight;
 		double capacity;

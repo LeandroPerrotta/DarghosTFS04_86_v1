@@ -19,31 +19,21 @@
 #define __LUASCRIPT__
 #include "otsystem.h"
 #ifdef __LUAJIT__
-    #include <luajit-2.0/lua.hpp>
+#include <lua.hpp>
 
-    extern "C"
-    {
-        #include <luajit-2.0/lauxlib.h>
-        #include <luajit-2.0/lualib.h>
-        #include <luajit-2.0/luajit.h>
-    }
-    #elif defined(__ALT_LUA_PATH__)
-
-    #include "lua5.1/lua.hpp"
-
-    extern "C"
-    {
-        #include "lua5.1/lauxlib.h"
-        #include "lua5.1/lualib.h"
-    }
+extern "C"
+{
+	#include <lauxlib.h>
+	#include <lualib.h>
+}
 #else
-    #include "lua.hpp"
 
-    extern "C"
-    {
-        #include "lauxlib.h"
-        #include "lualib.h"
-    }
+extern "C"
+{
+	#include "lua.h"
+	#include "lualib.h"
+	#include "lauxlib.h"
+}
 #endif
 
 #include "database.h"
@@ -99,21 +89,21 @@ class ScriptEnviroment
 		static bool saveGameState();
 		static bool loadGameState();
 
-		bool getStorage(const std::string& key, std::string& value) const;
-		void setStorage(const std::string& key, const std::string& value) {m_storageMap[key] = value;}
-		void eraseStorage(const std::string& key) {m_storageMap.erase(key);}
+		bool getStorage(const uint32_t key, std::string& value) const;
+		void setStorage(const uint32_t key, const std::string& value) {m_storageMap[key] = value;}
+		void eraseStorage(const uint32_t key) {m_storageMap.erase(key);}
 
-		int32_t getScriptId() const {return m_scriptId;};
+		int32_t getScriptId() {return m_scriptId;}
 		void setScriptId(int32_t scriptId, LuaInterface* interface)
 			{m_scriptId = scriptId; m_interface = interface;}
 
-		int32_t getCallbackId() const {return m_callbackId;};
+		int32_t getCallbackId() {return m_callbackId;}
 		bool setCallbackId(int32_t callbackId, LuaInterface* interface);
 
-		std::string getEvent() const {return m_event;};
+		std::string getEvent() {return m_event;}
 		void setEvent(const std::string& desc) {m_event = desc;}
 
-		Position getRealPos() const {return m_realPos;};
+		Position getRealPos() {return m_realPos;}
 		void setRealPos(const Position& realPos) {m_realPos = realPos;}
 
 		Npc* getNpc() const {return m_curNpc;}
@@ -175,7 +165,7 @@ class ScriptEnviroment
 		typedef std::list<Item*> ItemList;
 		typedef std::map<ScriptEnviroment*, ItemList> TempItemListMap;
 
-		typedef std::map<std::string, std::string> StorageMap;
+		typedef std::map<uint32_t, std::string> StorageMap;
 		typedef std::map<uint32_t, CombatArea*> AreaMap;
 		typedef std::map<uint32_t, Combat*> CombatMap;
 		typedef std::map<uint32_t, Condition*> ConditionMap;
@@ -261,9 +251,9 @@ class LuaInterface
 
 		bool loadBuffer(const std::string& text, Npc* npc = NULL);
 		bool loadFile(const std::string& file, Npc* npc = NULL);
-		bool loadDirectory(const std::string& dir, Npc* npc = NULL, bool recursively = false);
+		bool loadDirectory(const std::string& dir, Npc* npc = NULL);
 
-		std::string getName() const {return m_interfaceName;};
+		std::string getName() {return m_interfaceName;}
 		std::string getScript(int32_t scriptId);
 		std::string getLastError() const {return m_lastError;}
 
@@ -365,7 +355,6 @@ class LuaInterface
 		static int32_t luaDoRemoveConditions(lua_State* L);
 		static int32_t luaDoRemoveCreature(lua_State* L);
 		static int32_t luaDoMoveCreature(lua_State* L);
-		static int32_t luaDoSteerCreature(lua_State* L);
 		static int32_t luaDoCreatureSay(lua_State* L);
 		static int32_t luaDoPlayerAddSkillTry(lua_State* L);
 		static int32_t luaDoCreatureAddHealth(lua_State* L);
@@ -383,7 +372,6 @@ class LuaInterface
 		static int32_t luaDoPlayerSendTextMessage(lua_State* L);
 		static int32_t luaDoPlayerSendChannelMessage(lua_State* L);
 		static int32_t luaDoPlayerSendToChannel(lua_State* L);
-		static int32_t luaDoPlayerOpenChannel(lua_State* L);
 		static int32_t luaDoPlayerAddMoney(lua_State* L);
 		static int32_t luaDoPlayerRemoveMoney(lua_State* L);
 		static int32_t luaDoPlayerTransferMoneyTo(lua_State* L);
@@ -579,7 +567,6 @@ class LuaInterface
 		static int32_t luaIsMovable(lua_State* L);
 		static int32_t luaGetContainerSize(lua_State* L);
 		static int32_t luaGetContainerCap(lua_State* L);
-		static int32_t luaGetContainerItems(lua_State* L);
 		static int32_t luaGetContainerItem(lua_State* L);
 		static int32_t luaDoAddContainerItem(lua_State* L);
 		static int32_t luaCreateCombatObject(lua_State* L);
@@ -662,9 +649,6 @@ class LuaInterface
 		static int32_t luaGetItemAttribute(lua_State* L);
 		static int32_t luaDoItemSetAttribute(lua_State* L);
 		static int32_t luaDoItemEraseAttribute(lua_State* L);
-		static int32_t luaGetVocationList(lua_State* L);
-		static int32_t luaGetGroupList(lua_State* L);
-		static int32_t luaGetChannelList(lua_State* L);
 		static int32_t luaGetTalkActionList(lua_State* L);
 		static int32_t luaGetExperienceStageList(lua_State* L);
 		static int32_t luaGetTownList(lua_State* L);
@@ -732,6 +716,11 @@ class LuaInterface
 		static int32_t luaDoPlayerGetAfkState(lua_State* L);
 		#endif
 
+		#ifdef __DARGHOS_CUSTOM__
+		static int32_t luaDoPlayerSetDoubleDamage(lua_State* L);
+		static int32_t luaDoPlayerRemoveDoubleDamage(lua_State* L);
+		#endif
+
 		lua_State* m_luaState;
 		bool m_errors;
 		std::string m_lastError;
@@ -750,7 +739,7 @@ class LuaInterface
 			PlayerInfoVocation,
 			PlayerInfoTown,
 			PlayerInfoPromotionLevel,
-			PlayerInfoMoney,
+			PlayerInfoSoul,
 			PlayerInfoFreeCap,
 			PlayerInfoGuildId,
 			PlayerInfoGuildName,

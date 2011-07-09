@@ -322,7 +322,7 @@ ReturnValue Container::__queryMaxCount(int32_t index, const Thing* thing, uint32
 	if(item->isStackable())
 	{
 		uint32_t n = 0;
-		if(index == INDEX_WHEREEVER)
+		if(index != INDEX_WHEREEVER)
 		{
 			//Iterate through every item and check how much free stackable slots there is.
 			uint32_t slotIndex = 0;
@@ -378,14 +378,14 @@ ReturnValue Container::__queryRemove(const Thing* thing, uint32_t count, uint32_
 	if(count == 0 || (item->isStackable() && count > item->getItemCount()))
 		return RET_NOTPOSSIBLE;
 
-	if(!item->isMovable() && !hasBitSet(FLAG_IGNORENOTMOVABLE, flags))
-		return RET_NOTMOVABLE;
+	if(!item->isMoveable() && !hasBitSet(FLAG_IGNORENOTMOVEABLE, flags))
+		return RET_NOTMOVEABLE;
 
 	return RET_NOERROR;
 }
 
 Cylinder* Container::__queryDestination(int32_t& index, const Thing* thing, Item** destItem,
-	uint32_t& flags)
+	uint32_t&)
 {
 	if(index == 254 /*move up*/)
 	{
@@ -410,8 +410,8 @@ Cylinder* Container::__queryDestination(int32_t& index, const Thing* thing, Item
 		if you have a container, maximize it to show all 20 slots
 		then you open a bag that is inside the container you will have a bag with 8 slots
 		and a "grey" area where the other 12 slots where from the container
-		if you drop the item on that grey area the client calculates the slot position
-		as if the bag has 20 slots
+		if you drop the item on that grey area
+		the client calculates the slot position as if the bag has 20 slots
 		*/
 
 		index = INDEX_WHEREEVER;
@@ -422,18 +422,22 @@ Cylinder* Container::__queryDestination(int32_t& index, const Thing* thing, Item
 	if(!item)
 		return this;
 
-	if(!((flags & FLAG_IGNOREAUTOSTACK) == FLAG_IGNOREAUTOSTACK)
-		&& item->isStackable() && item->getParent() != this)
+	if(item->isStackable())
 	{
-		//try to find a suitable item to stack with
-		uint32_t n = itemlist.size();
-		for(ItemList::reverse_iterator cit = itemlist.rbegin(); cit != itemlist.rend(); ++cit, --n)
+		if(item->getParent() != this)
 		{
-			if((*cit)->getID() == item->getID() && (*cit)->getItemCount() < 100)
+			//try find a suitable item to stack with
+			uint32_t n = 0;
+			for(ItemList::iterator cit = itemlist.begin(); cit != itemlist.end(); ++cit)
 			{
-				*destItem = (*cit);
-				index = n;
-				return this;
+				if((*cit) != item && (*cit)->getID() == item->getID() && (*cit)->getItemCount() < 100)
+				{
+					*destItem = (*cit);
+					index = n;
+					return this;
+				}
+
+				++n;
 			}
 		}
 	}

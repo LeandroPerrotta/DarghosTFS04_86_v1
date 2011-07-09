@@ -57,7 +57,7 @@ class Logger
 		void log(const char* func, LogType_t type, std::string message, std::string channel = "", bool newLine = true);
 
 	private:
-		Logger() {m_loaded = false;}
+		Logger() {}
 		void internal(FILE* file, std::string output, bool newLine);
 
 		FILE* m_files[LOGFILE_LAST + 1];

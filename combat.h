@@ -350,8 +350,7 @@ class MagicField : public Item
 
 		virtual bool isBlocking(const Creature* creature) const;
 
-		bool isReplacable() const {return Item::items[getID()].replacable;}
-		bool isUnstepable() const {return id == ITEM_MAGICWALL_SAFE || id == ITEM_WILDGROWTH_SAFE;}
+		bool isReplacable() const {return Item::items[getID()].replaceable;}
 		CombatType_t getCombatType() const
 		{
 			const ItemType& it = items[getID()];

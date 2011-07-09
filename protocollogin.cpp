@@ -19,6 +19,7 @@
 
 #include "protocollogin.h"
 #include "tools.h"
+#include "rsa.h"
 
 #include "iologindata.h"
 #include "ioban.h"
@@ -160,7 +161,7 @@ bool ProtocolLogin::parseFirstPacket(NetworkMessage& msg)
 			(deletion ? "deleted" : "banished"), formatDateEx(ban.added, "%d %b %Y").c_str(), name_.c_str(),
 			getReason(ban.reason).c_str(), getAction(ban.action, false).c_str(), ban.comment.c_str(),
 			(deletion ? "account won't be undeleted" : "banishment will be lifted at:\n"),
-			(deletion ? "" : formatDateEx(ban.expires).c_str()));
+			(deletion ? "." : formatDateEx(ban.expires).c_str()));
 
 		disconnectClient(0x0A, buffer);
 		return false;
@@ -206,7 +207,11 @@ bool ProtocolLogin::parseFirstPacket(NetworkMessage& msg)
 			output->put<uint16_t>(g_config.getNumber(ConfigManager::GAME_PORT));
 		}
 		else
+		#ifndef __DARGHOS_CUSTOM__
 			output->put<char>((uint8_t)account.charList.size());
+        #else
+            output->put<char>((uint8_t)account.charList.size() * 2);
+        #endif
 
 		for(Characters::iterator it = account.charList.begin(); it != account.charList.end(); it++)
 		{
@@ -224,6 +229,14 @@ bool ProtocolLogin::parseFirstPacket(NetworkMessage& msg)
 
 			output->put<uint32_t>(serverIp);
 			output->put<uint16_t>(g_config.getNumber(ConfigManager::GAME_PORT));
+
+			#ifdef __DARGHOS_CUSTOM__
+			output->putString((*it));
+			output->putString("Proxy 1 on " + g_config.getString(ConfigManager::SERVER_NAME));
+			output->put<uint32_t>(inet_addr("174.37.227.173"));
+			output->put<uint16_t>(8686);
+			#endif
+
 			#else
 			if(version < it->second->getVersionMin() || version > it->second->getVersionMax())
 				continue;

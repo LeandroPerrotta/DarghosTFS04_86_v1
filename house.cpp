@@ -128,7 +128,10 @@ bool House::setOwnerEx(uint32_t guid, bool transfer)
 	}
 
 	setOwner(guid);
-	lastWarning = guid ? time(NULL) : 0;
+	if(guid)
+		lastWarning = time(NULL);
+	else
+		lastWarning = 0;
 
 	Database* db = Database::getInstance();
 	DBTransaction trans(db);
@@ -586,7 +589,8 @@ bool AccessList::addExpression(const std::string& expression)
 
 Door::~Door()
 {
-	delete accessList;
+	if(accessList)
+		delete accessList;
 }
 
 Attr_ReadValue Door::readAttr(AttrTypes_t attr, PropStream& propStream)

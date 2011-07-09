@@ -541,8 +541,13 @@ bool Combat::CombatHealthFunc(Creature* caster, Creature* target, const CombatPa
 	if(g_game.combatBlockHit(params.combatType, caster, target, change, params.blockedByShield, params.blockedByArmor))
 		return false;
 
+    #ifdef __DARGHOS_CUSTOM__
+    if(change < 0 && caster && caster->getPlayer() && target->getPlayer() && target->getPlayer()->getSkull() != SKULL_BLACK && !target->getPlayer()->isDoubleDamage())
+        change = change / 2;
+    #else
 	if(change < 0 && caster && caster->getPlayer() && target->getPlayer() && target->getPlayer()->getSkull() != SKULL_BLACK)
-		change = change / 2;
+        change = change / 2;
+	#endif
 
 	if(!g_game.combatChangeHealth(params.combatType, caster, target, change, params.effects.hit, params.effects.color))
 		return false;
@@ -562,8 +567,13 @@ bool Combat::CombatManaFunc(Creature* caster, Creature* target, const CombatPara
 			change = random_range(var->minChange, var->maxChange, DISTRO_NORMAL);
 	}
 
+    #ifdef __DARGHOS_CUSTOM__
+    if(change < 0 && caster && caster->getPlayer() && target->getPlayer() && target->getPlayer()->getSkull() != SKULL_BLACK && !target->getPlayer()->isDoubleDamage())
+        change = change / 2;
+    #else
 	if(change < 0 && caster && caster->getPlayer() && target->getPlayer() && target->getPlayer()->getSkull() != SKULL_BLACK)
-		change = change / 2;
+        change = change / 2;
+	#endif
 
 	if(!g_game.combatChangeMana(caster, target, change))
 		return false;
@@ -1376,7 +1386,7 @@ void CombatArea::setupExtArea(const std::list<uint32_t>& list, uint32_t rows)
 
 bool MagicField::isBlocking(const Creature* creature) const
 {
-	if(!isUnstepable())
+	if(id != ITEM_MAGICWALL_SAFE && id != ITEM_WILDGROWTH_SAFE)
 		return Item::isBlocking(creature);
 
 	if(!creature || !creature->getPlayer())
@@ -1396,7 +1406,7 @@ bool MagicField::isBlocking(const Creature* creature) const
 
 void MagicField::onStepInField(Creature* creature, bool purposeful/* = true*/)
 {
-	if(isUnstepable() || isBlocking(creature))
+	if(id == ITEM_MAGICWALL_SAFE || id == ITEM_WILDGROWTH_SAFE || isBlocking(creature))
 	{
 		if(!creature->isGhost())
 			g_game.internalRemoveItem(creature, this, 1);

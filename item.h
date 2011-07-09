@@ -51,7 +51,7 @@ enum ITEMPROPERTY
 	BLOCKPATH,
 	ISVERTICAL,
 	ISHORIZONTAL,
-	MOVABLE,
+	MOVEABLE,
 	IMMOVABLEBLOCKSOLID,
 	IMMOVABLEBLOCKPATH,
 	IMMOVABLENOFIELDBLOCKPATH,
@@ -266,7 +266,7 @@ class Item : virtual public Thing, public ItemAttributes
 		virtual double getWeight() const;
 		void getLight(LightInfo& lightInfo);
 
-		int32_t getMaxWriteLength() const {return items[id].maxTextLength;}
+		int32_t getMaxWriteLength() const {return items[id].maxTextLen;}
 		int32_t getWorth() const {return getItemCount() * items[id].worth;}
 		virtual int32_t getThrowRange() const {return (isPickupable() ? 15 : 2);}
 
@@ -282,7 +282,7 @@ class Item : virtual public Thing, public ItemAttributes
 		virtual bool canTransform() const {return true;}
 		bool canWriteText() const {return items[id].canWriteText;}
 
-		virtual bool isPushable() const {return isMovable();}
+		virtual bool isPushable() const {return isMoveable();}
 		virtual bool isBlocking(const Creature*) const {return items[id].blockSolid;}
 		bool isGroundTile() const {return items[id].isGroundTile();}
 		bool isContainer() const {return items[id].isContainer();}
@@ -299,9 +299,9 @@ class Item : virtual public Thing, public ItemAttributes
 		bool isRune() const {return items[id].isRune();}
 		bool isStackable() const {return items[id].stackable;}
 		bool isAlwaysOnTop() const {return items[id].alwaysOnTop;}
-		bool isMovable() const {return items[id].movable;}
+		bool isMoveable() const {return items[id].moveable;}
 		bool isPickupable() const {return items[id].pickupable;}
-		bool isUsable() const {return items[id].usable;}
+		bool isUseable() const {return items[id].useable;}
 		bool isHangable() const {return items[id].isHangable;}
 		bool isRoteable() const {const ItemType& it = items[id]; return it.rotable && it.rotateTo;}
 		bool isWeapon() const {return (items[id].weaponType != WEAPON_NONE);}
@@ -490,7 +490,7 @@ inline std::string Item::getText() const
 	if(v)
 		return *v;
 
-	return items[id].text;
+	return "";
 }
 
 inline time_t Item::getDate() const
@@ -499,7 +499,7 @@ inline time_t Item::getDate() const
 	if(v)
 		return (time_t)*v;
 
-	return items[id].date;
+	return 0;
 }
 
 inline std::string Item::getWriter() const
@@ -508,7 +508,7 @@ inline std::string Item::getWriter() const
 	if(v)
 		return *v;
 
-	return items[id].writer;
+	return "";
 }
 
 inline int32_t Item::getActionId() const

@@ -137,9 +137,6 @@ typedef std::map<int32_t, float> StageList;
 #define EVENT_DECAYINTERVAL 1000
 #define EVENT_DECAYBUCKETS 16
 #define STATE_DELAY 1000
-#ifdef __WAR_SYSTEM__
-#define EVENT_WARSINTERVAL 900000
-#endif
 
 /**
   * Main Game class.
@@ -175,7 +172,7 @@ class Game
 		  * \param width width of the map
 		  * \param height height of the map
 		  */
-		inline void getMapDimensions(uint32_t& width, uint32_t& height) const 
+		inline void getMapDimensions(uint32_t& width, uint32_t& height)
 		{
 			width = map->mapWidth;
 			height = map->mapHeight;
@@ -335,7 +332,7 @@ class Game
 		uint32_t getNpcsOnline() {return (uint32_t)Npc::autoList.size();}
 		uint32_t getCreaturesOnline() {return (uint32_t)autoList.size();}
 
-		uint32_t getPlayersRecord() const {return playersRecord;}
+		uint32_t getPlayersRecord() {return playersRecord;}
 		void getWorldLightInfo(LightInfo& lightInfo);
 
 		void getSpectators(SpectatorVec& list, const Position& centerPos, bool checkforduplicate = false, bool multifloor = false,
@@ -356,8 +353,6 @@ class Game
 			uint32_t flags = 0, bool test = false);
 		ReturnValue internalAddItem(Creature* actor, Cylinder* toCylinder, Item* item, int32_t index,
 			uint32_t flags, bool test, uint32_t& remainderCount);
-		ReturnValue internalAddItem(Creature* actor, Cylinder* toCylinder, Item* item, int32_t index,
-			uint32_t flags, bool test, uint32_t& remainderCount, Item** stackItem);
 		ReturnValue internalRemoveItem(Creature* actor, Item* item, int32_t count = -1,  bool test = false, uint32_t flags = 0);
 
 		ReturnValue internalPlayerAddItem(Creature* actor, Player* player, Item* item,
@@ -458,7 +453,7 @@ class Game
 		bool playerMoveThing(uint32_t playerId, const Position& fromPos, uint16_t spriteId,
 			int16_t fromStackpos, const Position& toPos, uint8_t count);
 		bool playerMoveCreature(uint32_t playerId, uint32_t movingCreatureId,
-			const Position& movingCreatureOrigPos, const Position& toPos, bool delay);
+			const Position& movingCreatureOrigPos, const Position& toPos);
 		bool playerMoveItem(uint32_t playerId, const Position& fromPos,
 			uint16_t spriteId, int16_t fromStackpos, const Position& toPos, uint8_t count);
 		bool playerMove(uint32_t playerId, Direction dir);
@@ -548,8 +543,6 @@ class Game
 			uint32_t minTargetDist, uint32_t maxTargetDist, bool fullPathSearch = true,
 			bool clearSight = true, int32_t maxSearchDist = -1);
 
-		bool steerCreature(Creature* creature, const Position& position);
-
 		Position getClosestFreeTile(Creature* creature, Position pos, bool extended = false, bool ignoreHouse = true);
 		std::string getSearchString(const Position& fromPos, const Position& toPos, bool fromIsCreature = false, bool toIsCreature = false);
 
@@ -585,9 +578,6 @@ class Game
 		void checkCreatureAttack(uint32_t creatureId);
 		void checkCreatures();
 		void checkLight();
-#ifdef __WAR_SYSTEM__
-		void checkWars();
-#endif
 
 		bool combatBlockHit(CombatType_t combatType, Creature* attacker, Creature* target,
 			int32_t& healthChange, bool checkDefense, bool checkArmor);
@@ -626,8 +616,8 @@ class Game
 		Map* getMap() {return map;}
 		const Map* getMap() const {return map;}
 
-		bool isRunning() const {return services && services->isRunning();}
-		int32_t getLightHour() const {return lightHour;}
+        bool isRunning() const {return services && services->isRunning();}
+		int32_t getLightHour() {return lightHour;}
 		void startDecay(Item* item);
 
 	protected:
@@ -680,9 +670,6 @@ class Game
 		int32_t lastMotdId;
 		uint32_t playersRecord;
 		uint32_t checkLightEvent, checkCreatureEvent, checkDecayEvent, saveEvent;
-#ifdef __WAR_SYSTEM__
-		uint32_t checkWarsEvent;
-#endif
 		bool globalSaveMessage[2];
 
 		RefreshTiles refreshTiles;

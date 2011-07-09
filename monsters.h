@@ -87,7 +87,7 @@ class MonsterType
 		void reset();
 
 		void dropLoot(Container* corpse);
-		ItemList createLoot(const LootBlock& lootBlock);
+		Item* createLoot(const LootBlock& lootBlock);
 		bool createChildLoot(Container* parent, const LootBlock& lootBlock);
 
 		bool isSummonable, isIllusionable, isConvinceable, isAttackable, isHostile, isLureable,

@@ -78,17 +78,8 @@ ReturnValue Spells::onPlayerSay(Player* player, const std::string& words)
 		type = SPEAK_MONSTER_SAY;
 
 	if(!g_config.getBool(ConfigManager::SPELL_NAME_INSTEAD_WORDS))
-	{
-		if(g_config.getBool(ConfigManager::UNIFIED_SPELLS))
-		{
-			reWords = instantSpell->getWords();
-			if(instantSpell->getHasParam())
-				reWords += " \"" + param + "\"";
-		}
-
 		return g_game.internalCreatureSay(player, type, reWords, player->isGhost()) ?
 			RET_NOERROR : RET_NOTPOSSIBLE;
-	}
 
 	std::string ret = instantSpell->getName();
 	if(param.length())
@@ -941,15 +932,19 @@ bool Spell::checkRuneSpell(Player* player, const Position& toPos)
 	return true;
 }
 
-void Spell::postSpell(Player* player) const
+void Spell::postSpell(Player* player, bool finishedCast /*= true*/, bool payCost /*= true*/) const
 {
-	if(!player->hasFlag(PlayerFlag_HasNoExhaustion) && exhaustion > 0)
-		player->addExhaust(exhaustion, isAggressive ? EXHAUST_COMBAT : EXHAUST_HEALING);
+	if(finishedCast)
+	{
+		if(!player->hasFlag(PlayerFlag_HasNoExhaustion) && exhaustion > 0)
+			player->addExhaust(exhaustion, isAggressive ? EXHAUST_COMBAT : EXHAUST_HEALING);
 
-	if(isAggressive && !player->hasFlag(PlayerFlag_NotGainInFight))
-		player->addInFightTicks(false);
+		if(isAggressive && !player->hasFlag(PlayerFlag_NotGainInFight))
+			player->addInFightTicks(false);
+	}
 
-	postSpell(player, (uint32_t)getManaCost(player), (uint32_t)getSoulCost());
+	if(payCost)
+		postSpell(player, (uint32_t)getManaCost(player), (uint32_t)getSoulCost());
 }
 
 void Spell::postSpell(Player* player, uint32_t manaCost, uint32_t soulCost) const
@@ -1520,7 +1515,7 @@ bool ConjureSpell::loadFunction(const std::string& functionName)
 }
 
 ReturnValue ConjureSpell::internalConjureItem(Player* player, uint32_t conjureId, uint32_t conjureCount,
-	bool transform/* = false*/, uint32_t reagentId/* = 0*/)
+	bool transform/* = false*/, uint32_t reagentId/* = 0*/, slots_t slot/* = SLOT_WHEREVER*/, bool test/* = false*/)
 {
 	if(!transform)
 	{
@@ -1538,48 +1533,24 @@ ReturnValue ConjureSpell::internalConjureItem(Player* player, uint32_t conjureId
 	if(!reagentId)
 		return RET_NOTPOSSIBLE;
 
-	std::list<Container*> containers;
-	Item *item = NULL, *fromItem = NULL;
-	for(int32_t i = SLOT_FIRST; i < SLOT_LAST; ++i)
+	Item* item = player->getInventoryItem(slot);
+	if(item && item->getID() == reagentId)
 	{
-		if(!(item = player->getInventoryItem((slots_t)i)))
-			continue;
+		if(item->isStackable() && item->getItemCount() != 1)
+			return RET_YOUNEEDTOSPLITYOURSPEARS;
 
-		if(!fromItem && item->getID() == reagentId)
-			fromItem = item;
-		else if(Container* container = item->getContainer())
-			containers.push_back(container);
+		if(test)
+			return RET_NOERROR;
+
+		Item* newItem = g_game.transformItem(item, conjureId, conjureCount);
+		if(!newItem)
+			return RET_NOTPOSSIBLE;
+
+		g_game.startDecay(newItem);
+		return RET_NOERROR;
 	}
 
-	if(!fromItem)
-	{
-		for(std::list<Container*>::iterator cit = containers.begin(); cit != containers.end(); ++cit)
-		{
-			for(ItemList::const_reverse_iterator it = (*cit)->getReversedItems(); it != (*cit)->getReversedEnd(); ++it)
-			{
-				if((*it)->getID() == reagentId)
-				{
-					fromItem = (*it);
-					break;
-				}
-
-				if(Container* tmp = (*it)->getContainer())
-					containers.push_back(tmp);
-			}
-		}
-	}
-
-	if(!fromItem)
-		return RET_YOUNEEDAMAGICITEMTOCASTSPELL;
-
-	item = Item::CreateItem(conjureId, conjureCount);
-	ReturnValue ret = g_game.internalPlayerAddItem(NULL, player, item, false);
-	if(ret != RET_NOERROR)
-		return ret;
-
-	g_game.transformItem(fromItem, reagentId, fromItem->getItemCount() - 1);
-	g_game.startDecay(item);
-	return RET_NOERROR;
+	return RET_YOUNEEDAMAGICITEMTOCASTSPELL;
 }
 
 bool ConjureSpell::ConjureItem(const ConjureSpell* spell, Creature* creature, const std::string&)
@@ -1595,24 +1566,54 @@ bool ConjureSpell::ConjureItem(const ConjureSpell* spell, Creature* creature, co
 		return false;
 	}
 
-	ReturnValue result = RET_NOTPOSSIBLE;
+	ReturnValue result = RET_NOERROR;
 	if(spell->getReagentId() != 0)
 	{
-		if((result = internalConjureItem(player, spell->getConjureId(), spell->getConjureCount(), true, spell->getReagentId())) == RET_NOERROR)
+		ReturnValue resLeft = internalConjureItem(player, spell->getConjureId(), spell->getConjureCount(),
+			true, spell->getReagentId(), SLOT_LEFT, true);
+		if(resLeft == RET_NOERROR)
 		{
-			spell->postSpell(player);
+			resLeft = internalConjureItem(player, spell->getConjureId(), spell->getConjureCount(),
+				true, spell->getReagentId(), SLOT_LEFT);
+			if(resLeft == RET_NOERROR)
+				spell->postSpell(player, false);
+		}
+
+		ReturnValue resRight = internalConjureItem(player, spell->getConjureId(), spell->getConjureCount(),
+			true, spell->getReagentId(), SLOT_RIGHT, true);
+		if(resRight == RET_NOERROR)
+		{
+			if(resLeft == RET_NOERROR && !spell->checkSpell(player))
+				return false;
+
+			resRight = internalConjureItem(player, spell->getConjureId(), spell->getConjureCount(),
+				true, spell->getReagentId(), SLOT_RIGHT);
+			if(resRight == RET_NOERROR)
+				spell->postSpell(player, false);
+		}
+
+		if(resLeft == RET_NOERROR || resRight == RET_NOERROR)
+		{
+			spell->postSpell(player, true, false);
 			g_game.addMagicEffect(player->getPosition(), MAGIC_EFFECT_WRAPS_RED);
 			return true;
 		}
+
+		result = resLeft;
+		if((result == RET_NOERROR && resRight != RET_NOERROR) ||
+			(result == RET_YOUNEEDAMAGICITEMTOCASTSPELL && resRight == RET_YOUNEEDTOSPLITYOURSPEARS))
+			result = resRight;
 	}
-	else if((result = internalConjureItem(player, spell->getConjureId(), spell->getConjureCount())) == RET_NOERROR)
+	else if(internalConjureItem(player, spell->getConjureId(), spell->getConjureCount()) == RET_NOERROR)
 	{
 		spell->postSpell(player);
 		g_game.addMagicEffect(player->getPosition(), MAGIC_EFFECT_WRAPS_RED);
 		return true;
 	}
 
-	player->sendCancelMessage(result);
+	if(result != RET_NOERROR)
+		player->sendCancelMessage(result);
+
 	g_game.addMagicEffect(player->getPosition(), MAGIC_EFFECT_POFF);
 	return false;
 }
@@ -1703,7 +1704,7 @@ bool RuneSpell::Illusion(const RuneSpell*, Creature* creature, Item*, const Posi
 	}
 
 	Item* illusionItem = thing->getItem();
-	if(!illusionItem || !illusionItem->isMovable())
+	if(!illusionItem || !illusionItem->isMoveable())
 	{
 		player->sendCancelMessage(RET_NOTPOSSIBLE);
 		g_game.addMagicEffect(player->getPosition(), MAGIC_EFFECT_POFF);

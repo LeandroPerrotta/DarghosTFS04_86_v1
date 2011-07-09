@@ -47,12 +47,11 @@ AutoList<Player> Player::autoList;
 #ifdef __ENABLE_SERVER_DIAGNOSTIC__
 uint32_t Player::playerCount = 0;
 #endif
+MuteCountMap Player::muteCountMap;
 
 #ifdef __REMOVE_AFK_FROM_STATUS__
 uint32_t Player::afkCount = 0;
 #endif
-
-MuteCountMap Player::muteCountMap;
 
 Player::Player(const std::string& _name, ProtocolGame* p):
 	Creature(), transferContainer(ITEM_LOCKER), name(_name), nameDescription(_name), client(p)
@@ -65,6 +64,10 @@ Player::Player(const std::string& _name, ProtocolGame* p):
 
     #ifdef __REMOVE_AFK_FROM_STATUS__
     isAfk = false;
+    #endif
+
+    #ifdef __DARGHOS_CUSTOM__
+    doubleDamage = false;
     #endif
 
 	lastAttackBlockType = BLOCK_NONE;
@@ -595,19 +598,19 @@ int32_t Player::getSkill(skills_t skilltype, skillsid_t skillinfo) const
 	return std::max((int32_t)0, ret);
 }
 
-void Player::addSkillAdvance(skills_t skill, uint64_t count, bool useMultiplier/* = true*/)
+void Player::addSkillAdvance(skills_t skill, uint32_t count, bool useMultiplier/* = true*/)
 {
 	if(!count)
 		return;
 
 	//player has reached max skill
-	uint64_t currReqTries = vocation->getReqSkillTries(skill, skills[skill][SKILL_LEVEL]),
+	uint32_t currReqTries = vocation->getReqSkillTries(skill, skills[skill][SKILL_LEVEL]),
 		nextReqTries = vocation->getReqSkillTries(skill, skills[skill][SKILL_LEVEL] + 1);
 	if(currReqTries > nextReqTries)
 		return;
 
 	if(useMultiplier)
-		count = uint64_t((double)count * rates[skill] * g_config.getDouble(ConfigManager::RATE_SKILL));
+		count = uint32_t((double)count * rates[skill] * g_config.getDouble(ConfigManager::RATE_SKILL));
 
 	std::stringstream s;
 	while(skills[skill][SKILL_TRIES] + count >= nextReqTries)
@@ -641,7 +644,7 @@ void Player::addSkillAdvance(skills_t skill, uint64_t count, bool useMultiplier/
 		skills[skill][SKILL_TRIES] += count;
 
 	//update percent
-	uint16_t newPercent = Player::getPercentLevel(skills[skill][SKILL_TRIES], nextReqTries);
+	uint32_t newPercent = Player::getPercentLevel(skills[skill][SKILL_TRIES], nextReqTries);
  	if(skills[skill][SKILL_PERCENT] != newPercent)
 	{
 		skills[skill][SKILL_PERCENT] = newPercent;
@@ -802,13 +805,12 @@ void Player::dropLoot(Container* corpse)
 	}
 }
 
-bool Player::setStorage(const std::string& key, const std::string& value)
+bool Player::setStorage(const uint32_t key, const std::string& value)
 {
-	uint32_t numericKey = atol(key.c_str());
-	if(!IS_IN_KEYRANGE(numericKey, RESERVED_RANGE))
+	if(!IS_IN_KEYRANGE(key, RESERVED_RANGE))
 		return Creature::setStorage(key, value);
 
-	if(IS_IN_KEYRANGE(numericKey, OUTFITS_RANGE))
+	if(IS_IN_KEYRANGE(key, OUTFITS_RANGE))
 	{
 		uint32_t lookType = atoi(value.c_str()) >> 16, addons = atoi(value.c_str()) & 0xFF;
 		if(addons < 4)
@@ -821,7 +823,7 @@ bool Player::setStorage(const std::string& key, const std::string& value)
 			std::clog << "[Warning - Player::setStorage] Invalid addons value key: " << key
 				<< ", value: " << value << " for player: " << getName() << std::endl;
 	}
-	else if(IS_IN_KEYRANGE(numericKey, OUTFITSID_RANGE))
+	else if(IS_IN_KEYRANGE(key, OUTFITSID_RANGE))
 	{
 		uint32_t outfitId = atoi(value.c_str()) >> 16, addons = atoi(value.c_str()) & 0xFF;
 		if(addons < 4)
@@ -836,10 +838,10 @@ bool Player::setStorage(const std::string& key, const std::string& value)
 	return false;
 }
 
-void Player::eraseStorage(const std::string& key)
+void Player::eraseStorage(const uint32_t key)
 {
 	Creature::eraseStorage(key);
-	if(IS_IN_KEYRANGE(atol(key.c_str()), RESERVED_RANGE))
+	if(IS_IN_KEYRANGE(key, RESERVED_RANGE))
 		std::clog << "[Warning - Player::eraseStorage] Unknown reserved key: " << key << " for player: " << name << std::endl;
 }
 
@@ -864,8 +866,13 @@ bool Player::canSeeCreature(const Creature* creature) const
 
 bool Player::canWalkthrough(const Creature* creature) const
 {
-	if(creature == this || hasCustomFlag(PlayerCustomFlag_CanWalkthrough) || creature->isWalkable() ||
-		(creature->getMaster() && creature->getMaster() != this && canWalkthrough(creature->getMaster())))
+	if(!creature)
+		return true;
+
+	if(creature == this)
+		return false;
+
+	if(hasCustomFlag(PlayerCustomFlag_CanWalkthrough) || creature->isWalkable())
 		return true;
 
 	const Player* player = creature->getPlayer();
@@ -939,7 +946,7 @@ void Player::sendCancelMessage(ReturnValue message) const
 			sendCancel("Destination is out of reach.");
 			break;
 
-		case RET_NOTMOVABLE:
+		case RET_NOTMOVEABLE:
 			sendCancel("You cannot move this object.");
 			break;
 
@@ -1150,6 +1157,10 @@ void Player::sendCancelMessage(ReturnValue message) const
 
 		case RET_CANNOTCONJUREITEMHERE:
 			sendCancel("You cannot conjure items here.");
+			break;
+
+		case RET_YOUNEEDTOSPLITYOURSPEARS:
+			sendCancel("You need to split your spears first.");
 			break;
 
 		case RET_NAMEISTOOAMBIGUOUS:
@@ -1852,7 +1863,7 @@ void Player::addManaSpent(uint64_t amount, bool useMultiplier/* = true*/)
 	if(amount)
 		manaSpent += amount;
 
-	uint16_t newPercent = Player::getPercentLevel(manaSpent, nextReqMana);
+	uint32_t newPercent = Player::getPercentLevel(manaSpent, nextReqMana);
 	if(magLevelPercent != newPercent)
 	{
 		magLevelPercent = newPercent;
@@ -1942,8 +1953,8 @@ void Player::removeExperience(uint64_t exp, bool updateStats/* = true*/)
 		sendTextMessage(MSG_EVENT_ADVANCE, advMsg);
 	}
 
-	uint64_t currLevelExp = Player::getExpForLevel(level),
-		nextLevelExp = Player::getExpForLevel(level + 1);
+	uint64_t currLevelExp = Player::getExpForLevel(level);
+	uint64_t nextLevelExp = Player::getExpForLevel(level + 1);
 	if(nextLevelExp > currLevelExp)
 		levelPercent = Player::getPercentLevel(experience - currLevelExp, nextLevelExp - currLevelExp);
 	else
@@ -1953,7 +1964,7 @@ void Player::removeExperience(uint64_t exp, bool updateStats/* = true*/)
 		sendStats();
 }
 
-uint16_t Player::getPercentLevel(uint64_t count, uint64_t nextLevelCount)
+uint32_t Player::getPercentLevel(uint64_t count, uint64_t nextLevelCount)
 {
 	if(nextLevelCount > 0)
 		return std::min((uint32_t)100, std::max((uint32_t)0, uint32_t(count * 100 / nextLevelCount)));
@@ -1979,8 +1990,9 @@ void Player::onAttackedCreatureBlockHit(Creature* target, BlockType_t blockType)
 	{
 		case BLOCK_NONE:
 		{
-			bloodHitCount = shieldBlockCount = 30;
 			addAttackSkillPoint = true;
+			bloodHitCount = 30;
+			shieldBlockCount = 30;
 			break;
 		}
 
@@ -2177,7 +2189,8 @@ bool Player::onDeath()
 		double percent = 1. - ((double)(experience - lossExperience) / experience);
 
 		//Magic level loss
-		uint64_t sumMana = 0, lostMana = 0;
+		uint32_t sumMana = 0;
+		uint64_t lostMana = 0;
 		for(uint32_t i = 1; i <= magLevel; ++i)
 			sumMana += vocation->getReqMana(i);
 
@@ -2198,7 +2211,7 @@ bool Player::onDeath()
 			magLevelPercent = 0;
 
 		//Skill loss
-		uint64_t lostSkillTries, sumSkillTries;
+		uint32_t lostSkillTries, sumSkillTries;
 		for(int16_t i = 0; i < 7; ++i) //for each skill
 		{
 			lostSkillTries = sumSkillTries = 0;
@@ -2206,7 +2219,7 @@ bool Player::onDeath()
 				sumSkillTries += vocation->getReqSkillTries(i, c);
 
 			sumSkillTries += skills[i][SKILL_TRIES];
-			lostSkillTries = (uint64_t)std::ceil(sumSkillTries * ((double)(percent * lossPercent[LOSS_SKILLS]) / 100.));
+			lostSkillTries = (uint32_t)std::ceil(sumSkillTries * ((double)(percent * lossPercent[LOSS_SKILLS]) / 100.));
 			while(lostSkillTries > skills[i][SKILL_TRIES])
 			{
 				lostSkillTries -= skills[i][SKILL_TRIES];
@@ -2410,7 +2423,7 @@ void Player::addList()
 	Manager::getInstance()->addUser(this);
 }
 
-void Player::kick(bool displayEffect, bool forceLogout)
+void Player::kickPlayer(bool displayEffect, bool forceLogout)
 {
 	if(!client)
 	{
@@ -2753,7 +2766,7 @@ ReturnValue Player::__queryMaxCount(int32_t index, const Thing* thing, uint32_t 
 			else
 				maxQueryCount = 0;
 		}
-		else if(__queryAdd(index, item, count, flags) == RET_NOERROR)
+		else if(__queryAdd(index, item, item->getItemCount(), flags) == RET_NOERROR)
 		{
 			if(item->isStackable())
 				maxQueryCount = 100;
@@ -2783,8 +2796,8 @@ ReturnValue Player::__queryRemove(const Thing* thing, uint32_t count, uint32_t f
 	if(!count || (item->isStackable() && count > item->getItemCount()))
 		return RET_NOTPOSSIBLE;
 
-	 if(!item->isMovable() && !hasBitSet(FLAG_IGNORENOTMOVABLE, flags))
-		return RET_NOTMOVABLE;
+	 if(!item->isMoveable() && !hasBitSet(FLAG_IGNORENOTMOVEABLE, flags))
+		return RET_NOTMOVEABLE;
 
 	return RET_NOERROR;
 }
@@ -2799,120 +2812,80 @@ Cylinder* Player::__queryDestination(int32_t& index, const Thing* thing, Item** 
 		if(!item)
 			return this;
 
-		std::list<std::pair<Container*, int32_t> > containers;
-		std::list<std::pair<Cylinder*, int32_t> > freeSlots;
-
-		bool autoStack = !((flags & FLAG_IGNOREAUTOSTACK) == FLAG_IGNOREAUTOSTACK);
+		//find an appropiate slot
+		std::list<std::pair<Item*, int32_t> > itemList;
 		for(int32_t i = SLOT_FIRST; i < SLOT_LAST; ++i)
 		{
-			if(Item* invItem = inventory[i])
+			if(Item* inventoryItem = inventory[i])
 			{
-				if(invItem == item || invItem == tradeItem)
-					continue;
-
-				if(autoStack && item->isStackable() && __queryAdd(i, item, item->getItemCount(), 0)
-					== RET_NOERROR && invItem->getID() == item->getID() && invItem->getItemCount() < 100)
-				{
-					*destItem = invItem;
-					index = i;
-					return this;
-				}
-
-				if(Container* container = invItem->getContainer())
-				{
-					if(!autoStack && container->__queryAdd(INDEX_WHEREEVER,
-						item, item->getItemCount(), flags) == RET_NOERROR)
-					{
-						index = INDEX_WHEREEVER;
-						return container;
-					}
-
-					containers.push_back(std::make_pair(container, 0));
-				}
+				if(inventoryItem != tradeItem)
+					itemList.push_back(std::make_pair(inventoryItem, i));
 			}
-			else if(!autoStack)
+			else if(__queryAdd(i, item, item->getItemCount(), 0) == RET_NOERROR)
 			{
-				if(__queryAdd(i, item, item->getItemCount(), 0) == RET_NOERROR)
-				{
-					index = i;
-					return this;
-				}
+				index = i;
+				return this;
 			}
-			else
-				freeSlots.push_back(std::make_pair(this, i));
 		}
 
-		int32_t deepness = g_config.getNumber(ConfigManager::PLAYER_DEEPNESS);
-		while(!containers.empty())
+		//try containers
+		std::list<std::pair<Container*, int32_t> > deepList;
+		for(std::list<std::pair<Item*, int32_t> >::iterator it = itemList.begin(); it != itemList.end(); ++it)
 		{
-			Container* tmpContainer = containers.front().first;
-			int32_t level = containers.front().second;
+			//try find an already existing item to stack with
+			if((*it).first != item && item->isStackable() && (*it).first->getID() == item->getID() && (*it).first->getItemCount() < 100)
+			{
+				*destItem = (*it).first;
+				index = (*it).second;
+				return this;
+			}
+			//check sub-containers
+			else if(Container* container = (*it).first->getContainer())
+			{
+				int32_t tmpIndex = INDEX_WHEREEVER;
+				Item* tmpDestItem = NULL;
 
-			containers.pop_front();
-			if(!tmpContainer)
+				Cylinder* tmpCylinder = container->__queryDestination(tmpIndex, item, &tmpDestItem, flags);
+				if(tmpCylinder && tmpCylinder->__queryAdd(tmpIndex, item, item->getItemCount(), flags) == RET_NOERROR)
+				{
+					index = tmpIndex;
+					*destItem = tmpDestItem;
+					return tmpCylinder;
+				}
+
+				deepList.push_back(std::make_pair(container, 0));
+			}
+		}
+
+		//check deeper in the containers
+		int32_t deepness = g_config.getNumber(ConfigManager::PLAYER_DEEPNESS);
+		for(std::list<std::pair<Container*, int32_t> >::iterator dit = deepList.begin(); dit != deepList.end(); ++dit)
+		{
+			Container* c = (*dit).first;
+			if(!c)
 				continue;
 
-			for(uint32_t n = 0; n < tmpContainer->capacity(); ++n)
+			int32_t level = (*dit).second;
+			for(ItemList::const_iterator it = c->getItems(); it != c->getEnd(); ++it)
 			{
-				if(Item* tmpItem = tmpContainer->getItem(n))
-				{
-					if(tmpItem == item || tmpItem == tradeItem)
-						continue;
-
-					if(autoStack && item->isStackable() && tmpContainer->__queryAdd(n, item, item->getItemCount(),
-						0) == RET_NOERROR && tmpItem->getID() == item->getID() && tmpItem->getItemCount() < 100)
-					{
-						index = n;
-						*destItem = tmpItem;
-						return tmpContainer;
-					}
-
-					if(Container* container = tmpItem->getContainer())
-					{
-						if(!autoStack && container->__queryAdd(INDEX_WHEREEVER,
-							item, item->getItemCount(), flags) == RET_NOERROR)
-						{
-							index = INDEX_WHEREEVER;
-							return container;
-						}
-
-						if(deepness < 0 || level < deepness)
-							containers.push_back(std::make_pair(container, level + 1));
-					}
-				}
-				else
-				{
-					if(!autoStack)
-					{
-						if(tmpContainer->__queryAdd(n, item, item->getItemCount(), 0) == RET_NOERROR)
-						{
-							index = n;
-							return tmpContainer;
-						}
-					}
-					else
-						freeSlots.push_back(std::make_pair(tmpContainer, n));
-
-					break; // one slot to check is definitely enough.
-				}
-			}
-		}
-
-		if(autoStack)
-		{
-			while(!freeSlots.empty())
-			{
-				Cylinder* tmpCylinder = freeSlots.front().first;
-				int32_t i = freeSlots.front().second;
-
-				freeSlots.pop_front();
-				if(!tmpCylinder)
+				if((*it) == tradeItem)
 					continue;
 
-				if(tmpCylinder->__queryAdd(i, item, item->getItemCount(), flags) == RET_NOERROR)
+				if(Container* subContainer = dynamic_cast<Container*>(*it))
 				{
-					index = i;
-					return tmpCylinder;
+					int32_t tmpIndex = INDEX_WHEREEVER;
+					Item* tmpDestItem = NULL;
+
+					Cylinder* tmpCylinder = subContainer->__queryDestination(tmpIndex, item, &tmpDestItem, flags);
+					if(tmpCylinder && tmpCylinder->__queryAdd(tmpIndex, item, item->getItemCount(), flags) == RET_NOERROR)
+					{
+						index = tmpIndex;
+						*destItem = tmpDestItem;
+						return tmpCylinder;
+					}
+
+					if(deepness < 0 || level < deepness)
+						deepList.push_back(std::make_pair(subContainer, (level + 1)));
 				}
 			}
 		}
@@ -3517,7 +3490,7 @@ void Player::updateItemsLight(bool internal/* = false*/)
 			maxLight = curLight;
 	}
 
-	if(maxLight.level > itemsLight.level || (maxLight.level == itemsLight.level && maxLight.color != itemsLight.color))
+	if(itemsLight.level != maxLight.level || itemsLight.color != maxLight.color)
 	{
 		itemsLight = maxLight;
 		if(!internal)
@@ -3722,7 +3695,7 @@ void Player::onPlacedCreature()
 {
 	//scripting event - onLogin
 	if(!g_creatureEvents->playerLogin(this))
-		kick(true, true);
+		kickPlayer(true, true);
 }
 
 void Player::onAttackedCreatureDrain(Creature* target, int32_t points)
@@ -3839,7 +3812,7 @@ bool Player::onKilledCreature(Creature* target, DeathEntry& entry)
 #ifdef __WAR_SYSTEM__
 
 	War_t enemy;
-	if(targetPlayer->getEnemy(this, enemy) && (!entry.isLast() || IOGuild::getInstance()->updateWar(enemy)))
+	if(targetPlayer->getEnemy(this, enemy) && (!entry.isLast() || IOGuild::getInstance()->war(enemy)))
 		entry.setWar(enemy);
 
 #endif
@@ -3994,7 +3967,7 @@ bool Player::canWearOutfit(uint32_t outfitId, uint32_t addons)
 		|| ((it->second.addons & addons) != addons && !hasCustomFlag(PlayerCustomFlag_CanWearAllAddons)))
 		return false;
 
-	if(it->second.storageId.empty())
+	if(!it->second.storageId)
 		return true;
 
 	std::string value;
@@ -4046,7 +4019,7 @@ bool Player::removeOutfit(uint32_t outfitId, uint32_t addons)
 
 void Player::generateReservedStorage()
 {
-	uint32_t key = PSTRG_OUTFITSID_RANGE_START + 1;
+	uint32_t baseKey = PSTRG_OUTFITSID_RANGE_START + 1;
 	const OutfitMap& defaultOutfits = Outfits::getInstance()->getOutfits(sex);
 	for(OutfitMap::const_iterator it = outfits.begin(); it != outfits.end(); ++it)
 	{
@@ -4055,12 +4028,12 @@ void Player::generateReservedStorage()
 			& it->second.addons) == it->second.addons))
 			continue;
 
-		std::stringstream k, v;
-		k << key++; // this may not work as intended, revalidate it
-		v << ((it->first << 16) | (it->second.addons & 0xFF));
+		std::stringstream ss;
+		ss << ((it->first << 16) | (it->second.addons & 0xFF));
+		storageMap[baseKey] = ss.str();
 
-		storageMap[k.str()] = v.str();
-		if(key <= PSTRG_OUTFITSID_RANGE_START + PSTRG_OUTFITSID_RANGE_SIZE)
+		baseKey++;
+		if(baseKey <= PSTRG_OUTFITSID_RANGE_START + PSTRG_OUTFITSID_RANGE_SIZE)
 			continue;
 
 		std::clog << "[Warning - Player::genReservedStorageRange] Player " << getName() << " with more than 500 outfits!" << std::endl;
@@ -5179,5 +5152,25 @@ void Player::removeAfkState()
 bool Player::getAfkState()
 {
     return isAfk;
+}
+#endif
+
+#ifdef __DARGHOS_CUSTOM__
+void Player::setDoubleDamage()
+{
+    doubleDamage = true;
+}
+
+void Player::removeDoubleDamage()
+{
+    if(doubleDamage)
+    {
+        doubleDamage = false;
+    }
+}
+
+bool Player::isDoubleDamage()
+{
+    return doubleDamage;
 }
 #endif

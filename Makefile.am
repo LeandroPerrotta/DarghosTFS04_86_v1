@@ -3,7 +3,7 @@ noinst_PROGRAMS = theforgottenserver
 CXXFLAGS = -pipe
 AM_CXXFLAGS = $(XML_CPPFLAGS) $(OTSERV_FLAGS) $(LUA_CFLAGS) $(DEBUG_FLAGS)\
 $(MYSQL_FLAGS) $(SQLITE_FLAGS) $(PGSQL_FLAGS) $(PROFILER_FLAGS)\
-$(OPTIONAL_FLAGS) -D_THREAD_SAFE -D_REENTRANT -Wall -Wextra -Werror -Wno-strict-aliasing -Wno-unused-parameter
+$(OPTIONAL_FLAGS) -D_THREAD_SAFE -D_REENTRANT -Wall -Wextra -Werror -Wno-strict-aliasing
 
 theforgottenserver_LDADD = $(LUA_LIBS)
 
@@ -45,7 +45,7 @@ theforgottenserver_SOURCES = account.h actions.cpp actions.h $(MAYBE_OTADMIN) \
 	protocol.cpp protocol.h protocolgame.cpp protocolgame.h \
 	protocolhttp.cpp protocolhttp.h protocollogin.cpp protocollogin.h \
 	protocolold.cpp protocolold.h quests.cpp quests.h raids.cpp raids.h \
-	scheduler.cpp scheduler.h scriptmanager.cpp \
+	rsa.cpp rsa.h scheduler.cpp scheduler.h scriptmanager.cpp \
 	scriptmanager.h server.cpp server.h spawn.cpp spawn.h spells.cpp \
 	spells.h status.cpp status.h talkaction.cpp talkaction.h teleport.cpp \
 	teleport.h templates.h textlogger.cpp textlogger.h thing.cpp thing.h \

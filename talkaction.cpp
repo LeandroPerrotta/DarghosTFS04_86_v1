@@ -101,7 +101,7 @@ bool TalkActions::registerEvent(Event* event, xmlNodePtr p, bool override)
 			defaultTalkAction = talkAction;
 		}
 		else
-			std::clog << "[Warning - TalkAction::registerEvent] You cannot define more than one default talkAction." << std::endl;
+			std::cout << "[Warning - TalkAction::registerEvent] You cannot define more than one default talkAction." << std::endl;
 
 		return true;
 	}
@@ -262,10 +262,10 @@ bool TalkAction::configureEvent(xmlNodePtr p)
 	if(readXMLInteger(p, "channel", intValue))
 		m_channel = intValue;
 
-	if(readXMLString(p, "logged", strValue) || readXMLString(p, "log", strValue))
+	if(readXMLString(p, "log", strValue) || readXMLString(p, "logged", strValue))
 		m_logged = booleanString(strValue);
 
-	if(readXMLString(p, "hidden", strValue) || readXMLString(p, "hide", strValue))
+	if(readXMLString(p, "hide", strValue) || readXMLString(p, "hidden", strValue))
 		m_hidden = booleanString(strValue);
 
 	if(readXMLString(p, "case-sensitive", strValue) || readXMLString(p, "casesensitive", strValue) || readXMLString(p, "sensitive", strValue))
@@ -302,6 +302,8 @@ bool TalkAction::loadFunction(const std::string& functionName)
 		m_function = banishmentInfo;
 	else if(m_functionName == "diagnostics")
 		m_function = diagnostics;
+	else if(m_functionName == "addskill")
+		m_function = addSkill;
 	else if(m_functionName == "ghost")
 		m_function = ghost;
 	else if(m_functionName == "software")
@@ -851,11 +853,11 @@ bool TalkAction::thingProporties(Creature* creature, const std::string&, const s
 		toLowerCaseString(action);
 		if(Item* item = thing->getItem())
 		{
-			if(action == "set" || action == "add" || action == "new")
+			if(action == "set")
 			{
 				std::string type = parseParams(it, tokens.end()), key = parseParams(it,
 					tokens.end()), value = parseParams(it, tokens.end());
-				if(type == "integer" || type == "number" || type == "int" || type == "num")
+				if(type == "integer" || type == "number" || type == "int")
 					item->setAttribute(key, atoi(value.c_str()));
 				else if(type == "float" || type == "double")
 					item->setAttribute(key, (float)atof(value.c_str()));
@@ -864,7 +866,7 @@ bool TalkAction::thingProporties(Creature* creature, const std::string&, const s
 				else
 					item->setAttribute(key, value);
 			}
-			else if(action == "erase" || action == "remove" || action == "delete")
+			else if(action == "erase" || action == "remove")
 				item->eraseAttribute(parseParams(it, tokens.end()));
 			else if(action == "action" || action == "actionid" || action == "aid")
 			{
@@ -880,8 +882,8 @@ bool TalkAction::thingProporties(Creature* creature, const std::string&, const s
 				if(tmp >= 1000 || tmp <= 0xFFFF)
 					item->setUniqueId(tmp);
 			}
-			else if(action == "destination" || action == "position" || action == "pos"
-				|| action == "dest" || action == "loc" || action == "location") //TODO: doesn't work
+			else if(action == "destination" || action == "position"
+				|| action == "pos" || action == "dest") //TODO: doesn't work
 			{
 				if(Teleport* teleport = item->getTeleport())
 					teleport->setDestination(Position(atoi(parseParams(it, tokens.end()).c_str()), atoi(
@@ -1149,6 +1151,54 @@ bool TalkAction::diagnostics(Creature* creature, const std::string&, const std::
 #else
 	player->sendTextMessage(MSG_STATUS_CONSOLE_BLUE, "Command not available, please rebuild your software with -D__ENABLE_SERVER_DIAG__");
 #endif
+	return true;
+}
+
+bool TalkAction::addSkill(Creature* creature, const std::string&, const std::string& param)
+{
+	Player* player = creature->getPlayer();
+	if(!player)
+		return false;
+
+	StringVec params = explodeString(param, ",");
+	if(params.size() < 2)
+	{
+		player->sendTextMessage(MSG_STATUS_SMALL, "Command requires at least 2 parameters.");
+		return true;
+	}
+
+	uint32_t amount = 1;
+	if(params.size() > 2)
+	{
+		std::string tmp = params[2];
+		trimString(tmp);
+		amount = (uint32_t)std::max(1, atoi(tmp.c_str()));
+	}
+
+	std::string name = params[0], skill = params[1];
+	trimString(name);
+	trimString(skill);
+
+	Player* target = NULL;
+	ReturnValue ret = g_game.getPlayerByNameWildcard(name, target);
+	if(ret != RET_NOERROR)
+	{
+		player->sendCancelMessage(ret);
+		return true;
+	}
+
+	if(skill[0] == 'l' || skill[0] == 'e')
+		target->addExperience(uint64_t(Player::getExpForLevel(target->getLevel() + amount) - target->getExperience()));
+	else if(skill[0] == 'm')
+		target->addManaSpent((uint64_t)(target->getVocation()->getReqMana(target->getMagicLevel() +
+			amount) - target->getSpentMana()), false);
+	else
+	{
+		skills_t skillId = getSkillId(skill);
+		target->addSkillAdvance(skillId, (uint32_t)(target->getVocation()->getReqSkillTries(skillId, target->getSkill(skillId,
+			SKILL_LEVEL) + amount) - target->getSkill(skillId, SKILL_TRIES)), false);
+	}
+
 	return true;
 }
 

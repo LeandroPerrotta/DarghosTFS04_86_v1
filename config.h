@@ -4,6 +4,9 @@
 /* Define to 1 if you have the <arpa/inet.h> header file. */
 #define HAVE_ARPA_INET_H 1
 
+/* Define to 1 if you have the <boost/asio.hpp> header file. */
+#define HAVE_BOOST_ASIO_HPP 1
+
 /* Define to 1 if you have the <boost/tr1/unordered_set.hpp> header file. */
 #define HAVE_BOOST_TR1_UNORDERED_SET_HPP 1
 
@@ -42,6 +45,9 @@
 
 /* Define to 1 if you have the `gethostname' function. */
 #define HAVE_GETHOSTNAME 1
+
+/* Define to 1 if you have the <gmp.h> header file. */
+#define HAVE_GMP_H 1
 
 /* Define to 1 if you have the <inttypes.h> header file. */
 #define HAVE_INTTYPES_H 1
@@ -102,23 +108,14 @@
    */
 #define HAVE_LIBBOOST_THREAD_MT 1
 
-/* Define to 1 if you have the `crypto' library (-lcrypto). */
-#define HAVE_LIBCRYPTO 1
-
 /* Define to 1 if you have the `cryptopp' library (-lcryptopp). */
 #define HAVE_LIBCRYPTOPP 1
 
+/* Define to 1 if you have the `gmp' library (-lgmp). */
+#define HAVE_LIBGMP 1
+
 /* Define to 1 if you have the `lua' library (-llua). */
 /* #undef HAVE_LIBLUA */
-
-/* Define to 1 if you have the `lua5.1' library (-llua5.1). */
-#define HAVE_LIBLUA5_1 1
-
-/* Define to 1 if you have the `luajit' library (-lluajit). */
-/* #undef HAVE_LIBLUAJIT */
-
-/* Define to 1 if you have the `luajit-5.1' library (-lluajit-5.1). */
-/* #undef HAVE_LIBLUAJIT_5_1 */
 
 /* Define to 1 if you have the `mysqlclient' library (-lmysqlclient). */
 #define HAVE_LIBMYSQLCLIENT 1
@@ -132,14 +129,8 @@
 /* Define to 1 if you have the `z' library (-lz). */
 #define HAVE_LIBZ 1
 
-/* Define to 1 if you have the <lua5.1/lua.h> header file. */
-#define HAVE_LUA5_1_LUA_H 1
-
-/* Define to 1 if you have the <luajit-2.0/lua.hpp> header file. */
-/* #undef HAVE_LUAJIT_2_0_LUA_HPP */
-
-/* Define to 1 if you have the <lua.h> header file. */
-/* #undef HAVE_LUA_H */
+/* Define to 1 if you have the <lua.hpp> header file. */
+/* #undef HAVE_LUA_HPP */
 
 /* Define to 1 if your system has a GNU libc compatible `malloc' function, and
    to 0 otherwise. */
@@ -159,15 +150,6 @@
 
 /* Define to 1 if you have the <netinet/in.h> header file. */
 #define HAVE_NETINET_IN_H 1
-
-/* Define to 1 if you have the <openssl/bn.h> header file. */
-#define HAVE_OPENSSL_BN_H 1
-
-/* Define to 1 if you have the <openssl/err.h> header file. */
-#define HAVE_OPENSSL_ERR_H 1
-
-/* Define to 1 if you have the <openssl/rsa.h> header file. */
-#define HAVE_OPENSSL_RSA_H 1
 
 /* Define to 1 if you have the `pow' function. */
 #define HAVE_POW 1

@@ -900,7 +900,7 @@ void Monster::pushItems(Tile* tile)
 	for(int32_t i = downItemsSize - 1; i >= 0; --i)
 	{
 		assert(i >= 0 && i < downItemsSize);
-		if((item = items->at(i)) && item->hasProperty(MOVABLE) &&
+		if((item = items->at(i)) && item->hasProperty(MOVEABLE) &&
 			(item->hasProperty(BLOCKPATH) || item->hasProperty(BLOCKSOLID)))
 		{
 			if(moveCount < 20 && pushItem(item, 1))
@@ -1318,7 +1318,7 @@ bool Monster::isImmune(CombatType_t type) const
 	return it->second >= 100;
 }
 
-void Monster::resetLight()
+void Monster::setNormalCreatureLight()
 {
 	internalLight.level = mType->lightLevel;
 	internalLight.color = mType->lightColor;

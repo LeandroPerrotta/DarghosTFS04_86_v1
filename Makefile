@@ -74,10 +74,10 @@ am__theforgottenserver_SOURCES_DIST = account.h actions.cpp actions.h \
 	protocol.cpp protocol.h protocolgame.cpp protocolgame.h \
 	protocolhttp.cpp protocolhttp.h protocollogin.cpp \
 	protocollogin.h protocolold.cpp protocolold.h quests.cpp \
-	quests.h raids.cpp raids.h scheduler.cpp scheduler.h \
-	scriptmanager.cpp scriptmanager.h server.cpp server.h \
-	spawn.cpp spawn.h spells.cpp spells.h status.cpp status.h \
-	talkaction.cpp talkaction.h teleport.cpp teleport.h \
+	quests.h raids.cpp raids.h rsa.cpp rsa.h scheduler.cpp \
+	scheduler.h scriptmanager.cpp scriptmanager.h server.cpp \
+	server.h spawn.cpp spawn.h spells.cpp spells.h status.cpp \
+	status.h talkaction.cpp talkaction.h teleport.cpp teleport.h \
 	templates.h textlogger.cpp textlogger.h thing.cpp thing.h \
 	tile.cpp tile.h tools.cpp tools.h town.h trashholder.cpp \
 	trashholder.h waitlist.cpp waitlist.h waypoints.h weapons.cpp \
@@ -108,12 +108,12 @@ am_theforgottenserver_OBJECTS = actions.$(OBJEXT) $(am__objects_1) \
 	player.$(OBJEXT) position.$(OBJEXT) protocol.$(OBJEXT) \
 	protocolgame.$(OBJEXT) protocolhttp.$(OBJEXT) \
 	protocollogin.$(OBJEXT) protocolold.$(OBJEXT) quests.$(OBJEXT) \
-	raids.$(OBJEXT) scheduler.$(OBJEXT) scriptmanager.$(OBJEXT) \
-	server.$(OBJEXT) spawn.$(OBJEXT) spells.$(OBJEXT) \
-	status.$(OBJEXT) talkaction.$(OBJEXT) teleport.$(OBJEXT) \
-	textlogger.$(OBJEXT) thing.$(OBJEXT) tile.$(OBJEXT) \
-	tools.$(OBJEXT) trashholder.$(OBJEXT) waitlist.$(OBJEXT) \
-	weapons.$(OBJEXT) vocation.$(OBJEXT)
+	raids.$(OBJEXT) rsa.$(OBJEXT) scheduler.$(OBJEXT) \
+	scriptmanager.$(OBJEXT) server.$(OBJEXT) spawn.$(OBJEXT) \
+	spells.$(OBJEXT) status.$(OBJEXT) talkaction.$(OBJEXT) \
+	teleport.$(OBJEXT) textlogger.$(OBJEXT) thing.$(OBJEXT) \
+	tile.$(OBJEXT) tools.$(OBJEXT) trashholder.$(OBJEXT) \
+	waitlist.$(OBJEXT) weapons.$(OBJEXT) vocation.$(OBJEXT)
 theforgottenserver_OBJECTS = $(am_theforgottenserver_OBJECTS)
 am__DEPENDENCIES_1 =
 theforgottenserver_DEPENDENCIES = $(am__DEPENDENCIES_1)
@@ -145,11 +145,11 @@ DIST_ARCHIVES = $(distdir).tar.gz
 GZIP_ENV = --best
 distuninstallcheck_listfiles = find . -type f -print
 distcleancheck_listfiles = find . -type f -print
-ACLOCAL = ${SHELL} /mnt/hgfs/tfs/trunk.r3884/missing --run aclocal-1.11
-AMTAR = ${SHELL} /mnt/hgfs/tfs/trunk.r3884/missing --run tar
-AUTOCONF = ${SHELL} /mnt/hgfs/tfs/trunk.r3884/missing --run autoconf
-AUTOHEADER = ${SHELL} /mnt/hgfs/tfs/trunk.r3884/missing --run autoheader
-AUTOMAKE = ${SHELL} /mnt/hgfs/tfs/trunk.r3884/missing --run automake-1.11
+ACLOCAL = ${SHELL} /mnt/hgfs/tfs-2/trunk.r3777/missing --run aclocal-1.11
+AMTAR = ${SHELL} /mnt/hgfs/tfs-2/trunk.r3777/missing --run tar
+AUTOCONF = ${SHELL} /mnt/hgfs/tfs-2/trunk.r3777/missing --run autoconf
+AUTOHEADER = ${SHELL} /mnt/hgfs/tfs-2/trunk.r3777/missing --run autoheader
+AUTOMAKE = ${SHELL} /mnt/hgfs/tfs-2/trunk.r3777/missing --run automake-1.11
 AWK = mawk
 CPPFLAGS = 
 CXX = g++
@@ -173,16 +173,16 @@ INSTALL_SCRIPT = ${INSTALL}
 INSTALL_STRIP_PROGRAM = $(install_sh) -c -s
 LDFLAGS = 
 LIBOBJS = 
-LIBS = -lmysqlclient -llua5.1 -lcrypto -lcryptopp -lboost_filesystem-mt -lboost_date_time-mt -lboost_system-mt -lboost_regex-mt -lboost_thread-mt -lz  -lxml2
+LIBS = -lmysqlclient -lcryptopp -lboost_filesystem-mt -lboost_date_time-mt -lboost_system-mt -lboost_regex-mt -lboost_thread-mt -lz -lgmp  -lxml2
 LTLIBOBJS = 
-LUA_CFLAGS = 
-LUA_LIBS = 
-MAKEINFO = ${SHELL} /mnt/hgfs/tfs/trunk.r3884/missing --run makeinfo
+LUA_CFLAGS = -I/usr/include/lua5.1  
+LUA_LIBS = -llua5.1  
+MAKEINFO = ${SHELL} /mnt/hgfs/tfs-2/trunk.r3777/missing --run makeinfo
 MKDIR_P = /bin/mkdir -p
 MYSQL_FLAGS = -D__USE_MYSQL__
 MYSQL_LIBS = -lmysqlclient
 OBJEXT = o
-OPTIONAL_FLAGS =  -D__ALT_LUA_PATH__
+OPTIONAL_FLAGS =  -D__ENABLE_SERVER_DIAGNOSTIC__
 PACKAGE = theforgottenserver
 PACKAGE_BUGREPORT = 
 PACKAGE_NAME = TheForgottenServer
@@ -193,7 +193,7 @@ PACKAGE_VERSION = 0.4
 PATH_SEPARATOR = :
 PGSQL_FLAGS = 
 PGSQL_LIBS = 
-PKG_CONFIG = 
+PKG_CONFIG = /usr/bin/pkg-config
 PKG_CONFIG_LIBDIR = 
 PKG_CONFIG_PATH = 
 PROFILER_FLAGS = 
@@ -206,10 +206,10 @@ VERSION = 0.4
 XML2_CONFIG = /usr/bin/xml2-config
 XML_CPPFLAGS = -I/usr/include/libxml2
 XML_LIBS = -lxml2
-abs_builddir = /mnt/hgfs/tfs/trunk.r3884
-abs_srcdir = /mnt/hgfs/tfs/trunk.r3884
-abs_top_builddir = /mnt/hgfs/tfs/trunk.r3884
-abs_top_srcdir = /mnt/hgfs/tfs/trunk.r3884
+abs_builddir = /mnt/hgfs/tfs-2/trunk.r3777
+abs_srcdir = /mnt/hgfs/tfs-2/trunk.r3777
+abs_top_builddir = /mnt/hgfs/tfs-2/trunk.r3777
+abs_top_srcdir = /mnt/hgfs/tfs-2/trunk.r3777
 ac_ct_CXX = g++
 am__include = include
 am__leading_dot = .
@@ -228,7 +228,7 @@ host_alias =
 htmldir = ${docdir}
 includedir = ${prefix}/include
 infodir = ${datarootdir}/info
-install_sh = ${SHELL} /mnt/hgfs/tfs/trunk.r3884/install-sh
+install_sh = ${SHELL} /mnt/hgfs/tfs-2/trunk.r3777/install-sh
 libdir = ${exec_prefix}/lib
 libexecdir = ${exec_prefix}/libexec
 localedir = ${datarootdir}/locale
@@ -250,7 +250,7 @@ top_builddir = .
 top_srcdir = .
 AM_CXXFLAGS = $(XML_CPPFLAGS) $(OTSERV_FLAGS) $(LUA_CFLAGS) $(DEBUG_FLAGS)\
 $(MYSQL_FLAGS) $(SQLITE_FLAGS) $(PGSQL_FLAGS) $(PROFILER_FLAGS)\
-$(OPTIONAL_FLAGS) -D_THREAD_SAFE -D_REENTRANT -Wall -Wextra -Werror -Wno-strict-aliasing -Wno-unused-parameter
+$(OPTIONAL_FLAGS) -D_THREAD_SAFE -D_REENTRANT -Wall -Wextra -Werror -Wno-strict-aliasing
 
 theforgottenserver_LDADD = $(LUA_LIBS)
 MAYBE_MYSQL = databasemysql.cpp databasemysql.h
@@ -280,7 +280,7 @@ theforgottenserver_SOURCES = account.h actions.cpp actions.h $(MAYBE_OTADMIN) \
 	protocol.cpp protocol.h protocolgame.cpp protocolgame.h \
 	protocolhttp.cpp protocolhttp.h protocollogin.cpp protocollogin.h \
 	protocolold.cpp protocolold.h quests.cpp quests.h raids.cpp raids.h \
-	scheduler.cpp scheduler.h scriptmanager.cpp \
+	rsa.cpp rsa.h scheduler.cpp scheduler.h scriptmanager.cpp \
 	scriptmanager.h server.cpp server.h spawn.cpp spawn.h spells.cpp \
 	spells.h status.cpp status.h talkaction.cpp talkaction.h teleport.cpp \
 	teleport.h templates.h textlogger.cpp textlogger.h thing.cpp thing.h \
@@ -416,6 +416,7 @@ include ./$(DEPDIR)/protocollogin.Po
 include ./$(DEPDIR)/protocolold.Po
 include ./$(DEPDIR)/quests.Po
 include ./$(DEPDIR)/raids.Po
+include ./$(DEPDIR)/rsa.Po
 include ./$(DEPDIR)/scheduler.Po
 include ./$(DEPDIR)/scriptmanager.Po
 include ./$(DEPDIR)/server.Po

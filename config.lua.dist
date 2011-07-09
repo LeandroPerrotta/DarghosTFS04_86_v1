@@ -1,7 +1,7 @@
 -- The Forgotten Server Config
 
 	-- Account manager
-	accountManager = false
+	accountManager = true
 	namelockManager = true
 	newPlayerChooseVoc = false
 	newPlayerSpawnPosX = 95
@@ -11,7 +11,6 @@
 	newPlayerLevel = 1
 	newPlayerMagicLevel = 0
 	generateAccountNumber = false
-	generateAccountSalt = false
 
 	-- Unjustified kills
 	-- NOTE: *Banishment and *BlackSkull variables are >summed up<
@@ -86,8 +85,7 @@
 
 	-- Connection config
 	worldId = 0
-	ip = "200.158.97.58"
-	bindOnlyGlobalAddress = false
+	ip = "127.0.0.1"
 	loginPort = 7171
 	gamePort = 7172
 	loginTries = 10
@@ -106,31 +104,21 @@
 	loginOnlyWithLoginServer = false
 	premiumPlayerSkipWaitList = false
 
-	-- RSA
-	-- NOTE: These should not be changed unless you know what your doing!
-	-- Prime1 - known as p; Prime2 - known as q; Public - known as e;
-	-- Modulus - known as n; Private - known as d.
-	rsaPrime1 = "14299623962416399520070177382898895550795403345466153217470516082934737582776038882967213386204600674145392845853859217990626450972452084065728686565928113"
-	rsaPrime2 = "7630979195970404721891201847792002125535401292779123937207447574596692788513647179235335529307251350570728407373705564708871762033017096809910315212884101"
-	rsaPublic = "65537"
-	rsaModulus = "109120132967399429278860960508995541528237502902798129123468757937266291492576446330739696001110603907230888610072655818825358503429057592827629436413108566029093628212635953836686562675849720620786279431090218017681061521755056710823876476444260558147179707119674283982419152118103759076030616683978566631413"
-	rsaPrivate = "46730330223584118622160180015036832148732986808519344675210555262940258739805766860224610646919605860206328024326703361630109888417839241959507572247284807035235569619173792292786907845791904955103601652822519121908367187885509270025388641700821735345222087940578381210879116823013776808975766851829020659073"
-
 	-- Database
 	-- NOTE: sqlFile is used only by sqlite database, and sqlKeepAlive by mysql database.
 	-- To disable sqlKeepAlive such as mysqlReadTimeout use 0 value.
 	-- encryptionType can be plain, md5, sha1, sha256, sha512 or vahash.
-	sqlType = "mysql"
+	sqlType = "sqlite"
 	sqlHost = "localhost"
 	sqlPort = 3306
 	sqlUser = "root"
-	sqlPass = "051190a1"
-	sqlDatabase = "darghos"
+	sqlPass = ""
+	sqlDatabase = "theforgottenserver"
 	sqlFile = "theforgottenserver.s3db"
 	sqlKeepAlive = 0
 	mysqlReadTimeout = 10
 	mysqlWriteTimeout = 10
-	encryptionType = "md5"
+	encryptionType = "sha1"
 
 	-- Deathlist
 	deathListEnabled = true
@@ -169,7 +157,7 @@
 
 	-- Map
 	-- NOTE: storeTrash costs more memory, but will perform alot faster cleaning.
-	mapName = "test.otbm"
+	mapName = "forgotten.otbm.gz"
 	mapAuthor = "Komic"
 	randomizeTiles = true
 	storeTrash = true
@@ -186,7 +174,7 @@
 	coresUsed = "-1"
 
 	-- Startup
-	startupDatabaseOptimization = false
+	startupDatabaseOptimization = true
 	updatePremiumStateAtStartup = true
 	confirmOutdatedVersion = false
 
@@ -196,7 +184,6 @@
 	bufferMutedOnSpellFailure = false
 	spellNameInsteadOfWords = false
 	emoteSpells = false
-	unifiedSpells = true
 
 	-- Outfits
 	allowChangeOutfit = true
@@ -215,7 +202,6 @@
 	promptExceptionTracerErrorBox = true
 	maximumDoorLevel = 500
 	maxMessageBuffer = 4
-	tradeLimit = 100
 
 	-- VIP list
 	separateVipListPerCharacter = false
@@ -225,7 +211,7 @@
 	-- Saving-related
 	-- useHouseDataStorage usage may be found at README.
 	saveGlobalStorage = true
-	useHouseDataStorage = true
+	useHouseDataStorage = false
 	storePlayerDirection = false
 
 	-- Loot
@@ -349,7 +335,7 @@
 	prefixChannelLogs = ""
 	runFile = ""
 	outputLog = ""
-	truncateLogOnStartup = false
+	truncateLogsOnStartup = false
 
 	-- Manager
 	-- NOTE: managerPassword left blank disables manager.

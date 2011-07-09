@@ -39,40 +39,36 @@ bool Mission::isCompleted(Player* player)
 	return atoi(value.c_str()) >= endValue;
 }
  
-std::string Mission::parseStorages(std::string state, std::string value)
-{
-	/*std::string::size_type start, end;
-	while((start = state.find("|STORAGE:")) != std::string::npos)
-	{
-		if((end = state.find("|", start)) = std::string::npos)
-			continue;
-
-		std::string value, storage = state.substr(start, end - start)
-		player->getStorage(storage, value);
-		state.replace(start, end, value);
-	} requires testing and probably fixing, inspired by QuaS code*/
-
-	replaceString(state, "|STATE|", value);
-	return state;
-}
-
 std::string Mission::getDescription(Player* player)
 {
 	std::string value;
 	player->getStorage(storageId, value);
 	if(state.size())
-		return parseStorages(state, value);
- 
+	{
+		std::string ret = state;
+		replaceString(ret, "|STATE|", value);
+		return ret;
+	}
+
 	if(atoi(value.c_str()) >= endValue)
-		return parseStorages(states.rbegin()->second, value);
+	{
+		std::string ret = states.rbegin()->second;
+		replaceString(ret, "|STATE|", value);
+		return ret;
+	}
 
 	for(int32_t i = endValue; i >= startValue; --i)
 	{
 		player->getStorage(storageId, value);
-		if(atoi(value.c_str()) == i)
-			return parseStorages(states[i - startValue], value);
-	}
+		if(atoi(value.c_str()) != i)
+			continue;
+
+		std::string ret = states[i - startValue];
+		replaceString(ret, "|STATE|", value);
+		return ret;
  
+	}
+
 	return "Couldn't retrieve any mission description, please report to a gamemaster.";
 }
  
@@ -80,10 +76,10 @@ Quest::~Quest()
 {
 	for(MissionList::iterator it = missions.begin(); it != missions.end(); it++)
 		delete (*it);
-
+ 
 	missions.clear();
 }
- 
+
 bool Quest::isStarted(Player* player)
 {
 	if(!player)
@@ -104,7 +100,7 @@ bool Quest::isCompleted(Player* player) const
  
 	return true;
 }
-
+ 
 uint16_t Quest::getMissionCount(Player* player)
 {
 	uint16_t count = 0;
@@ -121,7 +117,7 @@ void Quests::clear()
 {
 	for(QuestList::iterator it = quests.begin(); it != quests.end(); it++)
 		delete (*it);
- 
+
 	quests.clear();
 }
  
@@ -140,7 +136,7 @@ bool Quests::loadFromXml()
 		std::clog << getLastXMLError() << std::endl;
 		return false;
 	}
-
+ 
 	xmlNodePtr p, root = xmlDocGetRootElement(doc);
 	if(xmlStrcmp(root->name,(const xmlChar*)"quests"))
 	{
@@ -155,7 +151,7 @@ bool Quests::loadFromXml()
 		parseQuestNode(p, false);
 		p = p->next;
 	}
- 
+
 	xmlFreeDoc(doc);
 	return true;
 }
@@ -164,7 +160,7 @@ bool Quests::parseQuestNode(xmlNodePtr p, bool checkDuplicate)
 {
 	if(xmlStrcmp(p->name, (const xmlChar*)"quest"))
 		return false;
-
+ 
 	int32_t intValue;
 	std::string strValue;
 
@@ -175,14 +171,14 @@ bool Quests::parseQuestNode(xmlNodePtr p, bool checkDuplicate)
 		if(id > m_lastId)
 			m_lastId = id;
 	}
- 
+
 	std::string name;
 	if(readXMLString(p, "name", strValue))
 		name = strValue;
-
-	std::string startStorageId;
-	if(readXMLString(p, "startstorageid", strValue) || readXMLString(p, "storageId", strValue))
-		startStorageId = strValue;
+ 
+	uint32_t startStorageId = 0;
+	if(readXMLInteger(p, "startstorageid", intValue) || readXMLInteger(p, "storageId", intValue))
+		startStorageId = intValue;
 
 	int32_t startStorageValue = 0;
 	if(readXMLInteger(p, "startstoragevalue", intValue) || readXMLInteger(p, "storageValue", intValue))
@@ -197,15 +193,16 @@ bool Quests::parseQuestNode(xmlNodePtr p, bool checkDuplicate)
 		if(xmlStrcmp(missionNode->name, (const xmlChar*)"mission"))
 			continue;
 
-		std::string missionName, missionState, storageId;
+		std::string missionName, missionState;
 		if(readXMLString(missionNode, "name", strValue))
 			missionName = strValue;
 
 		if(readXMLString(missionNode, "state", strValue) || readXMLString(missionNode, "description", strValue))
 			missionState = strValue;
 
-		if(readXMLString(missionNode, "storageid", strValue) || readXMLString(missionNode, "storageId", strValue))
-			storageId = strValue;
+		uint32_t storageId = 0;
+		if(readXMLInteger(missionNode, "storageid", intValue) || readXMLInteger(missionNode, "storageId", intValue))
+			storageId = intValue;
 
 		int32_t startValue = 0, endValue = 0;
 		if(readXMLInteger(missionNode, "startvalue", intValue) || readXMLInteger(missionNode, "startValue", intValue))

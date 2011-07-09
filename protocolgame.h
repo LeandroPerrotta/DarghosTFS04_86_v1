@@ -162,10 +162,6 @@ class ProtocolGame : public Protocol
 		void parseCloseRuleViolation(NetworkMessage& msg);
 		void parseCancelRuleViolation(NetworkMessage& msg);
 
-		//rule violation
-		void parseViolationWindow(NetworkMessage& msg);
-		void parseViolationReport(NetworkMessage& msg);
-
 		//Send functions
 		void sendChannelMessage(std::string author, std::string text, SpeakClasses type, uint8_t channel);
 		void sendClosePrivate(uint16_t channelId);
@@ -204,7 +200,7 @@ class ProtocolGame : public Protocol
 
 		void sendCreatureSkull(const Creature* creature);
 		void sendCreatureShield(const Creature* creature);
-		void sendCreatureEmblem(const Creature* creature) {reloadCreature(creature);}
+		void sendCreatureEmblem(const Creature* creature);
 		void sendCreatureImpassable(const Creature* creature);
 
 		void sendShop(const ShopInfoList& shop);
@@ -254,17 +250,16 @@ class ProtocolGame : public Protocol
 		void sendUpdateInventoryItem(slots_t slot, const Item* item);
 		void sendRemoveInventoryItem(slots_t slot);
 
-		// help functions
-		void reloadCreature(const Creature* creature);
+		//Help functions
 
-		//translate a tile to clientreadable format
+		// translate a tile to clientreadable format
 		void GetTileDescription(const Tile* tile, NetworkMessage_ptr msg);
 
-		//translate a floor to clientreadable format
+		// translate a floor to clientreadable format
 		void GetFloorDescription(NetworkMessage_ptr msg, int32_t x, int32_t y, int32_t z,
 			int32_t width, int32_t height, int32_t offset, int32_t& skip);
 
-		//translate a map area to clientreadable format
+		// translate a map area to clientreadable format
 		void GetMapDescription(int32_t x, int32_t y, int32_t z,
 			int32_t width, int32_t height, NetworkMessage_ptr msg);
 
@@ -303,6 +298,9 @@ class ProtocolGame : public Protocol
 		void AddInventoryItem(NetworkMessage_ptr msg, slots_t slot, const Item* item);
 		void UpdateInventoryItem(NetworkMessage_ptr msg, slots_t slot, const Item* item);
 		void RemoveInventoryItem(NetworkMessage_ptr msg, slots_t slot);
+
+		//rule violation window
+		void parseViolationWindow(NetworkMessage& msg);
 
 		//shop
 		void AddShopItem(NetworkMessage_ptr msg, const ShopInfo& item);

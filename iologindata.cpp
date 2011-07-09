@@ -240,16 +240,17 @@ bool IOLoginData::getPassword(uint32_t accountId, std::string& password, std::st
 	if(!(result = db->storeQuery(query.str())))
 		return false;
 
-	std::string tmpPassword = result->getDataString("password"), tmpSalt = result->getDataString("salt");
-	result->free();
 	if(name.empty() || name == "Account Manager")
 	{
-		password = tmpPassword;
-		salt = tmpSalt;
+		password = result->getDataString("password");
+		result->free();
 		return true;
 	}
 
+	std::string tmpPassword = result->getDataString("password"), tmpSalt = result->getDataString("salt");
+	result->free();
 	query.str("");
+
 	query << "SELECT `name` FROM `players` WHERE `account_id` = " << accountId;
 	if(!(result = db->storeQuery(query.str())))
 		return false;
@@ -272,17 +273,13 @@ bool IOLoginData::getPassword(uint32_t accountId, std::string& password, std::st
 
 bool IOLoginData::setPassword(uint32_t accountId, std::string newPassword)
 {
-	std::string salt;
-	if(g_config.getBool(ConfigManager::GENERATE_ACCOUNT_SALT))
-	{
-		salt = generateRecoveryKey(2, 19, true);
-		newPassword = salt + newPassword;
-	}
+	std::string salt = generateRecoveryKey(2, 19, true);
+	newPassword = salt + newPassword;
+	_encrypt(newPassword, false);
 
 	Database* db = Database::getInstance();
 	DBQuery query;
 
-	_encrypt(newPassword, false);
 	query << "UPDATE `accounts` SET `password` = " << db->escapeString(newPassword) << ", `salt` = "<< db->escapeString(salt) << " WHERE `id` = " << accountId << db->getUpdateLimiter();
 	return db->query(query.str());
 }
@@ -703,7 +700,7 @@ bool IOLoginData::loadPlayer(Player* player, const std::string& name, bool preLo
 	if((result = db->storeQuery(query.str())))
 	{
 		do
-			player->setStorage(result->getDataString("key"), result->getDataString("value"));
+			player->setStorage((uint32_t)result->getDataInt("key"), result->getDataString("value"));
 		while(result->next());
 		result->free();
 	}
@@ -969,7 +966,7 @@ bool IOLoginData::savePlayer(Player* player, bool preSave/* = true*/, bool shall
 	query_insert.setQuery("INSERT INTO `player_storage` (`player_id`, `key`, `value`) VALUES ");
 	for(StorageMap::const_iterator cit = player->getStorageBegin(); cit != player->getStorageEnd(); ++cit)
 	{
-		sprintf(buffer, "%u, %s, %s", player->getGUID(), db->escapeString(cit->first).c_str(), db->escapeString(cit->second).c_str());
+		sprintf(buffer, "%u, %u, %s", player->getGUID(), cit->first, db->escapeString(cit->second).c_str());
 		if(!query_insert.addRow(buffer))
 			return false;
 	}
@@ -1110,8 +1107,6 @@ bool IOLoginData::playerDeath(Player* _player, const DeathList& dl)
 
 #ifdef __WAR_SYSTEM__
 	DeathList wl;
-	bool war = false;
-
 #endif
 	uint64_t deathId = db->getLastInsertId();
 	for(DeathList::const_iterator it = dl.begin(); i < size && it != dl.end(); ++it, ++i)
@@ -1121,23 +1116,11 @@ bool IOLoginData::playerDeath(Player* _player, const DeathList& dl)
 #ifdef __WAR_SYSTEM__
 			<< ", `war`"
 #endif
-			<< ") VALUES (" << deathId << ", " << it->isLast() << ", " << it->isUnjustified();
+			<< ") VALUES (" << deathId << ", " << it->isLast() << ", " << it->isUnjustified()
 #ifdef __WAR_SYSTEM__
-		if(it->isLast()) //last hit is always first and we got stored war data only there
-		{
-			War_t tmp = it->getWar();
-			if(tmp.war && tmp.frags[tmp.type == WAR_GUILD]
-				<= tmp.limit && tmp.frags[tmp.type] <= tmp.limit)
-				war = true;
-		}
-
-		if(war)
-			query << ", " << it->getWar().war;
-		else
-			query << ", 0";
+			<< ", " << it->getWar().war
 #endif
-
-		query << ")";
+			<< ")";
 		if(!db->query(query.str()))
 			return false;
 
@@ -1184,7 +1167,7 @@ bool IOLoginData::playerDeath(Player* _player, const DeathList& dl)
 #ifdef __WAR_SYSTEM__
 
 	if(!wl.empty())
-		IOGuild::getInstance()->frag(_player, deathId, wl, war);
+		IOGuild::getInstance()->frag(_player, deathId, wl);
 #endif
 
 	return trans.commit();
@@ -1551,7 +1534,7 @@ bool IOLoginData::createCharacter(uint32_t accountId, std::string characterName,
 	return db->query(query.str());
 }
 
-DeleteCharacter_t IOLoginData::deleteCharacter(uint32_t accountId, const std::string& characterName)
+DeleteCharacter_t IOLoginData::deleteCharacter(uint32_t accountId, const std::string characterName)
 {
 	if(g_game.getPlayerByName(characterName))
 		return DELETE_ONLINE;

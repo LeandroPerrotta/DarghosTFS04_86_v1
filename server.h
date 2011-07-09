@@ -67,10 +67,9 @@ class ServicePort : boost::noncopyable, public boost::enable_shared_from_this<Se
 			m_serverPort(0), m_pendingStart(false) {}
 		virtual ~ServicePort() {close();}
 
-		static void services(boost::weak_ptr<ServicePort> weakService, IPAddressList ips, uint16_t port);
-		static void service(boost::weak_ptr<ServicePort> weakService, IPAddress ip, uint16_t port);
-
 		bool add(Service_ptr);
+		static void service(boost::weak_ptr<ServicePort> weakService, IPAddress ips, uint16_t port);
+
 		void open(IPAddressList ips, uint16_t port);
 		void close();
 
@@ -97,6 +96,7 @@ class ServicePort : boost::noncopyable, public boost::enable_shared_from_this<Se
 		static bool m_logError;
 };
 
+typedef boost::shared_ptr<ServicePort> ServicePort_ptr;
 class ServiceManager : boost::noncopyable
 {
 	ServiceManager(const ServiceManager&);

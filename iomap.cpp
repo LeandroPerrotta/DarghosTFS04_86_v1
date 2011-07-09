@@ -358,7 +358,7 @@ bool IOMap::loadMap(Map* map, const std::string& identifier)
 								if(item->getItemCount() <= 0)
 									item->setItemCount(1);
 
-								if(house && item->isMovable())
+								if(house && item->isMoveable())
 								{
 									std::clog << "[Warning - IOMap::loadMap] Movable item in house: " << house->getId();
 									std::clog << ", item type: " << item->getID() << ", at position " << px << "/" << py << "/";
@@ -375,7 +375,8 @@ bool IOMap::loadMap(Map* map, const std::string& identifier)
 								}
 								else if(item->isGroundTile())
 								{
-									delete ground;
+									if(ground)
+										delete ground;
 
 									ground = item;
 								}
@@ -425,7 +426,7 @@ bool IOMap::loadMap(Map* map, const std::string& identifier)
 								if(item->getItemCount() <= 0)
 									item->setItemCount(1);
 
-								if(house && item->isMovable())
+								if(house && item->isMoveable())
 								{
 									std::clog << "[Warning - IOMap::loadMap] Movable item in house: ";
 									std::clog << house->getId() << ", item type: " << item->getID();
@@ -442,7 +443,8 @@ bool IOMap::loadMap(Map* map, const std::string& identifier)
 								}
 								else if(item->isGroundTile())
 								{
-									delete ground;
+									if(ground)
+										delete ground;
 
 									ground = item;
 								}

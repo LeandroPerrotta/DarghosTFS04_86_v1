@@ -26,9 +26,7 @@
 #include "position.h"
 #include <libxml/parser.h>
 
-#define ITEMS 13000
-#define RANDOMIZATION 50
-
+#define ITEMS 11500
 #define SLOTP_WHEREEVER 0xFFFFFFFF
 #define SLOTP_HEAD 1 << 0
 #define	SLOTP_NECKLACE 1 << 1
@@ -134,7 +132,7 @@ class ItemType
 
 		bool stopTime, showCount, stackable, showDuration, showCharges, showAttributes, dualWield,
 			allowDistRead, canReadText, canWriteText, forceSerialize, isVertical, isHorizontal, isHangable,
-			usable, movable, pickupable, rotable, replacable, lookThrough, walkStack, hasHeight, blockSolid,
+			useable, moveable, pickupable, rotable, replaceable, lookThrough, walkStack, hasHeight, blockSolid,
 			blockPickupable, blockProjectile, blockPathFind, allowPickupable, alwaysOnTop, floorChange[CHANGE_LAST];
 
 		MagicEffect_t magicEffect;
@@ -148,14 +146,14 @@ class ItemType
 		Ammo_t ammoType;
 
 		uint16_t transformUseTo[2], transformToFree, transformEquipTo, transformDeEquipTo,
-			id, clientId, maxItems, slotPosition, wieldPosition, speed, maxTextLength, writeOnceItemId;
+			id, clientId, maxItems, slotPosition, wieldPosition, speed, maxTextLen, writeOnceItemId;
 
 		int32_t attack, extraAttack, defense, extraDefense, armor, breakChance, hitChance, maxHitChance,
 			runeLevel, runeMagLevel, lightLevel, lightColor, decayTo, rotateTo, alwaysOnTopOrder;
 		uint32_t shootRange, charges, decayTime, attackSpeed, wieldInfo, minReqLevel, minReqMagicLevel,
-			worth, levelDoor, date;
+			worth, levelDoor;
 
-		std::string name, pluralName, article, description, text, writer, runeSpellName, vocationString;
+		std::string name, pluralName, article, description, runeSpellName, vocationString;
 
 		Condition* condition;
 		Abilities abilities;
@@ -239,7 +237,7 @@ typedef std::map<int32_t, int32_t> IntegerMap;
 class Items
 {
 	public:
-		Items(): m_randomizationChance(RANDOMIZATION), items(ITEMS) {}
+		Items(): m_randomizationChance(50), items(ITEMS) {}
 		virtual ~Items() {clear();}
 
 		bool reload();
@@ -260,7 +258,7 @@ class Items
 		const RandomizationBlock getRandomization(int16_t id) {return randomizationMap[id];}
 
 		uint32_t size() {return items.size();}
-		const IntegerMap getMoneyMap() const {return moneyMap;}
+		const IntegerMap getMoneyMap() {return moneyMap;}
 		const ItemType* getElement(uint32_t id) const {return items.getElement(id);}
 
 		static uint32_t dwMajorVersion;

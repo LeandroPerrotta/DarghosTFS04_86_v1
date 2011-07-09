@@ -515,8 +515,8 @@ ResponseList Npc::loadInteraction(xmlNodePtr node)
 			if(readXMLInteger(node, "focus", intValue))
 				prop.focusStatus = intValue;
 
-			if(readXMLString(node, "storageId", strValue))
-				prop.storageId = strValue;
+			if(readXMLInteger(node, "storageId", intValue))
+				prop.storageId = intValue;
 
 			if(readXMLString(node, "storageValue", strValue))
 				prop.storageValue = strValue;
@@ -852,8 +852,8 @@ ResponseList Npc::loadInteraction(xmlNodePtr node)
 									std::clog << "[Warning - Npc::loadInteraction] Unknown action " << strValue << std::endl;
 							}
 
-							if(readXMLString(subNode, "key", strValue))
-								action.key = strValue;
+							if(readXMLInteger(subNode, "key", intValue))
+								action.key = intValue;
 
 							if(action.actionType != ACTION_NONE)
 								prop.actionList.push_back(action);
@@ -1006,11 +1006,10 @@ NpcState* Npc::getState(const Player* player, bool makeNew /*= true*/)
 
 bool Npc::canSee(const Position& pos) const
 {
-	Position tmp = getPosition();
-	if(pos.z != tmp.z)
+	if(pos.z != getPosition().z)
 		return false;
 
-	return Creature::canSee(tmp, pos, Map::maxClientViewportX, Map::maxClientViewportY);
+	return Creature::canSee(getPosition(), pos, Map::maxClientViewportX, Map::maxClientViewportY);
 }
 
 void Npc::onCreatureAppear(const Creature* creature)
@@ -1033,7 +1032,8 @@ void Npc::onCreatureAppear(const Creature* creature)
 	//only players for script events
 	if(Player* player = const_cast<Player*>(creature->getPlayer()))
 	{
-		if(NpcState* npcState = getState(player))
+		NpcState* npcState = getState(player);
+		if(npcState && canSee(player->getPosition()))
 		{
 			npcState->respondToCreature = player->getID();
 			onPlayerEnter(player, npcState);
@@ -1046,6 +1046,7 @@ void Npc::onCreatureDisappear(const Creature* creature, bool isLogout)
 	Creature::onCreatureDisappear(creature, isLogout);
 	if(creature == this)
 	{
+		//Close all open shop window's
 		closeAllShopWindows();
 		return;
 	}
@@ -1055,7 +1056,8 @@ void Npc::onCreatureDisappear(const Creature* creature, bool isLogout)
 
 	if(Player* player = const_cast<Player*>(creature->getPlayer()))
 	{
-		if(NpcState* npcState = getState(player))
+		NpcState* npcState = getState(player);
+		if(npcState)
 		{
 			npcState->respondToCreature = player->getID();
 			onPlayerLeave(player, npcState);
@@ -1072,7 +1074,8 @@ void Npc::onCreatureMove(const Creature* creature, const Tile* newTile, const Po
 
 	if(Player* player = const_cast<Player*>(creature->getPlayer()))
 	{
-		if(NpcState* npcState = getState(player))
+		NpcState* npcState = getState(player);
+		if(npcState)
 		{
 			bool canSeeNewPos = canSee(newPos), canSeeOldPos = canSee(oldPos);
 			if(canSeeNewPos && !canSeeOldPos)
@@ -1110,13 +1113,16 @@ void Npc::onCreatureSay(const Creature* creature, SpeakClasses type, const std::
 				destPos = (*pos);
 
 			const Position& myPos = getPosition();
-			if(canSee(myPos) && (destPos.x >= myPos.x - talkRadius) && (destPos.x <= myPos.x + talkRadius)
-				&& (destPos.y >= myPos.y - talkRadius) && (destPos.y <= myPos.y + talkRadius))
+			if(canSee(myPos))
 			{
-				if(NpcState* npcState = getState(player))
+				if((destPos.x >= myPos.x - talkRadius) && (destPos.x <= myPos.x + talkRadius) &&
+					(destPos.y >= myPos.y - talkRadius) && (destPos.y <= myPos.y + talkRadius))
 				{
-					npcState->respondToText = text;
-					npcState->respondToCreature = player->getID();
+					if(NpcState* npcState = getState(player))
+					{
+						npcState->respondToText = text;
+						npcState->respondToCreature = player->getID();
+					}
 				}
 			}
 		}
@@ -1426,7 +1432,7 @@ void Npc::executeResponse(Player* player, NpcState* npcState, const NpcResponse*
 
 				case ACTION_SETSTORAGE:
 				{
-					if(!it->key.empty())
+					if(it->key > 0)
 						player->setStorage(it->key, it->strValue);
 
 					break;
@@ -1762,6 +1768,25 @@ void Npc::doSay(const std::string& text, SpeakClasses type, Player* player)
 	}
 }
 
+void Npc::doTurn(Direction dir)
+{
+	g_game.internalCreatureTurn(this, dir);
+}
+
+void Npc::doMove(Direction dir)
+{
+	g_game.internalMoveCreature(this, dir);
+}
+
+void Npc::doMoveTo(Position target)
+{
+	std::list<Direction> listDir;
+	if(!g_game.getPathToEx(this, target, listDir, 1, 1, true, true))
+		return;
+
+	startAutoWalk(listDir);
+}
+
 uint32_t Npc::getListItemPrice(uint16_t itemId, ShopEvent_t type)
 {
 	for(ItemListMap::iterator it = itemListMap.begin(); it != itemListMap.end(); ++it)
@@ -1872,11 +1897,18 @@ bool Npc::canWalkTo(const Position& fromPos, Direction dir)
 bool Npc::getRandomStep(Direction& dir)
 {
 	std::vector<Direction> dirList;
-	for(int32_t i = NORTH; i < SOUTHWEST; ++i)
-	{
-		if(canWalkTo(getPosition(), (Direction)i))
-			dirList.push_back((Direction)i);
-	}
+	const Position& creaturePos = getPosition();
+	if(canWalkTo(creaturePos, NORTH))
+		dirList.push_back(NORTH);
+
+	if(canWalkTo(creaturePos, SOUTH))
+		dirList.push_back(SOUTH);
+
+	if(canWalkTo(creaturePos, EAST))
+		dirList.push_back(EAST);
+
+	if(canWalkTo(creaturePos, WEST))
+		dirList.push_back(WEST);
 
 	if(dirList.empty())
 		return false;
@@ -2086,7 +2118,7 @@ const NpcResponse* Npc::getResponse(const ResponseList& list, const Player* play
 			++matchCount;
 		}
 
-		if(!(*it)->getStorageId().empty())
+		if((*it)->getStorageId() != -1)
 		{
 			std::string value, storageValue = (*it)->getStorage();
 			player->getStorage((*it)->getStorageId(), value);
@@ -2417,9 +2449,14 @@ void NpcScript::registerFunctions()
 	LuaInterface::registerFunctions();
 	lua_register(m_luaState, "selfFocus", NpcScript::luaActionFocus);
 	lua_register(m_luaState, "selfSay", NpcScript::luaActionSay);
+
+	lua_register(m_luaState, "selfTurn", NpcScript::luaActionTurn);
+	lua_register(m_luaState, "selfMove", NpcScript::luaActionMove);
+	lua_register(m_luaState, "selfMoveTo", NpcScript::luaActionMoveTo);
 	lua_register(m_luaState, "selfFollow", NpcScript::luaActionFollow);
 
 	lua_register(m_luaState, "getNpcId", NpcScript::luaGetNpcId);
+	lua_register(m_luaState, "getNpcDistanceTo", NpcScript::luaGetNpcDistanceTo);
 	lua_register(m_luaState, "getNpcParameter", NpcScript::luaGetNpcParameter);
 
 	lua_register(m_luaState, "getNpcState", NpcScript::luaGetNpcState);
@@ -2476,6 +2513,46 @@ int32_t NpcScript::luaActionSay(lua_State* L)
 	return 0;
 }
 
+int32_t NpcScript::luaActionTurn(lua_State* L)
+{
+	//selfTurn(direction)
+	ScriptEnviroment* env = getEnv();
+	if(Npc* npc = env->getNpc())
+		npc->doTurn((Direction)popNumber(L));
+
+	return 0;
+}
+
+int32_t NpcScript::luaActionMove(lua_State* L)
+{
+	//selfMove(direction)
+	ScriptEnviroment* env = getEnv();
+	if(Npc* npc = env->getNpc())
+		npc->doMove((Direction)popNumber(L));
+
+	return 0;
+}
+
+int32_t NpcScript::luaActionMoveTo(lua_State* L)
+{
+	//selfMoveTo({x, y, z|pos})
+	PositionEx pos;
+	if(!lua_istable(L, -1))
+	{
+		pos.z = (uint16_t)popNumber(L);
+		pos.y = (uint16_t)popNumber(L);
+		pos.x = (uint16_t)popNumber(L);
+	}
+	else
+		popPosition(L, pos);
+
+	ScriptEnviroment* env = getEnv();
+	if(Npc* npc = env->getNpc())
+		npc->doMoveTo(pos);
+
+	return 0;
+}
+
 int32_t NpcScript::luaActionFollow(lua_State* L)
 {
 	//selfFollow(cid)
@@ -2512,9 +2589,34 @@ int32_t NpcScript::luaGetNpcId(lua_State* L)
 	return 1;
 }
 
+int32_t NpcScript::luaGetNpcDistanceTo(lua_State* L)
+{
+	//getNpcDistanceTo(uid)
+	ScriptEnviroment* env = getEnv();
+	Npc* npc = env->getNpc();
+
+	Thing* thing = env->getThingByUID(popNumber(L));
+	if(thing && npc)
+	{
+		Position thingPos = thing->getPosition();
+		Position npcPos = npc->getPosition();
+		if(npcPos.z == thingPos.z)
+			lua_pushnumber(L, std::max(std::abs(npcPos.x - thingPos.x), std::abs(npcPos.y - thingPos.y)));
+		else
+			lua_pushnumber(L, -1);
+	}
+	else
+	{
+		errorEx(getError(LUA_ERROR_THING_NOT_FOUND));
+		lua_pushnil(L);
+	}
+
+	return 1;
+}
+
 int32_t NpcScript::luaGetNpcParameter(lua_State* L)
 {
-	//getNpcParameter(key)
+	//getNpcParameter(paramKey)
 	ScriptEnviroment* env = getEnv();
 	if(Npc* npc = env->getNpc())
 	{

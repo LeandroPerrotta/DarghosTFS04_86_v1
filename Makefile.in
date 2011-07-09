@@ -74,10 +74,10 @@ am__theforgottenserver_SOURCES_DIST = account.h actions.cpp actions.h \
 	protocol.cpp protocol.h protocolgame.cpp protocolgame.h \
 	protocolhttp.cpp protocolhttp.h protocollogin.cpp \
 	protocollogin.h protocolold.cpp protocolold.h quests.cpp \
-	quests.h raids.cpp raids.h scheduler.cpp scheduler.h \
-	scriptmanager.cpp scriptmanager.h server.cpp server.h \
-	spawn.cpp spawn.h spells.cpp spells.h status.cpp status.h \
-	talkaction.cpp talkaction.h teleport.cpp teleport.h \
+	quests.h raids.cpp raids.h rsa.cpp rsa.h scheduler.cpp \
+	scheduler.h scriptmanager.cpp scriptmanager.h server.cpp \
+	server.h spawn.cpp spawn.h spells.cpp spells.h status.cpp \
+	status.h talkaction.cpp talkaction.h teleport.cpp teleport.h \
 	templates.h textlogger.cpp textlogger.h thing.cpp thing.h \
 	tile.cpp tile.h tools.cpp tools.h town.h trashholder.cpp \
 	trashholder.h waitlist.cpp waitlist.h waypoints.h weapons.cpp \
@@ -108,12 +108,12 @@ am_theforgottenserver_OBJECTS = actions.$(OBJEXT) $(am__objects_1) \
 	player.$(OBJEXT) position.$(OBJEXT) protocol.$(OBJEXT) \
 	protocolgame.$(OBJEXT) protocolhttp.$(OBJEXT) \
 	protocollogin.$(OBJEXT) protocolold.$(OBJEXT) quests.$(OBJEXT) \
-	raids.$(OBJEXT) scheduler.$(OBJEXT) scriptmanager.$(OBJEXT) \
-	server.$(OBJEXT) spawn.$(OBJEXT) spells.$(OBJEXT) \
-	status.$(OBJEXT) talkaction.$(OBJEXT) teleport.$(OBJEXT) \
-	textlogger.$(OBJEXT) thing.$(OBJEXT) tile.$(OBJEXT) \
-	tools.$(OBJEXT) trashholder.$(OBJEXT) waitlist.$(OBJEXT) \
-	weapons.$(OBJEXT) vocation.$(OBJEXT)
+	raids.$(OBJEXT) rsa.$(OBJEXT) scheduler.$(OBJEXT) \
+	scriptmanager.$(OBJEXT) server.$(OBJEXT) spawn.$(OBJEXT) \
+	spells.$(OBJEXT) status.$(OBJEXT) talkaction.$(OBJEXT) \
+	teleport.$(OBJEXT) textlogger.$(OBJEXT) thing.$(OBJEXT) \
+	tile.$(OBJEXT) tools.$(OBJEXT) trashholder.$(OBJEXT) \
+	waitlist.$(OBJEXT) weapons.$(OBJEXT) vocation.$(OBJEXT)
 theforgottenserver_OBJECTS = $(am_theforgottenserver_OBJECTS)
 am__DEPENDENCIES_1 =
 theforgottenserver_DEPENDENCIES = $(am__DEPENDENCIES_1)
@@ -250,7 +250,7 @@ top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 AM_CXXFLAGS = $(XML_CPPFLAGS) $(OTSERV_FLAGS) $(LUA_CFLAGS) $(DEBUG_FLAGS)\
 $(MYSQL_FLAGS) $(SQLITE_FLAGS) $(PGSQL_FLAGS) $(PROFILER_FLAGS)\
-$(OPTIONAL_FLAGS) -D_THREAD_SAFE -D_REENTRANT -Wall -Wextra -Werror -Wno-strict-aliasing -Wno-unused-parameter
+$(OPTIONAL_FLAGS) -D_THREAD_SAFE -D_REENTRANT -Wall -Wextra -Werror -Wno-strict-aliasing
 
 theforgottenserver_LDADD = $(LUA_LIBS)
 @USE_MYSQL_TRUE@MAYBE_MYSQL = databasemysql.cpp databasemysql.h
@@ -280,7 +280,7 @@ theforgottenserver_SOURCES = account.h actions.cpp actions.h $(MAYBE_OTADMIN) \
 	protocol.cpp protocol.h protocolgame.cpp protocolgame.h \
 	protocolhttp.cpp protocolhttp.h protocollogin.cpp protocollogin.h \
 	protocolold.cpp protocolold.h quests.cpp quests.h raids.cpp raids.h \
-	scheduler.cpp scheduler.h scriptmanager.cpp \
+	rsa.cpp rsa.h scheduler.cpp scheduler.h scriptmanager.cpp \
 	scriptmanager.h server.cpp server.h spawn.cpp spawn.h spells.cpp \
 	spells.h status.cpp status.h talkaction.cpp talkaction.h teleport.cpp \
 	teleport.h templates.h textlogger.cpp textlogger.h thing.cpp thing.h \
@@ -416,6 +416,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/protocolold.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/quests.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/raids.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rsa.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/scheduler.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/scriptmanager.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/server.Po@am__quote@

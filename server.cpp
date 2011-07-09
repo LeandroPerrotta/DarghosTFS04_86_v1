@@ -30,13 +30,16 @@ extern ConfigManager g_config;
 
 bool ServicePort::m_logError = true;
 
-void ServicePort::services(boost::weak_ptr<ServicePort> weakService, IPAddressList ips, uint16_t port)
+bool ServicePort::add(Service_ptr newService)
 {
-	if(weakService.expired())
-		return;
+	for(ServiceVec::const_iterator it = m_services.begin(); it != m_services.end(); ++it)
+	{
+		if((*it)->isSingleSocket())
+			return false;
+	}
 
-	if(ServicePort_ptr service = weakService.lock())
-		service->open(ips, port);
+	m_services.push_back(newService);
+	return true;
 }
 
 void ServicePort::service(boost::weak_ptr<ServicePort> weakService, IPAddress ip, uint16_t port)
@@ -53,32 +56,18 @@ void ServicePort::service(boost::weak_ptr<ServicePort> weakService, IPAddress ip
 	service->open(ips, port);
 }
 
-bool ServicePort::add(Service_ptr newService)
-{
-	for(ServiceVec::const_iterator it = m_services.begin(); it != m_services.end(); ++it)
-	{
-		if((*it)->isSingleSocket())
-			return false;
-	}
-
-	m_services.push_back(newService);
-	return true;
-}
-
 void ServicePort::open(IPAddressList ips, uint16_t port)
 {
 	m_pendingStart = false;
 	m_serverPort = port;
 
 	bool error = false;
-	IPAddressList pendingIps;
 	for(IPAddressList::iterator it = ips.begin(); it != ips.end(); ++it)
 	{
 		try
 		{
 			Acceptor_ptr tmp(new boost::asio::ip::tcp::acceptor(m_io_service,
 				boost::asio::ip::tcp::endpoint(*it, m_serverPort)));
-			tmp->set_option(boost::asio::ip::tcp::acceptor::reuse_address(true));
 
 			accept(tmp);
 			m_acceptors.push_back(tmp);
@@ -88,20 +77,18 @@ void ServicePort::open(IPAddressList ips, uint16_t port)
 			if(m_logError)
 			{
 				LOG_MESSAGE(LOGTYPE_ERROR, e.what(), "NETWORK")
-				pendingIps.push_back(*it);
 				if(!error)
 					error = true;
 			}
+
+			m_pendingStart = true;
+			Scheduler::getInstance().addEvent(createSchedulerTask(5000, boost::bind(
+				&ServicePort::service, boost::weak_ptr<ServicePort>(shared_from_this()), *it, m_serverPort)));
 		}
 	}
 
 	if(error)
-	{
 		m_logError = false;
-		m_pendingStart = true;
-		Scheduler::getInstance().addEvent(createSchedulerTask(5000, boost::bind(
-			&ServicePort::services, boost::weak_ptr<ServicePort>(shared_from_this()), pendingIps, m_serverPort)));
-	}
 }
 
 void ServicePort::close()

@@ -35,10 +35,8 @@ class ContainerIterator
 		ContainerIterator& operator=(const ContainerIterator& rhs);
 		bool operator==(const ContainerIterator& rhs);
 		bool operator!=(const ContainerIterator& rhs);
-
 		ContainerIterator& operator++();
 		ContainerIterator operator++(int32_t);
-
 		Item* operator*();
 		Item* operator->();
 

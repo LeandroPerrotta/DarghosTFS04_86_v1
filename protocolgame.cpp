@@ -126,7 +126,7 @@ bool ProtocolGame::login(const std::string& name, uint32_t id, const std::string
 				(deletion ? "deleted" : "banished"), formatDateEx(ban.added, "%d %b %Y").c_str(), name_.c_str(),
 				getReason(ban.reason).c_str(), getAction(ban.action, false).c_str(), ban.comment.c_str(),
 				(deletion ? "character won't be undeleted" : "banishment will be lifted at:\n"),
-				(deletion ? "" : formatDateEx(ban.expires).c_str()));
+				(deletion ? "." : formatDateEx(ban.expires).c_str()));
 
 			disconnectClient(0x14, buffer);
 			return false;
@@ -254,14 +254,7 @@ bool ProtocolGame::login(const std::string& name, uint32_t id, const std::string
 		m_acceptPackets = true;
 		return true;
 	}
-
-	if(gamemaster && !_player->hasCustomFlag(PlayerCustomFlag_GamemasterPrivileges))
-	{
-		disconnectClient(0x14, "You are not a gamemaster! Turn off the gamemaster mode in your IP changer.");
-		return false;
-	}
-
-	if(_player->client)
+	else if(_player->client)
 	{
 		if(m_eventConnect || !g_config.getBool(ConfigManager::REPLACE_KICK_ON_LOGIN))
 		{
@@ -499,7 +492,7 @@ bool ProtocolGame::parseFirstPacket(NetworkMessage& msg)
 			(deletion ? "deleted" : "banished"), formatDateEx(ban.added, "%d %b %Y").c_str(), name_.c_str(),
 			getReason(ban.reason).c_str(), getAction(ban.action, false).c_str(), ban.comment.c_str(),
 			(deletion ? "account won't be undeleted" : "banishment will be lifted at:\n"),
-			(deletion ? "" : formatDateEx(ban.expires).c_str()));
+			(deletion ? "." : formatDateEx(ban.expires).c_str()));
 
 		disconnectClient(0x14, buffer);
 		return false;
@@ -517,7 +510,8 @@ void ProtocolGame::parsePacket(NetworkMessage &msg)
 		return;
 
 	uint8_t recvbyte = msg.get<char>();
-	if(player->isRemoved() && recvbyte != 0x14) //a dead player cannot performs actions
+	//a dead player cannot performs actions
+	if(player->isRemoved() && recvbyte != 0x14)
 		return;
 
 	if(player->isAccountManager())
@@ -796,10 +790,6 @@ void ProtocolGame::parsePacket(NetworkMessage &msg)
 				parseQuestInfo(msg);
 				break;
 
-			case 0xF2:
-				parseViolationReport(msg);
-				break;
-
 			default:
 			{
 				if(g_config.getBool(ConfigManager::BAN_UNKNOWN_BYTES))
@@ -831,8 +821,11 @@ void ProtocolGame::parsePacket(NetworkMessage &msg)
 					}
 				}
 
-				std::stringstream hex;
+				std::stringstream hex, s;
 				hex << "0x" << std::hex << (int16_t)recvbyte << std::dec;
+				s << player->getName() << " sent unknown byte: " << hex << std::endl;
+
+				LOG_MESSAGE(LOGTYPE_NOTICE, s.str(), "PLAYER")
 				Logger::getInstance()->eFile(getFilePath(FILE_TYPE_LOG, "bots/" + player->getName() + ".log").c_str(),
 					"[" + formatDate() + "] Received byte " + hex.str(), false);
 				break;
@@ -1511,14 +1504,7 @@ void ProtocolGame::parseViolationWindow(NetworkMessage& msg)
 	std::string statement = msg.getString();
 	uint32_t statementId = (uint32_t)msg.get<uint16_t>();
 	bool ipBanishment = msg.get<char>();
-	addGameTask(&Game::playerViolationWindow, player->getID(), target,
-		reason, action, comment, statement, statementId, ipBanishment);
-}
-
-void ProtocolGame::parseViolationReport(NetworkMessage& msg)
-{
-	msg.skip(msg.size() - msg.position());
-	// addGameTask(&Game::playerViolationReport, player->getID(), ...);
+	addGameTask(&Game::playerViolationWindow, player->getID(), target, reason, action, comment, statement, statementId, ipBanishment);
 }
 
 //********************** Send methods *******************************//
@@ -1571,10 +1557,38 @@ void ProtocolGame::sendWorldLight(const LightInfo& lightInfo)
 	}
 }
 
+void ProtocolGame::sendCreatureEmblem(const Creature* creature)
+{
+	if(!canSee(creature))
+		return;
+
+	// we are cheating the client in here!
+	uint32_t stackpos = creature->getTile()->getClientIndexOfThing(player, creature);
+	if(stackpos >= 10)
+		return;
+
+	NetworkMessage_ptr msg = getOutputBuffer();
+	if(msg)
+	{
+		TRACK_MESSAGE(msg);
+		std::list<uint32_t>::iterator it = std::find(knownCreatureList.begin(), knownCreatureList.end(), creature->getID());
+		if(it != knownCreatureList.end())
+		{
+			RemoveTileItem(msg, creature->getPosition(), stackpos);
+			msg->put<char>(0x6A);
+
+			msg->putPosition(creature->getPosition());
+			msg->put<char>(stackpos);
+			AddCreature(msg, creature, false, creature->getID());
+		}
+		else
+			AddTileCreature(msg, creature->getPosition(), stackpos, creature);
+	}
+}
+
 void ProtocolGame::sendCreatureImpassable(const Creature* creature)
 {
-	reloadCreature(creature);
-	/* TODO: how this actually work...
+	// TODO: how this actually work...
 	if(!canSee(creature))
 		return;
 
@@ -1585,7 +1599,7 @@ void ProtocolGame::sendCreatureImpassable(const Creature* creature)
 		msg->put<char>(0x92);
 		msg->put<uint32_t>(creature->getID());
 		msg->put<char>(!player->canWalkthrough(creature));
-	}*/
+	}
 }
 
 void ProtocolGame::sendCreatureShield(const Creature* creature)
@@ -2255,10 +2269,11 @@ void ProtocolGame::sendAddCreature(const Creature* creature, const Position& pos
 	AddPlayerStats(msg);
 	AddPlayerSkills(msg);
 
+	//gameworld light-settings
 	LightInfo lightInfo;
 	g_game.getWorldLightInfo(lightInfo);
-
 	AddWorldLight(msg, lightInfo);
+	//player light level
 	AddCreatureLight(msg, creature);
 
 	player->sendIcons();
@@ -2636,35 +2651,7 @@ void ProtocolGame::sendVIP(uint32_t guid, const std::string& name, bool isOnline
 	}
 }
 
-void ProtocolGame::reloadCreature(const Creature* creature)
-{
-	if(!canSee(creature))
-		return;
-
-	// we are cheating the client in here!
-	uint32_t stackpos = creature->getTile()->getClientIndexOfThing(player, creature);
-	if(stackpos >= 10)
-		return;
-
-	NetworkMessage_ptr msg = getOutputBuffer();
-	if(msg)
-	{
-		TRACK_MESSAGE(msg);
-		std::list<uint32_t>::iterator it = std::find(knownCreatureList.begin(), knownCreatureList.end(), creature->getID());
-		if(it != knownCreatureList.end())
-		{
-			RemoveTileItem(msg, creature->getPosition(), stackpos);
-			msg->put<char>(0x6A);
-
-			msg->putPosition(creature->getPosition());
-			msg->put<char>(stackpos);
-			AddCreature(msg, creature, false, creature->getID());
-		}
-		else
-			AddTileCreature(msg, creature->getPosition(), stackpos, creature);
-	}
-}
-
+////////////// Add common messages
 void ProtocolGame::AddMapDescription(NetworkMessage_ptr msg, const Position& pos)
 {
 	msg->put<char>(0x64);
@@ -2728,15 +2715,8 @@ void ProtocolGame::AddCreature(NetworkMessage_ptr msg, const Creature* creature,
 	AddCreatureOutfit(msg, creature, creature->getCurrentOutfit());
 
 	LightInfo lightInfo;
-	if(creature == player && player->hasCustomFlag(PlayerCustomFlag_HasFullLight))
-	{
-		lightInfo.level = 0xFF;
-		lightInfo.color = 215;
-	}
-	else
-		creature->getCreatureLight(lightInfo);
-
-	msg->put<char>(lightInfo.level);
+	creature->getCreatureLight(lightInfo);
+	msg->put<char>(player->hasCustomFlag(PlayerCustomFlag_HasFullLight) ? 0xFF : lightInfo.level);
 	msg->put<char>(lightInfo.color);
 
 	msg->put<uint16_t>(creature->getStepSpeed());
@@ -2911,25 +2891,18 @@ void ProtocolGame::AddCreatureOutfit(NetworkMessage_ptr msg, const Creature* cre
 void ProtocolGame::AddWorldLight(NetworkMessage_ptr msg, const LightInfo& lightInfo)
 {
 	msg->put<char>(0x82);
-	msg->put<char>(player->hasCustomFlag(PlayerCustomFlag_HasFullLight) ? 0xFF : lightInfo.level);
+	msg->put<char>((player->hasCustomFlag(PlayerCustomFlag_HasFullLight) ? 0xFF : lightInfo.level));
 	msg->put<char>(lightInfo.color);
 }
 
 void ProtocolGame::AddCreatureLight(NetworkMessage_ptr msg, const Creature* creature)
 {
+	LightInfo lightInfo;
+	creature->getCreatureLight(lightInfo);
+
 	msg->put<char>(0x8D);
 	msg->put<uint32_t>(creature->getID());
-
-	LightInfo lightInfo;
-	if(creature == player && player->hasCustomFlag(PlayerCustomFlag_HasFullLight))
-	{
-		lightInfo.level = 0xFF;
-		lightInfo.color = 215;
-	}
-	else
-		creature->getCreatureLight(lightInfo);
-
-	msg->put<char>(lightInfo.level);
+	msg->put<char>((player->hasCustomFlag(PlayerCustomFlag_HasFullLight) ? 0xFF : lightInfo.level));
 	msg->put<char>(lightInfo.color);
 }
 

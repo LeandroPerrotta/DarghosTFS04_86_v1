@@ -137,21 +137,6 @@ bool Creature::canSeeCreature(const Creature* creature) const
 	return creature == this || (!creature->isGhost() && (!creature->isInvisible() || canSeeInvisibility()));
 }
 
-bool Creature::canWalkthrough(const Creature* creature) const
-{
-	if(creature == this)
-		return true;
-
-	if(const Creature* _master = creature->getMaster())
-	{	
-		if(_master != this && canWalkthrough(_master))
-			return true;
-	}
-	
-	return creature->isGhost() || creature->isWalkable() || (master &&
-		master != creature && master->canWalkthrough(creature));
-}
-
 int64_t Creature::getTimeSinceLastMove() const
 {
 	if(lastStep)
@@ -352,6 +337,21 @@ void Creature::stopEventWalk()
 	eventWalk = 0;
 }
 
+void Creature::internalCreatureDisappear(const Creature* creature, bool isLogout)
+{
+	if(attackedCreature == creature)
+	{
+		setAttackedCreature(NULL);
+		onAttackedCreatureDisappear(isLogout);
+	}
+
+	if(followCreature == creature)
+	{
+		setFollowCreature(NULL);
+		onFollowCreatureDisappear(isLogout);
+	}
+}
+
 void Creature::updateMapCache()
 {
 	const Position& pos = getPosition();
@@ -382,6 +382,12 @@ void Creature::validateMapCache()
 }
 #endif
 
+void Creature::updateTileCache(const Tile* tile)
+{
+	if(isMapLoaded && tile->getPosition().z == getPosition().z)
+		updateTileCache(tile, tile->getPosition());
+}
+
 void Creature::updateTileCache(const Tile* tile, int32_t dx, int32_t dy)
 {
 	if((std::abs(dx) <= (mapWalkWidth - 1) / 2) && (std::abs(dy) <= (mapWalkHeight - 1) / 2))
@@ -401,12 +407,6 @@ void Creature::updateTileCache(const Tile* tile, const Position& pos)
 	const Position& myPos = getPosition();
 	if(pos.z == myPos.z)
 		updateTileCache(tile, pos.x - myPos.x, pos.y - myPos.y);
-}
-
-void Creature::updateTileCache(const Tile* tile)
-{
-	if(isMapLoaded && tile->getPosition().z == getPosition().z)
-		updateTileCache(tile, tile->getPosition());
 }
 
 int32_t Creature::getWalkCache(const Position& pos) const
@@ -482,19 +482,9 @@ void Creature::onCreatureAppear(const Creature* creature)
 		updateTileCache(creature->getTile(), creature->getPosition());
 }
 
-void Creature::internalCreatureDisappear(const Creature* creature, bool isLogout)
+void Creature::onCreatureDisappear(const Creature* creature, bool)
 {
-	if(attackedCreature == creature)
-	{
-		setAttackedCreature(NULL);
-		onAttackedCreatureDisappear(isLogout);
-	}
-
-	if(followCreature == creature)
-	{
-		setFollowCreature(NULL);
-		onFollowCreatureDisappear(isLogout);
-	}
+	internalCreatureDisappear(creature, true);
 }
 
 void Creature::onRemovedCreature()
@@ -887,7 +877,7 @@ void Creature::changeMana(int32_t manaChange)
 		mana = std::max((int32_t)0, mana + manaChange);
 }
 
-bool Creature::getStorage(const std::string& key, std::string& value) const
+bool Creature::getStorage(const uint32_t key, std::string& value) const
 {
 	StorageMap::const_iterator it = storageMap.find(key);
 	if(it != storageMap.end())
@@ -900,7 +890,7 @@ bool Creature::getStorage(const std::string& key, std::string& value) const
 	return false;
 }
 
-bool Creature::setStorage(const std::string& key, const std::string& value)
+bool Creature::setStorage(const uint32_t key, const std::string& value)
 {
 	storageMap[key] = value;
 	return true;
@@ -1567,7 +1557,7 @@ void Creature::getCreatureLight(LightInfo& light) const
 	light = internalLight;
 }
 
-void Creature::resetLight()
+void Creature::setNormalCreatureLight()
 {
 	internalLight.level = internalLight.color = 0;
 }

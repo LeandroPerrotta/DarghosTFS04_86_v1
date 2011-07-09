@@ -234,7 +234,7 @@
 	</instant>
 	<instant name="Magic Rope" words="exani tera" lvl="9" mana="20" exhaustion="2000" aggressive="0" script="support/magic_rope.lua">
 	</instant>
-	<instant name="Light Healing" words="exura" lvl="9" mana="20"  exhaustion="2000" selftarget="1" aggressive="0" script="healing/light_healing.lua">
+	<instant name="Light Healing" words="exura" lvl="9" mana="20"  exhaustion="1000" selftarget="1" aggressive="0" script="healing/light_healing.lua">
 	</instant>
 	<instant name="Antidote" words="exana pox" lvl="10" mana="30" exhaustion="2000" selftarget="1" aggressive="0" script="healing/antidote.lua">
 	</instant>
@@ -280,7 +280,7 @@
 	<instant name="Fire Wave" words="exevo flam hur" lvl="18" mana="25" exhaustion="2000" direction="1" script="attack/fire_wave.lua">
 		<vocation name="Sorcerer"/> <vocation name="Master Sorcerer"/>
 	</instant>
-	<instant name="Heal Friend" words="exura sio" lvl="18" mana="140" exhaustion="2000" needtarget="1" params="1" aggressive="0" script="healing/heal_friend.lua">
+	<instant name="Heal Friend" words="exura sio" lvl="18" mana="140" exhaustion="1000" needtarget="1" params="1" aggressive="0" script="healing/heal_friend.lua">
 		<vocation name="Druid"/>    <vocation name="Elder Druid"/>
 	</instant>
 	<instant name="Ice Wave" words="exevo frigo hur" lvl="18" mana="25" exhaustion="2000" direction="1" script="attack/ice_wave.lua">

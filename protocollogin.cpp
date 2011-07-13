@@ -207,7 +207,7 @@ bool ProtocolLogin::parseFirstPacket(NetworkMessage& msg)
 			output->put<uint16_t>(g_config.getNumber(ConfigManager::GAME_PORT));
 		}
 		else
-		#ifndef __DARGHOS_CUSTOM__
+		#ifndef __DARGHOS_PROXY__
 			output->put<char>((uint8_t)account.charList.size());
         #else
             output->put<char>((uint8_t)account.charList.size() * 2);
@@ -230,7 +230,7 @@ bool ProtocolLogin::parseFirstPacket(NetworkMessage& msg)
 			output->put<uint32_t>(serverIp);
 			output->put<uint16_t>(g_config.getNumber(ConfigManager::GAME_PORT));
 
-			#ifdef __DARGHOS_CUSTOM__
+			#ifdef __DARGHOS_PROXY__
 			output->putString((*it));
 			output->putString("Proxy 1 on " + g_config.getString(ConfigManager::SERVER_NAME));
 			output->put<uint32_t>(inet_addr("174.37.227.173"));

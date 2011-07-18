@@ -60,8 +60,8 @@
     <voice sentence="Fire!"/>
   </voices>
   <loot>
-    <item id="2187" chance="2111">
-      <!--wand of inferno-->
+    <item id="12691" actionId="22" chance="2111">
+      <!--addon doll (actionId 22 = warmaster outfit)-->
     </item>
   </loot>
 </monster>

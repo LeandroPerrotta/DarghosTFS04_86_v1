@@ -174,6 +174,8 @@
 	INQ_DEMON_4					= 1064,
 	INQ_DEMON_5					= 1065,
 	
+	MINI_GAME_BOSS				= 1066,
+	
 	-- pvp systems
 	ARENA_TEAM_ONE_WALLS		= {3301, 3302},
 	ARENA_TEAM_TWO_WALLS		= {3303, 3304},

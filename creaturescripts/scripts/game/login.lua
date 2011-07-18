@@ -11,6 +11,7 @@ function onLogin(cid)
 	registerCreatureEvent(cid, "onKill")
 	registerCreatureEvent(cid, "autolotgold")
 	registerCreatureEvent(cid, "tradeHandler")
+	registerCreatureEvent(cid, "lookItem")
 	
 	--if(tasks.hasStartedTask(cid)) then
 		registerCreatureEvent(cid, "CustomTasks")

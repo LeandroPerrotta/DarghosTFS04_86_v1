@@ -17961,4 +17961,7 @@
 		<attribute key="weight" value="120" />
 		<attribute key="description" value="Use it to earn premium time for 30 days." />
 	</item>	
+	<item id="12691" article="a" name="outfit ticket">
+		<attribute key="weight" value="1200" />
+	</item>		
 </items>

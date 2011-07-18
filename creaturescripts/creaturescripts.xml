@@ -11,6 +11,7 @@
 	<event type="think" name="SkullCheck" event="script" value="skullcheck.lua"/>
 	
 	<!-- DARGHOS -->
+	<event type="look" name="lookItem" event="script" value="game/look.lua"/>
 	<event type="login" name="CustomPlayerLogin" event="script" value="game/login.lua"/>
 	<event type="kill" name="pvpArena_onKill" event="script" value="game/pvp_arena.lua"/>
 	<event type="logout" name="pvpArena_onLogout" event="script" value="game/pvp_arena.lua"/>
@@ -18,6 +19,7 @@
 	<event type="target" name="CustomPlayerTarget" event="script" value="game/target.lua"/>
 	<event type="death" name="CustomPlayerDeath" event="script" value="game/death.lua"/>
 	<event type="death" name="inquisitionReplaceDemons" event="script" value="game/inquisition/death.lua"/>
+	<event type="death" name="minigameOnBossDeath" event="script" value="game/mini_game.lua"/>
 	<event type="kill" name="Inquisition" event="script" value="game/inquisition.lua"/>
 	<event type="logout" name="CustomPlayerLogout" event="script" value="game/logout.lua"/>
 	<event type="kill" name="CustomBonartesTasks" event="script" value="game/onkillmission.lua"/>

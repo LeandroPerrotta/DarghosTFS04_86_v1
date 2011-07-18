@@ -35,6 +35,10 @@
 	<movevent type="StepIn" actionid="4040" event="script" value="game/medusa_tp.lua"/>
 	
 	
+	<!-- MINI GAME -->
+	<movevent type="StepIn" actionid="261" event="script" value="game/mini_game_tp.lua"/>
+	<movevent type="StepIn" actionid="262" event="script" value="game/mini_game_tile.lua"/>	
+	
 	<!-- POI QUEST -->
 	<movevent type="StepIn" actionid="250" event="script" value="game/poi.quest/tps.lua"/>
 	<movevent type="StepIn" actionid="251" event="script" value="game/poi.quest/tps.lua"/>

@@ -24743,9 +24743,7 @@
     <monster name="Scarab" x="0" y="4" z="10" spawntime="33554432"/>
     <monster name="Scarab" x="1" y="4" z="10" spawntime="60"/>
   </spawn>
-  <spawn centerx="2383" centery="2654" centerz="10" radius="30">
-    <monster name="boss" x="2" y="-1" z="10" spawntime="60"/>
-  </spawn>
+  <spawn centerx="2383" centery="2654" centerz="10" radius="30"/>
   <spawn centerx="2693" centery="2665" centerz="10" radius="27">
     <monster name="Tortoise" x="-10" y="-5" z="10" spawntime="60"/>
     <monster name="Tortoise" x="-9" y="-5" z="10" spawntime="32256"/>

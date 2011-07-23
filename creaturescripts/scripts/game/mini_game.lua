@@ -1,6 +1,7 @@
 function onDeath(cid, corpse, deathList)
 	
 	setGlobalStorageValue(gid.EVENT_MINI_GAME_STATE, -1)
+	doCreatureSay(cid, "O Comander foi derrotado, o evento Warmaster Game por esta semana esta encerrado. Todos serão enviados para seus templos em 2 minutos.", TALKTYPE_ORANGE_1)
 	addEvent(kickPlayers, 1000 * 60 * 2)
 		
 	return true

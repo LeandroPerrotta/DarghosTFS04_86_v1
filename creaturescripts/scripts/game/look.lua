@@ -1,17 +1,14 @@
 function onLook(cid, thing, position, lookDistance)    
 
-	local item_id = thing.itemid
-	
-	local ITEM_ADDON_DOLL = 12691
-	
-	if(item_id == ITEM_ADDON_DOLL) then
-		lookingAddonDoll(cid, thing)
+	local item_id = thing.itemid	
+	if(item_id == CUSTOM_ITEMS.OUTFIT_TICKET) then
+		lookingOutfitTicket(cid, thing)
 	end
 
 	return true
 end
 
-function lookingAddonDoll(cid, thing)
+function lookingOutfitTicket(cid, thing)
 
 	local outfitId = thing.actionid or 0
 	local outfitName = {

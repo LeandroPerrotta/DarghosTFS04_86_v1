@@ -49,14 +49,14 @@ function lookingAddonDoll(cid, thing)
 	local desc = ""
 	
 	if(not canPlayerWearOutfitId(cid, outfitId, 0)) then
-		desc = "Use this ticket to purchase the " .. tempName .. " outfit."
+		desc = "Use this ticket to earn the " .. tempName .. " outfit."
 	else
 		if(canPlayerWearOutfitId(cid, outfitId, 2)) then
-			desc = "An player without any part of " .. tempName .. " outfit can purchase it with this ticket."
+			desc = "An player without any part of " .. tempName .. " outfit can earn it using this ticket."
 		elseif(canPlayerWearOutfitId(cid, outfitId, 1)) then
-			desc = "Use this ticket to purchase the second addon to " .. tempName .. " outfit."
+			desc = "Use this ticket to earn the second addon for " .. tempName .. " outfit."
 		else
-			desc = "Use this ticket to purchase the first addon to " .. tempName .. " outfit."
+			desc = "Use this ticket to earn the first addon for " .. tempName .. " outfit."
 		end		
 	end	
 

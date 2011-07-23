@@ -13,7 +13,7 @@ end
 
 function lookingAddonDoll(cid, thing)
 
-	local outfitId = (thing.aid ~= nil) and thing.actionid or 0
+	local outfitId = thing.actionid or 0
 	local outfitName = {
 		[1] = "Citizen",
 		[2] = "Hunter",

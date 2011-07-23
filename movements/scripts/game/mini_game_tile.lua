@@ -6,7 +6,7 @@ function onStepIn(cid, item, position, fromPosition)
 		
 		doTeleportThing(cid, fromPosition, false)
 		doSendMagicEffect(position, CONST_ME_MAGIC_BLUE)
-		doPlayerSendTextMessage(cid, MESSAGE_INFO_DESCR, "Este evento s√≥ est√° disponivel aos domingos a partir das 15:00.")	
+		doPlayerSendTextMessage(cid, MESSAGE_INFO_DESCR, "Este evento sÛ È aberto aos domingos a partir das 15:00.")	
 	end
 	
 	return true

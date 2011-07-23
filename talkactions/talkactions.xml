@@ -76,6 +76,8 @@
 	<talkaction log="yes" words="/info" access="2" event="script" value="playerinfo.lua"/>
 	<talkaction log="yes" words="/gethouse" access="2" event="script" value="gethouse.lua"/>
 	<talkaction log="yes" access="2" words="/b" event="script" value="broadcast.lua"/>
+	<talkaction log="yes" words="/town" access="2" event="script" value="teleporttown.lua"/>
+	<talkaction log="yes" words="/t" access="2" event="script" value="teleporttown.lua"/>
 
 	<!-- Tutors -->
 	<talkaction log="yes" words="/baninfo;!baninfo" access="1" event="function" value="banishmentInfo"/>
@@ -102,6 +104,8 @@
 	<talkaction words="alito sio" filter="word-spaced" event="script" value="leavehouse.lua"/>
 
 	<!-- Guilds -->
+	<!-- 
 	<talkaction words="!createguild;/createguild" event="function" value="guildCreate"/>
 	<talkaction words="!joinguild;/joinguild" event="function" value="guildJoin"/>
+	 -->
 </talkactions>

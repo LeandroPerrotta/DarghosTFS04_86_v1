@@ -60,5 +60,5 @@ function lookingAddonDoll(cid, thing)
 		end		
 	end	
 
-	doItemSetAttribute(thing, "description", desc)
+	doItemSetAttribute(thing.uid, "description", desc)
 end

@@ -60,7 +60,7 @@
     <voice sentence="Fire!"/>
   </voices>
   <loot>
-    <item id="12691" actionId="22" chance="2111">
+    <item id="12691" actionId="22" countmax="1" chance="100000">
       <!--addon doll (actionId 22 = warmaster outfit)-->
     </item>
   </loot>

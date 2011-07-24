@@ -15344,55 +15344,55 @@
     <monster name="Toad" x="1" y="24" z="8" spawntime="60"/>
   </spawn>
   <spawn centerx="2385" centery="2682" centerz="8" radius="5">
-    <monster name="Stone Wall" x="-1" y="-3" z="8" spawntime="60"/>
-    <monster name="Stone Wall" x="0" y="-3" z="8" spawntime="60"/>
-    <monster name="Stone Wall" x="1" y="-3" z="8" spawntime="60"/>
-    <monster name="Stone Wall" x="2" y="-3" z="8" spawntime="60"/>
-    <monster name="pillar" x="-1" y="-2" z="8" spawntime="60"/>
-    <monster name="pillar" x="0" y="-2" z="8" spawntime="60"/>
-    <monster name="pillar" x="1" y="-2" z="8" spawntime="60"/>
-    <monster name="pillar" x="2" y="-2" z="8" spawntime="60"/>
+    <monster name="Stone Wall" x="-1" y="-3" z="8" spawntime="3600"/>
+    <monster name="Stone Wall" x="0" y="-3" z="8" spawntime="3600"/>
+    <monster name="Stone Wall" x="1" y="-3" z="8" spawntime="3600"/>
+    <monster name="Stone Wall" x="2" y="-3" z="8" spawntime="3600"/>
+    <monster name="pillar" x="-1" y="-2" z="8" spawntime="3600"/>
+    <monster name="pillar" x="0" y="-2" z="8" spawntime="3600"/>
+    <monster name="pillar" x="1" y="-2" z="8" spawntime="3600"/>
+    <monster name="pillar" x="2" y="-2" z="8" spawntime="3600"/>
     <monster name="pillar" x="-4" y="-1" z="8" spawntime="60"/>
-    <monster name="catapult l" x="-2" y="-1" z="8" spawntime="60"/>
-    <monster name="catapult r" x="3" y="-1" z="8" spawntime="60"/>
+    <monster name="catapult l" x="-2" y="-1" z="8" spawntime="3600"/>
+    <monster name="catapult r" x="3" y="-1" z="8" spawntime="3600"/>
     <monster name="pillar" x="5" y="-1" z="8" spawntime="60"/>
     <monster name="pillar" x="-4" y="1" z="8" spawntime="60"/>
-    <monster name="catapult l" x="-2" y="1" z="8" spawntime="60"/>
-    <monster name="catapult r" x="3" y="1" z="8" spawntime="60"/>
+    <monster name="catapult l" x="-2" y="1" z="8" spawntime="3600"/>
+    <monster name="catapult r" x="3" y="1" z="8" spawntime="3600"/>
     <monster name="pillar" x="5" y="1" z="8" spawntime="60"/>
     <monster name="pillar" x="-4" y="3" z="8" spawntime="60"/>
-    <monster name="catapult l" x="-2" y="3" z="8" spawntime="60"/>
-    <monster name="catapult r" x="3" y="3" z="8" spawntime="60"/>
+    <monster name="catapult l" x="-2" y="3" z="8" spawntime="3600"/>
+    <monster name="catapult r" x="3" y="3" z="8" spawntime="3600"/>
     <monster name="pillar" x="5" y="3" z="8" spawntime="60"/>
     <monster name="pillar" x="-4" y="5" z="8" spawntime="60"/>
-    <monster name="catapult l" x="-2" y="5" z="8" spawntime="60"/>
-    <monster name="catapult r" x="3" y="5" z="8" spawntime="60"/>
+    <monster name="catapult l" x="-2" y="5" z="8" spawntime="3600"/>
+    <monster name="catapult r" x="3" y="5" z="8" spawntime="3600"/>
     <monster name="pillar" x="5" y="5" z="8" spawntime="60"/>
   </spawn>
   <spawn centerx="2385" centery="2692" centerz="8" radius="5">
     <monster name="pillar" x="-4" y="-3" z="8" spawntime="60"/>
-    <monster name="catapult l" x="-2" y="-3" z="8" spawntime="60"/>
-    <monster name="catapult r" x="3" y="-3" z="8" spawntime="60"/>
+    <monster name="catapult l" x="-2" y="-3" z="8" spawntime="3600"/>
+    <monster name="catapult r" x="3" y="-3" z="8" spawntime="3600"/>
     <monster name="pillar" x="5" y="-3" z="8" spawntime="60"/>
     <monster name="pillar" x="-4" y="-1" z="8" spawntime="60"/>
-    <monster name="catapult l" x="-2" y="-1" z="8" spawntime="60"/>
-    <monster name="catapult r" x="3" y="-1" z="8" spawntime="60"/>
+    <monster name="catapult l" x="-2" y="-1" z="8" spawntime="3600"/>
+    <monster name="catapult r" x="3" y="-1" z="8" spawntime="3600"/>
     <monster name="pillar" x="5" y="-1" z="8" spawntime="60"/>
     <monster name="pillar" x="-4" y="1" z="8" spawntime="60"/>
-    <monster name="catapult l" x="-2" y="1" z="8" spawntime="60"/>
-    <monster name="catapult r" x="3" y="1" z="8" spawntime="60"/>
+    <monster name="catapult l" x="-2" y="1" z="8" spawntime="3600"/>
+    <monster name="catapult r" x="3" y="1" z="8" spawntime="3600"/>
     <monster name="pillar" x="5" y="1" z="8" spawntime="60"/>
     <monster name="pillar" x="-4" y="3" z="8" spawntime="60"/>
-    <monster name="catapult l" x="-2" y="3" z="8" spawntime="60"/>
-    <monster name="pillar" x="-1" y="3" z="8" spawntime="60"/>
-    <monster name="pillar" x="0" y="3" z="8" spawntime="60"/>
-    <monster name="pillar" x="1" y="3" z="8" spawntime="60"/>
-    <monster name="pillar" x="2" y="3" z="8" spawntime="60"/>
-    <monster name="catapult r" x="3" y="3" z="8" spawntime="60"/>
-    <monster name="Stone Wall" x="-1" y="4" z="8" spawntime="60"/>
-    <monster name="Stone Wall" x="0" y="4" z="8" spawntime="60"/>
-    <monster name="Stone Wall" x="1" y="4" z="8" spawntime="60"/>
-    <monster name="Stone Wall" x="2" y="4" z="8" spawntime="60"/>
+    <monster name="catapult l" x="-2" y="3" z="8" spawntime="3600"/>
+    <monster name="pillar" x="-1" y="3" z="8" spawntime="3600"/>
+    <monster name="pillar" x="0" y="3" z="8" spawntime="3600"/>
+    <monster name="pillar" x="1" y="3" z="8" spawntime="3600"/>
+    <monster name="pillar" x="2" y="3" z="8" spawntime="3600"/>
+    <monster name="catapult r" x="3" y="3" z="8" spawntime="3600"/>
+    <monster name="Stone Wall" x="-1" y="4" z="8" spawntime="3600"/>
+    <monster name="Stone Wall" x="0" y="4" z="8" spawntime="3600"/>
+    <monster name="Stone Wall" x="1" y="4" z="8" spawntime="3600"/>
+    <monster name="Stone Wall" x="2" y="4" z="8" spawntime="3600"/>
   </spawn>
   <spawn centerx="2655" centery="2705" centerz="8" radius="27">
     <monster name="Thornback Tortoise" x="-8" y="-18" z="8" spawntime="60"/>
@@ -20299,9 +20299,7 @@
     <monster name="Giant Spider" x="-1" y="3" z="9" spawntime="60"/>
     <monster name="Giant Spider" x="4" y="3" z="9" spawntime="60"/>
   </spawn>
-  <spawn centerx="2387" centery="2663" centerz="9" radius="5">
-    <monster name="Stone" x="0" y="1" z="9" spawntime="3600"/>
-  </spawn>
+  <spawn centerx="2387" centery="2663" centerz="9" radius="5"/>
   <spawn centerx="2769" centery="2669" centerz="9" radius="27">
     <monster name="Tortoise" x="-21" y="-16" z="9" spawntime="60"/>
     <monster name="Thornback Tortoise" x="-14" y="-16" z="9" spawntime="60"/>
@@ -20333,24 +20331,24 @@
     <monster name="Thornback Tortoise" x="-4" y="26" z="9" spawntime="60"/>
   </spawn>
   <spawn centerx="2379" centery="2671" centerz="9" radius="5">
-    <monster name="Stone Wall" x="-1" y="-1" z="9" spawntime="60"/>
-    <monster name="Stone Wall" x="0" y="-1" z="9" spawntime="60"/>
-    <monster name="Stone Wall" x="1" y="-1" z="9" spawntime="2560"/>
-    <monster name="Stone Wall" x="2" y="-1" z="9" spawntime="60"/>
-    <monster name="Stone Wall" x="-1" y="5" z="9" spawntime="60"/>
-    <monster name="Stone Wall" x="0" y="5" z="9" spawntime="60"/>
-    <monster name="Stone Wall" x="1" y="5" z="9" spawntime="60"/>
-    <monster name="Stone Wall" x="2" y="5" z="9" spawntime="60"/>
+    <monster name="Stone Wall" x="-1" y="-1" z="9" spawntime="3600"/>
+    <monster name="Stone Wall" x="0" y="-1" z="9" spawntime="3600"/>
+    <monster name="Stone Wall" x="1" y="-1" z="9" spawntime="3600"/>
+    <monster name="Stone Wall" x="2" y="-1" z="9" spawntime="3600"/>
+    <monster name="Stone Wall" x="-1" y="5" z="9" spawntime="3600"/>
+    <monster name="Stone Wall" x="0" y="5" z="9" spawntime="3600"/>
+    <monster name="Stone Wall" x="1" y="5" z="9" spawntime="3600"/>
+    <monster name="Stone Wall" x="2" y="5" z="9" spawntime="3600"/>
   </spawn>
   <spawn centerx="2394" centery="2671" centerz="9" radius="5">
-    <monster name="Stone Wall" x="-1" y="-4" z="9" spawntime="60"/>
-    <monster name="Stone Wall" x="0" y="-4" z="9" spawntime="60"/>
-    <monster name="Stone Wall" x="1" y="-4" z="9" spawntime="60"/>
-    <monster name="Stone Wall" x="2" y="-4" z="9" spawntime="60"/>
-    <monster name="Stone Wall" x="-1" y="2" z="9" spawntime="60"/>
-    <monster name="Stone Wall" x="0" y="2" z="9" spawntime="60"/>
-    <monster name="Stone Wall" x="1" y="2" z="9" spawntime="60"/>
-    <monster name="Stone Wall" x="2" y="2" z="9" spawntime="60"/>
+    <monster name="Stone Wall" x="-1" y="-4" z="9" spawntime="3600"/>
+    <monster name="Stone Wall" x="0" y="-4" z="9" spawntime="3600"/>
+    <monster name="Stone Wall" x="1" y="-4" z="9" spawntime="3600"/>
+    <monster name="Stone Wall" x="2" y="-4" z="9" spawntime="3600"/>
+    <monster name="Stone Wall" x="-1" y="2" z="9" spawntime="3600"/>
+    <monster name="Stone Wall" x="0" y="2" z="9" spawntime="3600"/>
+    <monster name="Stone Wall" x="1" y="2" z="9" spawntime="3600"/>
+    <monster name="Stone Wall" x="2" y="2" z="9" spawntime="3600"/>
   </spawn>
   <spawn centerx="2681" centery="2674" centerz="9" radius="27">
     <monster name="Tortoise" x="5" y="-15" z="9" spawntime="60"/>
@@ -20376,20 +20374,21 @@
     <monster name="Tortoise" x="22" y="25" z="9" spawntime="60"/>
   </spawn>
   <spawn centerx="2379" centery="2678" centerz="9" radius="5">
-    <monster name="Stone Wall" x="-1" y="4" z="9" spawntime="60"/>
-    <monster name="Stone Wall" x="0" y="4" z="9" spawntime="60"/>
-    <monster name="Stone Wall" x="1" y="4" z="9" spawntime="60"/>
-    <monster name="Stone Wall" x="2" y="4" z="9" spawntime="60"/>
+    <monster name="Stone Wall" x="-2" y="4" z="9" spawntime="3600"/>
+    <monster name="Stone Wall" x="-1" y="4" z="9" spawntime="3600"/>
+    <monster name="Stone Wall" x="0" y="4" z="9" spawntime="3600"/>
+    <monster name="Stone Wall" x="1" y="4" z="9" spawntime="3600"/>
+    <monster name="Stone Wall" x="2" y="4" z="9" spawntime="3600"/>
   </spawn>
   <spawn centerx="2393" centery="2682" centerz="9" radius="5">
-    <monster name="Stone Wall" x="0" y="-3" z="9" spawntime="60"/>
-    <monster name="Stone Wall" x="1" y="-3" z="9" spawntime="60"/>
-    <monster name="Stone Wall" x="2" y="-3" z="9" spawntime="60"/>
-    <monster name="Stone Wall" x="3" y="-3" z="9" spawntime="60"/>
-    <monster name="Stone Wall" x="0" y="3" z="9" spawntime="60"/>
-    <monster name="Stone Wall" x="1" y="3" z="9" spawntime="60"/>
-    <monster name="Stone Wall" x="2" y="3" z="9" spawntime="60"/>
-    <monster name="Stone Wall" x="3" y="3" z="9" spawntime="60"/>
+    <monster name="Stone Wall" x="0" y="-3" z="9" spawntime="3600"/>
+    <monster name="Stone Wall" x="1" y="-3" z="9" spawntime="3600"/>
+    <monster name="Stone Wall" x="2" y="-3" z="9" spawntime="3600"/>
+    <monster name="Stone Wall" x="3" y="-3" z="9" spawntime="3600"/>
+    <monster name="Stone Wall" x="0" y="3" z="9" spawntime="3600"/>
+    <monster name="Stone Wall" x="1" y="3" z="9" spawntime="3600"/>
+    <monster name="Stone Wall" x="2" y="3" z="9" spawntime="3600"/>
+    <monster name="Stone Wall" x="3" y="3" z="9" spawntime="3600"/>
   </spawn>
   <spawn centerx="2797" centery="2683" centerz="9" radius="27">
     <monster name="Tortoise" x="-10" y="26" z="9" spawntime="60"/>

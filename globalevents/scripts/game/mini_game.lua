@@ -3,8 +3,6 @@ function onTime(time)
 	local date = os.date("*t")
 	local SUNDAY = 1
 	
-	print(table.show(date))
-	
 	if(date.wday ~= SUNDAY) then
 		return true
 	end
@@ -28,4 +26,7 @@ function eventStart()
 	local boss = doSummonCreature("boss", boss_pos)	
 	
 	registerCreatureEvent(boss, "minigameOnBossDeath")
+	
+	local stone_poss = getThingPosition(uid.MINI_GAME_STONE)
+	doSummonCreature("stone", stone_poss)
 end

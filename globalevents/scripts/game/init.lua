@@ -23,6 +23,8 @@ function onStartup()
 	db.executeQuery("UPDATE `players` SET `afk` = 0 WHERE `world_id` = " .. getConfigValue('worldId') .. " AND `afk` > 0;")
 	addEvent(autoBroadcast, 1000 * 60 * 30)
 	
+	luaGlobal.truncate()
+	
 	return true
 end
 

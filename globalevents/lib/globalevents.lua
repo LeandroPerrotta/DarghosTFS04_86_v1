@@ -1,5 +1,5 @@
 PLAYERS_MIN_LEVEL = 12
-PLAYERS_MAX_LEVEL = 25
+PLAYERS_MAX_LEVEL = 40
 
 function spoofPlayers()
 

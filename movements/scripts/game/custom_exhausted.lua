@@ -1,6 +1,6 @@
 local items = {
-	[2164] = { sid = sids.EXHAUSTED_ITEM_MIGHT_RING, exhausted = 60},
-	[2197] = { sid = sids.EXHAUSTED_ITEM_STONE_SKIN_AMULET, exhausted = 60}
+	[2164] = { sid = sid.EXHAUSTED_ITEM_MIGHT_RING, exhausted = 60},
+	[2197] = { sid = sid.EXHAUSTED_ITEM_STONE_SKIN_AMULET, exhausted = 60}
 }
 
 function onEquip(cid, item, slot, boolean)

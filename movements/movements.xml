@@ -86,8 +86,8 @@
 	<movevent type="StepIn" actionid="30101-30199" event="script" value="game/teleport.lua"/>	
 
 	<!-- CUSTOM EXHAUSTEDS PARA MIGHT RING E STONE SKIN AMULETS -->
-	<movevent type="Equip" slot="ring" event="script" value="game/custom_exhausted.lua"/>
-	<movevent type="Equip" slot="necklace" event="script" value="game/custom_exhausted.lua"/>
+	<movevent type="Equip" itemid="2164" slot="ring" event="script" value="game/custom_exhausted.lua"/>
+	<movevent type="Equip" itemid="2197" slot="necklace" event="script" value="game/custom_exhausted.lua"/>
 
 	<!-- CUSTOM ITEMS -->
 	<!-- BOOTS SECTOR -->

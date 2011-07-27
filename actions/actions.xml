@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <actions>
 	<action default="yes" event="script" value="default.lua"/>
+	
+	<!-- Hack for default script for Use With items... -->
+	<action itemid="12670" script="default.lua"/>
 
 	<!-- Divine Ankh -->
 	<action itemid="2193" script="game/ankh.lua"/>

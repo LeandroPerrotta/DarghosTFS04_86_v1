@@ -543,6 +543,12 @@ end
 
 function doUpdateCreatureImpassable(cid)
 	
+	local onIsland = (getPlayerStorageValue(cid, sid.IS_ON_TRAINING_ISLAND) == 1) and true or false
+	
+	if(getPlayerTown(cid) ~= towns.ISLAND_OF_PEACE and not onIsland) then
+		return
+	end	
+	
 	doPlayerSetGroupId(cid, GROUP_PLAYER)
 end
 

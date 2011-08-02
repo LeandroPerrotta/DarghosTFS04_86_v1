@@ -13,8 +13,8 @@ function useOnDeadTree(cid, item, frompos, item2, topos)
 		return true
 	end	
 	
-	local questStatus = getGlobalStorageValue(gid.DEMON_OAK_STATUS) or false
-	if(questStatus) then
+	local questStatus = getGlobalStorageValue(gid.DEMON_OAK_STATUS)
+	if(questStatus == 1) then
 		doPlayerSendTextMessage(cid, MESSAGE_EVENT_DEFAULT, "Another player already in there.")
 		return true
 	end
@@ -30,4 +30,5 @@ function useOnDeadTree(cid, item, frompos, item2, topos)
     doTeleportThing(cid, newPosition, TRUE)
     doSendMagicEffect(topos, CONST_ME_TELEPORT)
     doSendMagicEffect(frompos, CONST_ME_POFF)
+    setGlobalStorageValue(gid.DEMON_OAK_STATUS, 1)
 end

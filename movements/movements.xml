@@ -16,9 +16,12 @@
 	<movevent type="StepIn" actionid="8305" event="script" value="game/field_damage.lua"/>
 	-->
 
+	<!-- DEMON OAK  -->
+	<movevent type="StepIn" actionid="4066" event="script" value="game/demon_oak.lua"/>
+
 	<!-- INQUISITION QUEST -->
 	
-	<movevent type="StepIn" actionid="4033" event="script" value="game/inquisition_hall.lua"/>		
+	<movevent type="StepIn" actionid="4033" event="script" value="game/inquisition_hall.lua"/>
 	<movevent type="StepIn" actionid="4034" event="script" value="game/inquisition_hall.lua"/>		
 	<movevent type="StepIn" actionid="4035" event="script" value="game/inquisition_hall.lua"/>		
 	<movevent type="StepIn" actionid="4036" event="script" value="game/inquisition_hall.lua"/>		

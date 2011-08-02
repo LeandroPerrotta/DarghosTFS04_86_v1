@@ -32,4 +32,5 @@ function useOnDeadTree(cid, item, frompos, item2, topos)
     doSendMagicEffect(frompos, CONST_ME_POFF)
     
     setGlobalStorageValue(gid.DEMON_OAK_STATUS, 1)
+    return true
 end

@@ -256,6 +256,22 @@ function canUseShopItem(log_id)
 	return false	
 end
 
+function doCreateRespawnArea(respawns, position, radius)
+
+	local min_x, max_x = position.x - radius, position.x + radius
+	local min_y, max_y = position.y - radius, position.y + radius
+	
+	for k,v in pairs(respawns) do
+		for i = 1, v.count do
+			local temp_pos = { z = position.z }
+			temp_pos.x = math.rand(min_x, max_x)
+			temp_pos.y = math.rand(min_y, max_y)
+			
+			doCreateMonster(v.name, temp_pos, true)
+		end
+	end
+end
+
 function restoreAddon(cid)
 
 	local patch = getDataDir() .. "lib/darghos/addons.json"

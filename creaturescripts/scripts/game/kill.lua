@@ -34,11 +34,12 @@ function killMissions(cid, target)
 	if(creatures[target_name] ~= nil) then
 		for k,v in pairs(creatures[target_name]) do
 		
-			local task_status = getPlayeStorageValue(cid, v.task_storage)
+			local task_status = getPlayerStorageValue(cid, v.task_storage)
 			if(task_status == 0) then
 				local slains = getPlayerStorageValue(cid, v.task_kills) or 0
 				slains = slains + 1
 				
+				setPlayerStorageValue(cid, v.task_kills, slains)
 				if(slains == v.task_need_kills) then
 					doPlayerSendTextMessage(cid, MESSAGE_EVENT_DEFAULT, "Você concluiu sua tarefa de derrotar " .. task_need_kills .. " " .. target_name .. ".")
 				elseif(slains < v.task_need_kills) then

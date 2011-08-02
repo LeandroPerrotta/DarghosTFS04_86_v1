@@ -86,7 +86,7 @@ function onAcceptTask(cid, message, keywords, parameters, node)
     end
     
     if(taskStatus == 0) then
-    	local slainDemons = getPlayerStorageValue(cid, sid.TASK_KILLED_DEMONS)
+    	local slainDemons = getPlayerStorageValue(cid, sid.TASK_KILLED_DEMONS) or 0
     	
     	if(slainDemons >= TASK_DEMONS_KILL) then
     		setPlayerStorageValue(cid, sid.TASK_KILL_DEMONS, 1)

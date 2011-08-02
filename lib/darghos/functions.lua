@@ -272,12 +272,6 @@ function doCreateRespawnArea(respawns, position, radius)
 	end
 end
 
-function summonDemonOak()
-	local pos = getThingPos(uid.THE_DEMON_OAK_POS)
-	local temp_monster = doSummonCreature("Demon Oak", pos)
-	setGlobalStorageValue(gid.THE_DEMON_OAK, temp_monster.uid)
-end
-
 function restoreAddon(cid)
 
 	local patch = getDataDir() .. "lib/darghos/addons.json"
@@ -918,6 +912,12 @@ function summonLordVankyner()
 	local creaturePos = getThingPos(uid.LORD_VANKYNER)
 	local creature = doSummonCreature("Lord Vankyner", creaturePos)
 	registerCreatureEvent(creature, "CreatureDie")
+end
+
+function summonDemonOak()
+	local pos = getThingPos(uid.THE_DEMON_OAK_POS)
+	local temp_monster = doSummonCreature("Demon Oak", pos)
+	setGlobalStorageValue(gid.THE_DEMON_OAK, temp_monster)
 end
 
 --[[

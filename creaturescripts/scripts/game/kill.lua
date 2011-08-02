@@ -15,10 +15,21 @@ function onKill(cid, target, damage, flags)
 		onUngreezDie(cid, target, damage, flags)
 	end
 	
+	killDemonOak(cid, target)
 	killMissions(cid, target)
 	
 	return TRUE
 
+end
+
+function killDemonOak(cid, target)
+
+	local target_name = string.lower(getCreatureName(target))
+	local playerInside = getGlobalStorageValue(gid.DEMON_OAK_PLAYER_INSIDE)
+	
+	if(target_name == "demon" and playerInside ~= -1 and playerInside == cid) then
+		setPlayerStorageValue(cid, sid.KILL_DEMON_OAK, 1)
+	end
 end
 
 function killMissions(cid, target)

@@ -13,37 +13,52 @@ local tries = {
 }
 
 local completeTries = 0
+local reseting = false
 
-local theDemonOak = {
+local theDemonOak = uid.THE_DEMON_OAK
+
+local theDemonOakYell = {
+	onEnter = "EU ESTIVE ESPERANDO POR VOCÊ!!",
+	onKill = "COMO FOI POSSIVEL? O MESTRE IRA ESMAGAR VOCÊ!!",
+	random = {"AMALDIÇO-O VOCÊ!!", "AHHHH, SUA DOR ME TORNA MAIS FORTE!!", "MINHAS RAIZES DRENAM SEU SANGUE DERRAMADO!!"}
+}
+
+local theDemonOakRespawns = {
 	-- braço da esquerda
 	[ITEM_DEMON_OAK_LEFT_ARM] = {
 		{
 			{ name = "braindeath", count = 3 },
-			{ name = "bone beast", count = 1 }
+			{ name = "bone beast", count = 1 },
+			yell = "LEVANTEM ESCRAVOS! LEVANTEM DA ESCURIDÃO!!!"
 		},
 		{
-			{ name = "betrayed wraith", count = 2 }
+			{ name = "betrayed wraith", count = 2 },
+			yell = "PEGUEM OS OSSOS E VENHAM ATÉ MIM! VENHAM ATÉ AONDE EU POSSA VER-LOS!!!"
 		},
 	},
 	
 	-- braço da direita
 	[ITEM_DEMON_OAK_RIGHT_ARM] = {
 		{
-			{ name = "banshee", count = 3 }
+			{ name = "banshee", count = 3 },
+			yell = "BANSHEES TRAGAM-ME SUAS ALMAS!!"
 		},
 		{
-			{ name = "grim reaper", count = 1 }
+			{ name = "grim reaper", count = 1 },
+			yell = "ARGGH! O TORTUREM! ACABEM COM ELE LENTAMENTE MEU ESCRAVO!!"
 		},	
 	},
 	
 	-- passaro
 	[ITEM_DEMON_OAK_BIRD] = {
 		{
-			{ name = "lich", count = 3 }
+			{ name = "lich", count = 3 },
+			yell = "MUITA DOR VOCÊ IRA SENTIR PARA OBTER A SUA RECOMPENSA!!!"
 		},
 		{
 			{ name = "dark torturer", count = 1 },
-			{ name = "blightwalker", count = 1 }
+			{ name = "blightwalker", count = 1 },
+			yell = "POR CADA GOLPE VOCÊ PAGARÁ DECADAS DE TORTURA!!"
 		},		
 	},
 	
@@ -51,11 +66,13 @@ local theDemonOak = {
 	[ITEM_DEMON_OAK_FACE] = {
 		{
 			{ name = "lich", count = 1 },
-			{ name = "giant spider", count = 2 }
+			{ name = "giant spider", count = 2 },
+			yell = "ENTÃO VOCÊ GOSTA DISSO? O AMALDIÇÕEM!!"
 		},
 		{
 			{ name = "undead dragon", count = 1 },
-			{ name = "hand of cursed fate", count = 1 }
+			{ name = "hand of cursed fate", count = 1 },
+			yell = "SINTA O PESO DA MÃO AMALDIÇOADA!!"
 		},		
 	}
 
@@ -65,7 +82,7 @@ function onUse(cid, item, frompos, item2, topos)
 
 	if(item.actionid == aid.DEMON_OAK_DEAD_TREE) then
 		return useOnDeadTree(cid, item, frompos, item2, topos)
-	elseif(theDemonOak[item2.itemid] ~= nil) then
+	elseif(theDemonOakRespawns[item2.itemid] ~= nil) then
 		return useOnDemonOak(cid, item, frompos, item2, topos)
 	end
 end
@@ -75,15 +92,20 @@ function useOnDemonOak(cid, item, frompos, item2, topos)
 	tries[item2.itemid] = tries[item2.itemid] + 1
 	
 	if(tries[item2.itemid] == 5) then
-		local respawns = theDemonOak[item2.itemid][1]
+		demonOakSpeak(theDemonOakRespawns[item2.itemid][1].yell)
+		local respawns = theDemonOakRespawns[item2.itemid][1]
 		doCreateRespawnArea(respawns, demon_oak_pos, 5)
 		
 	elseif(tries[item2.itemid] == 10) then
 		if(completeTries == 3) then
+			demonOakSpeak(theDemonOakYell.onKill)
 			local respawns = {{ name = "demon", count = 1}}
-			doCreateRespawnArea(respawns, demon_oak_pos, 5)			
+			doCreateRespawnArea(respawns, demon_oak_pos, 5)	
+			reseting = true
+			addEvent(resetDemonOak, 1000 * 30)		
 		else
-			local respawns = theDemonOak[item2.itemid][2]
+			demonOakSpeak(theDemonOakRespawns[item2.itemid][2].yell)
+			local respawns = theDemonOakRespawns[item2.itemid][2]
 			doCreateRespawnArea(respawns, demon_oak_pos, 5)	
 			completeTries = completeTries + 1		
 		end
@@ -95,13 +117,27 @@ function useOnDemonOak(cid, item, frompos, item2, topos)
 			local respawns = {{ name = "bone beast", count = 4}}
 			doCreateRespawnArea(respawns, demon_oak_pos, 5)	
 		end	
+		
+		local random = math.random(1, #theDemonOakYell.random)
+		demonOakSpeak(theDemonOakYell.random[random])
 	end
 	
+	doCreatureSay(item2.uid, "-krrrak-", TALKTYPE_ORANGE_1)
 	doSendMagicEffect(getPlayerPosition(cid), CONST_ME_BIGPLANTS)
 	return true
 end
 
+function demonOakSpeak(text)
+	doCreatureSay(theDemonOak, text, TALKTYPE_ORANGE_1)
+end
+
 function resetDemonOak()
+
+	if(getGlobalStorageValue(gid.DEMON_OAK_PLAYER_INSIDE) ~= -1) then
+		addEvent(resetDemonOak, 1000 * 10)
+		return
+	end
+
 	completeTries = 0
 	
 	tries = {
@@ -110,25 +146,38 @@ function resetDemonOak()
 		[ITEM_DEMON_OAK_BIRD] = 0,
 		[ITEM_DEMON_OAK_FACE] = 0
 	}	
+	
+	reseting = false
 end
 
 function useOnDeadTree(cid, item, frompos, item2, topos)
 
 	local level = getPlayerLevel(cid)
 	if(level < 120) then
-		doPlayerSendTextMessage(cid, MESSAGE_EVENT_DEFAULT, "You must be level 120 or higher to across.")
+		doPlayerSendTextMessage(cid, MESSAGE_EVENT_DEFAULT, "Você precisa ser level 120 ou superior para atravessar.")
 		return true
 	end	
 	
 	local questStatus = getGlobalStorageValue(gid.DEMON_OAK_PLAYER_INSIDE)
 	if(questStatus ~= -1) then
-		doPlayerSendTextMessage(cid, MESSAGE_EVENT_DEFAULT, "Another player already in there.")
+		doPlayerSendTextMessage(cid, MESSAGE_EVENT_DEFAULT, "Outro jogador já está dentro. Aguarde alguns minutos.")
 		return true
 	end
 	
 	local taskStatus = getPlayerStorageValue(cid, sid.TASK_KILL_DEMONS) or false
 	if(not taskStatus) then
-		doPlayerSendTextMessage(cid, MESSAGE_EVENT_DEFAULT, "You need special permission from Oldrak to go inside.")
+		doPlayerSendTextMessage(cid, MESSAGE_EVENT_DEFAULT, "Para entrar é preciso de uma permissão especial concedida por Oldrak.")
+		return true		
+	end
+	
+	local demonOakStatus = getPlayerStorageValue(cid, sid.KILL_DEMON_OAK) or false
+	if(demonOakStatus) then
+		doPlayerSendTextMessage(cid, MESSAGE_EVENT_DEFAULT, "Você já obteve a sua recompensa.")
+		return true		
+	end	
+	
+	if(reseting) then
+		doPlayerSendTextMessage(cid, MESSAGE_EVENT_DEFAULT, "Você não pode entrar agora, por favor, aguarde alguns instantes e tente novamente.")
 		return true		
 	end
 	
@@ -140,5 +189,6 @@ function useOnDeadTree(cid, item, frompos, item2, topos)
     doSendMagicEffect(frompos, CONST_ME_POFF)
     
     setGlobalStorageValue(gid.DEMON_OAK_PLAYER_INSIDE, cid)
+    demonOakSpeak(theDemonOakYell.onEnter)
     return true
 end

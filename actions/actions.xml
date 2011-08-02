@@ -24,6 +24,9 @@
 	<action actionid="4011" script="game/quara_stone.lua"/>	
 	<action itemid="5957" script="game/lotery_ticket.lua"/>	
 	<action itemid="7494" script="game/holy_water.lua"/>	
+	
+	<!-- Demon Oak Quest -->
+	<action actionid="4065" script="game/demon_oak.lua"/>
 
 	
 	<!-- Quests -->

@@ -27,8 +27,9 @@ function useOnDeadTree(cid, item, frompos, item2, topos)
 	
 	topos.y = topos.y + 1
 	
-    doTeleportThing(cid, newPosition, TRUE)
+    doTeleportThing(cid, topos, true)
     doSendMagicEffect(topos, CONST_ME_TELEPORT)
     doSendMagicEffect(frompos, CONST_ME_POFF)
+    
     setGlobalStorageValue(gid.DEMON_OAK_STATUS, 1)
 end

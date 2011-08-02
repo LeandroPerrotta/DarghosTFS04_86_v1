@@ -273,7 +273,7 @@ function doCreateRespawnArea(respawns, position, radius)
 end
 
 function summonDemonOak()
-	local pos = getThingPos(uid.THE_DEMON_OAK_POS)
+	local pos = getThingPosition(uid.THE_DEMON_OAK_POS)
 	local temp_monster = doCreateMonster("demon oak", pos)
 	setGlobalStorageValue(gid.THE_DEMON_OAK, temp_monster.uid)
 end

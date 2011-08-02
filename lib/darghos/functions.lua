@@ -274,7 +274,7 @@ end
 
 function summonDemonOak()
 	local pos = getThingPos(uid.THE_DEMON_OAK_POS)
-	local temp_monster = doCreateMonster("demon oak", pos)
+	local temp_monster = doSummonCreature("Demon Oak", pos)
 	setGlobalStorageValue(gid.THE_DEMON_OAK, temp_monster.uid)
 end
 

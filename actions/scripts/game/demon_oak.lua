@@ -91,7 +91,7 @@ function useOnDemonOak(cid, item, frompos, item2, topos)
 		doSendMagicEffect(getPlayerPosition(cid), CONST_ME_POFF)
 		return true
 	else
-		if(math.rand(1, 100) >= 50) then
+		if(math.random(1, 100) >= 50) then
 			local respawns = {{ name = "bone beast", count = 4}}
 			doCreateRespawnArea(respawns, demon_oak_pos, 5)	
 		end	

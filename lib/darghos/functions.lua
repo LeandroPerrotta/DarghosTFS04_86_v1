@@ -272,6 +272,12 @@ function doCreateRespawnArea(respawns, position, radius)
 	end
 end
 
+function summonDemonOak()
+	local pos = getThingPos(uid.THE_DEMON_OAK_POS)
+	local temp_monster = doCreateMonster("demon oak", pos)
+	setGlobalStorageValue(gid.THE_DEMON_OAK, temp_monster.uid)
+end
+
 function restoreAddon(cid)
 
 	local patch = getDataDir() .. "lib/darghos/addons.json"

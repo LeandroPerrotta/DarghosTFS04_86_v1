@@ -3,6 +3,7 @@ function onStartup()
 	spoofPlayers()
 	Dungeons.onServerStart()
 	summonLordVankyner()	
+	summonDemonOak()
 	
 	local sendPlayerToTemple = getGlobalStorageValue(gid.SEND_PLAYERS_TO_TEMPLE)
 	

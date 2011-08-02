@@ -1,6 +1,6 @@
 function onUse(cid, item, frompos, item2, topos)
 
-	if(item.actionid == 4065) then
+	if(item.actionid == aid.DEMON_OAK_DEAD_TREE) then
 		return useOnDeadTree(cid, item, frompos, item2, topos)
 	end
 end

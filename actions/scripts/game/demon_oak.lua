@@ -82,7 +82,7 @@ function onUse(cid, item, frompos, item2, topos)
 	if(item.actionid == aid.DEMON_OAK_DEAD_TREE) then
 		return useOnDeadTree(cid, item, frompos, item2, topos)
 	elseif(item.actionid == aid.DEMON_OAK_STONE_COFFIN) then
-	
+		return useOnStoneCoffin(cid, item, frompos, item2, topos)
 	elseif(theDemonOakRespawns[item2.itemid] ~= nil) then
 		return useOnDemonOak(cid, item, frompos, item2, topos)
 	end
@@ -201,7 +201,7 @@ function useOnStoneCoffin(cid, item, frompos, item2, topos)
 	    doTeleportThing(cid, rewardTeleportPos, true)
 	    doSendMagicEffect(topos, CONST_ME_TELEPORT)
 	    doSendMagicEffect(frompos, CONST_ME_POFF)		
-	    
-		return true		
 	end	
+	
+	return true
 end

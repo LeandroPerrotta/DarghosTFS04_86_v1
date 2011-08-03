@@ -3,263 +3,16 @@ local TEAM_ONE, TEAM_TWO = 1, 2
 
 local ITEM_GATE = 9532
 
-local ARENA_1X1, ARENA_2X2, ARENA_3X3, ARENA_5X5 = 1, 2, 3, 4
-
-local ARENA_MIN_LEVEL = 40
-
 local ARENA_STAGES = {
-	[ARENA_1X1] = {
-		{ from = ARENA_MIN_LEVEL, to = 99 },
-		{ from = 100, to = nil }
-	},
-	[ARENA_2X2] = {
-		{ from = 80, to = nil }
-	},	
-	[ARENA_3X3] = {
-		{ from = 80, to = nil }
-	},		
-	[ARENA_5X5] = {
-		{ from = 80, to = nil }
-	},		
+	{ from = 1, to = 19 },
+	{ from = 20, to = 39 },
+	{ from = 40, to = 59 },
+	{ from = 60, to = 79 },
+	{ from = 80, to = 99 },
+	{ from = 100, to = 139 },
+	{ from = 140, to = 179 },
+	{ from = 180, to = nil },
 }
-
-PVP_SERVICE_STATUS_VAR = "pvpServiceStatus"
-
-function getPvpServiceStatus()
-	return getGlobalValue(PVP_SERVICE_STATUS_VAR)
-end
-
-function setPvpServiceStatus(status)
-	setGlobalValue(PVP_SERVICE_STATUS_VAR, status)
-end
-
-pvpArena = {}
-
--- Handlers
-
-function pvpArena.playerCanJoin(cid)
-
-	if(getGameState() == GAMESTATE_CLOSING or getPvpServiceStatus() == STATE_PAUSED) then
-		pvpArena.sendPlayerMessage(cid, "A arena está desativada por enquanto, tente novamente mais tarde.")
-		return false
-	end
-
-	if(hasCondition(cid, CONDITION_INFIGHT)) then
-		pvpArena.sendPlayerMessage(cid, "Você está em condição de combate. Fique alguns instantes sem entrar em combate e tente novamente.")
-		return false
-	end	
-
-	if(getPlayerTown(cid) == getTownIdByName("Island of Peace")) then
-		pvpArena.sendPlayerMessage(cid, "Jogadores que moram em Island of Peace são muito passivos para participarem de sanguinarias batalhas de Arena.")
-		return false	
-	end
-	
-	if(getPlayerLevel(cid) < ARENA_MIN_LEVEL) then
-		pvpArena.sendPlayerMessage(cid, "Para participar de uma arena é necessario ser level " .. ARENA_MIN_LEVEL .. " ou superior.")
-		return false		
-	end
-	
-	if(getPlayerPosInQueue(cid) ~= nil) then
-		pvpArena.sendPlayerMessage(cid, "Você ja está na fila para participar de alguma arena, continue aguardando...")
-		return false
-	end
-	
-	return true
-end
-
-function pvpArena.sendPlayerMessage(cid, message, exclude)
-	
-	exclude = exclude or {}
-	
-	if(type(cid) == "table") then
-		for k,v in pairs(cid) do
-			cid = v
-			if(not isInArray(exclude, cid)) then
-				doPlayerSendTextMessage(cid, MESSAGE_STATUS_CONSOLE_BLUE, message)
-			end
-		end
-	else
-		doPlayerSendTextMessage(cid, MESSAGE_STATUS_CONSOLE_BLUE, message)
-	end
-end
-
-function pvpArena.buildTeams(queue, arena, onlyGroup)
-
-	onlyGroup = onlyGroup or false
-
-	local playersCount = {
-		[ARENA_1X1] = 1,
-		[ARENA_2X2] = 2,
-		[ARENA_3X3] = 3,
-		[ARENA_5X5] = 5
-	}
-	
-	if(onlyGroup and #queue[arena]["group"] < 2) then
-		return nil
-	end	
-	
-	local teams = {}
-	local t = 1
-	local formed = false
-	
-	if(#queue[arena]["group"] > 0) then
-		
-		for k,v in pairs(queue[arena]["group"]) do
-		
-			if(teams[t] ~= nil) then
-				t = t + 1
-			end
-		
-			teams[t] = {}
-		
-			for i = 1, playersCount[arena] do
-				table.insert(teams[t], {cid = v[1].cid, death = false})
-			end
-			
-			queue[arena]["group"][k] = nil
-			
-			if(t == 2) then
-				formed = true
-				queue[arena]["group"][k - 1] = nil
-				queue[arena]["group"][k] = nil
-				break
-			end
-		end
-		
-		if(not onlyGroup and not formed and #queue[arena]["single"] >= playersCount[arena]) then
-		
-			if(teams[t] ~= nil) then
-				t = t + 1
-			end				
-			
-			teams[t] = {}
-			local p = 0
-		
-			for k,v in pairs(queue[arena]["single"]) do
-
-				table.insert(teams[t], {cid = v.cid, death = false})
-				queue[arena]["single"][k] = nil		
-				p = p + 1	
-				
-				if(p == playersCount[arena]) then
-					formed = true
-					break
-				end								
-			end
-		end	
-	end
-	
-	if(not formed and #queue[arena]["single"] >= playersCount[arena] * 2) then
-		
-		for t = 1, 2 do
-			
-			teams[t] = {}
-			
-			local p = 0
-			
-			for k,v in pairs(queue[arena]["single"]) do
-
-				table.insert(teams[t], {cid = v.cid, death = false})
-				queue[arena]["single"][k] = nil		
-				p = p + 1	
-				
-				if(p == playersCount[arena]) then
-					formed = true
-					break
-				end
-			end				
-		end		
-	end			
-	
-	if(not formed) then
-		return nil
-	end
-	
-	return teams
-end
-
-function pvpArena.mainLoop()
-
-	local queue = getArenaQueue()
-	
-	local teams = nil pvpArena.buildTeams(queue, ARENA_5X5, true)
-	local teamFoundTo = nil
-	
-	for i = ARENA_5X5, ARENA_1X1, -1 do 
-	
-		local onlyGroup = (i == ARENA_5X5) and true or false
-		teams = pvpArena.buildTeams(queue, i, onlyGroup)
-		
-		if(teams ~= nil) then
-			teamFoundTo = i
-			break
-		end
-	end
-	
-	if(teams == nil) then
-		addEvent(pvpArena.mainLoop, 1000 * 60)
-		return
-	end	
-
-	local free_scenarios = {}
-
-	for k,v in pairs(pvpScenarios) do
-		local scenario = k
-		
-		if(getScenarioState(scenario) == SCENARIO_STATUS_FREE and (teamFoundTo >= v.minTeamSize and teamFoundTo <= v.maxTeamSize)) then
-			
-		end
-	end
-end
-
--- Callback
-
-function pvpArena.onPlayerJoinCallback(cid, inFirst)
-
-	inFirst = inFirst or false
-
-	if(not pvpArena.playerCanJoin(cid)) then
-		return false
-	end
-
-	local queue = getArenaQueue()
-
-	insertPlayersInQueue(queue, {cid})
-	
-	setArenaQueue(queue)
-	registerCreatureEvent(cid, "pvpArena_onLogout")	
-	
-	pvpArena.sendPlayerMessage(cid, "Você se juntou a fila para um duelo de arena. Agora você deve aguardar até que apareça algum adversário, isto pode levar de alguns segundos a vários minutos.")
-	pvpArena.log(T_LOG_ALL, "pvpArena:addPlayer", "Jogador engressou na fila", {name=getCreatureName(cid)})
-	self:prepareGame()
-	
-	return true
-end
-
-function pvpArena.onGroupJoinCallback(group, inFirst)
-
-	if(getGameState() == GAMESTATE_CLOSING or getPvpServiceStatus() == STATE_PAUSED) then
-		pvpArena.sendPlayerMessage(group, "A arena está desativada por enquanto, tente novamente mais tarde.")
-		return false
-	end
-
-	for k,v in pairs(group) do 
-	
-		if(not pvpArena.playerCanJoin(v)) then
-			pvpArena.sendPlayerMessage(group, "Um jogador neste grupo não está qualificado para se juntar a arena.", {v})
-			return false
-		end
-	end
-	
-	local queue = getArenaQueue()
-	
-	insertPlayersInQueue(queue, group)	
-	setArenaQueue(queue)	
-	
-	for k,v in pairs(group) do 
-		registerCreatureEvent(v, "pvpArena_onLogout")		
-	end	
-end
 
 --- Private vars
 pvpArena = {
@@ -268,7 +21,6 @@ pvpArena = {
 	bcMsg = 0
 }
 
-arenaInstances = {}
 -- Cria uma nova instancia de um scenario PvP
 function pvpArena:new()
 
@@ -435,6 +187,45 @@ end
 -------------------------
 -- FUNCTIONS SECTOR -----
 -------------------------
+
+function pvpArena:addPlayer(cid, inFirst)
+
+	inFirst = inFirst or false
+
+	if(getGameState() == GAMESTATE_CLOSING or self:getState() == STATE_PAUSED) then
+		doPlayerSendTextMessage(cid, MESSAGE_STATUS_CONSOLE_BLUE, "A arena está desativada por enquanto, tente novamente mais tarde.")
+		return			
+	end
+
+	if(hasCondition(cid, CONDITION_INFIGHT)) then
+		doPlayerSendTextMessage(cid, MESSAGE_STATUS_CONSOLE_BLUE, "Você está em condição de combate. Fique alguns instantes sem entrar em combate e tente novamente.")
+		return
+	end	
+
+	if(getPlayerTown(cid) == getTownIdByName("Island of Peace")) then
+		doPlayerSendTextMessage(cid, MESSAGE_STATUS_CONSOLE_BLUE, "Jogadores que moram em Island of Peace são muito passivos para participarem de sanguinarias batalhas de Arena.")
+		return		
+	end
+
+	pvpQueue.load()
+	
+	if(pvpQueue.getPlayerPosByCid(cid) ~= nil) then
+		doPlayerSendTextMessage(cid, MESSAGE_STATUS_CONSOLE_BLUE, "Você ja está na fila para participar de alguma arena, continue aguardando...")
+		return	
+	end
+
+	if(not inFirst) then
+		pvpQueue.insert(cid)
+	else
+		pvpQueue.insert(cid, 1)
+	end
+	
+	registerCreatureEvent(cid, "pvpArena_onLogout")
+	
+	doPlayerSendTextMessage(cid, MESSAGE_STATUS_CONSOLE_BLUE, "Você se juntou a fila para um duelo de arena. Agora você deve aguardar até que apareça algum adversário, isto pode levar de alguns segundos a vários minutos.")
+	pvpArena.log(T_LOG_ALL, "pvpArena:addPlayer", "Jogador engressou na fila", {name=getCreatureName(cid)})
+	self:prepareGame()
+end
 
 function pvpArena:finishGame(winner)
 

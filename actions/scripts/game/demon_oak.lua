@@ -91,19 +91,19 @@ function useOnDemonOak(cid, item, frompos, item2, topos)
 	tries[item2.itemid] = tries[item2.itemid] + 1
 	
 	if(tries[item2.itemid] == 5) then
-		demonOakSpeak(theDemonOakRespawns[item2.itemid][1].yell)
+		--demonOakSpeak(theDemonOakRespawns[item2.itemid][1].yell)
 		local respawns = theDemonOakRespawns[item2.itemid][1]
 		doCreateRespawnArea(respawns, demon_oak_pos, 5)
 		
 	elseif(tries[item2.itemid] == 10) then
 		if(completeTries == 3) then
-			demonOakSpeak(theDemonOakYell.onKill)
+			--demonOakSpeak(theDemonOakYell.onKill)
 			local respawns = {{ name = "demon", count = 1}}
 			doCreateRespawnArea(respawns, demon_oak_pos, 5)	
 			reseting = true
 			addEvent(resetDemonOak, 1000 * 30)		
 		else
-			demonOakSpeak(theDemonOakRespawns[item2.itemid][2].yell)
+			--demonOakSpeak(theDemonOakRespawns[item2.itemid][2].yell)
 			local respawns = theDemonOakRespawns[item2.itemid][2]
 			doCreateRespawnArea(respawns, demon_oak_pos, 5)	
 			completeTries = completeTries + 1		
@@ -118,7 +118,9 @@ function useOnDemonOak(cid, item, frompos, item2, topos)
 		end	
 	end
 	
-	doCreatureSay(item2.uid, "-krrrak-", TALKTYPE_ORANGE_1)
+	print("item2: " .. item2.uid)
+	
+	--doCreatureSay(item2.uid, "-krrrak-", TALKTYPE_ORANGE_1)
 	doSendMagicEffect(getPlayerPosition(cid), CONST_ME_BIGPLANTS)
 	return true
 end
@@ -186,6 +188,6 @@ function useOnDeadTree(cid, item, frompos, item2, topos)
     doSendMagicEffect(frompos, CONST_ME_POFF)
     
     setGlobalStorageValue(gid.DEMON_OAK_PLAYER_INSIDE, cid)
-    demonOakSpeak(theDemonOakYell.onEnter)
+    --demonOakSpeak(theDemonOakYell.onEnter)
     return true
 end

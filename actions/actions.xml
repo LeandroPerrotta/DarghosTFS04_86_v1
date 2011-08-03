@@ -27,6 +27,7 @@
 	
 	<!-- Demon Oak Quest -->
 	<action actionid="4065" script="game/demon_oak.lua"/>
+	<action actionid="4067" script="game/demon_oak.lua"/>
 	<action itemid="8293" script="game/demon_oak.lua"/>
 
 	

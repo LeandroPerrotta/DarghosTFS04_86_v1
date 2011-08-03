@@ -90,7 +90,7 @@ function onAcceptTask(cid, message, keywords, parameters, node)
     	
     	if(slainDemons >= TASK_DEMONS_KILL) then
     		setPlayerStorageValue(cid, sid.TASK_KILL_DEMONS, 1)
-	      	npcHandler:say("Como você esteve empenhado! Seremos eternamente gratos pela sua contribuição! Como recompensa você agora tem permissão para entrar no local aonde fica o The Demon Oak.", cid)
+	      	npcHandler:say("Como você esteve empenhado! Seremos eternamente gratos pela sua contribuição! Como recompensa você agora tem permissão para entrar na area infectada aonde fica o The Demon Oak.", cid)
 	    	npcHandler:resetNpc()
 	    	return true      	
     	else	
@@ -101,13 +101,36 @@ function onAcceptTask(cid, message, keywords, parameters, node)
     end    
 end
 
+function onAskDemonOak(cid, message, keywords, parameters, node)
+
+    if(not npcHandler:isFocused(cid)) then
+        return false
+    end
+    
+    local killDemonOak = getPlayerStorageValue(cid, sid.KILL_DEMON_OAK)
+    
+    if(killDemonOak == -1) then
+    
+  		npcHandler:say("Ele está localizao ao leste daqui, em uma area infectada, não muito longe. Há rumores que os que o derrotaram ganharam valiosas recompensas.", cid)
+	    npcHandler:resetNpc()
+	    return true     
+    elseif(killDemonOak == 1) then
+    
+  		npcHandler:say("Parabens! Você derrotou o Demon Oak! Você agora poderá acessar a valiosa recompensa! Siga para o sul da area infectada e procure o tumulo de Yesim Adeit.", cid)
+	    npcHandler:resetNpc()
+	    return true        
+    end   
+end
+
 local node1 = keywordHandler:addKeyword({'hallowed axe'}, StdModule.say, {npcHandler = npcHandler, onlyFocus = true, text = 'Eu posso fazer um para você! Para isso preciso de ' .. MONEY .. ' moedas de ouro além de um machado. Você possui estes items?'})
     node1:addChildKeyword({'yes', 'sim'}, tradeHallowedAxe, {npcHandler = npcHandler, onlyFocus = true, reset = true})
     node1:addChildKeyword({'no', 'não', 'nao'}, StdModule.say, {npcHandler = npcHandler, onlyFocus = true, text = 'Oaaah...', reset = true})
     
-local node2 = keywordHandler:addKeyword({'mission', 'task'}, StdModule.say, {npcHandler = npcHandler, onlyFocus = true, text = 'Estamos com problemas com o exesso de Demônios, e precisamos de toda ajuda possivel! Você poderia nos ajudar derrotando' .. TASK_DEMONS_KILL .. ' demônios?'})
+local node2 = keywordHandler:addKeyword({'mission', 'task'}, onAskTask, {npcHandler = npcHandler, onlyFocus = true})
     node2:addChildKeyword({'yes', 'sim'}, onAcceptTask, {npcHandler = npcHandler, onlyFocus = true, reset = true})
     node2:addChildKeyword({'no', 'não', 'nao'}, StdModule.say, {npcHandler = npcHandler, onlyFocus = true, text = 'Espero que um dia retorne para nos  ajudar...', reset = true})    
+
+keywordHandler:addKeyword({'demon oak', 'the demon oak'}, onAskDemonOak, {npcHandler = npcHandler, onlyFocus = true})
 
 npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, creatureSayCallback)
 npcHandler:addModule(FocusModule:new())

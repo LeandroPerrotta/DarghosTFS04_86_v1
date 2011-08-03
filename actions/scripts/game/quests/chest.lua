@@ -485,6 +485,26 @@ local quests =
 			rewardId = 2486,
 			count = 1
 		},
+		[uid.DEMON_OAK_DEMON_LEGS] = {
+			storageId = sid.DEMON_OAK_CHESTS,
+			rewardId = 2495,
+			count = 1
+		},
+		[uid.DEMON_OAK_RAINBOW_SHIELD] = {
+			storageId = sid.DEMON_OAK_CHESTS,
+			rewardId = 8905,
+			count = 1
+		},
+		[uid.DEMON_OAK_ROYAL_CROSSBOW] = {
+			storageId = sid.DEMON_OAK_CHESTS,
+			rewardId = 8851,
+			count = 1
+		},
+		[uid.DEMON_OAK_SPELLBOOK_OF_DARK_MYSTERIES] = {
+			storageId = sid.DEMON_OAK_CHESTS,
+			rewardId = 8918,
+			count = 1
+		}
 	}
 
 function useQuestChest(cid, quest, questActionId)

@@ -28,11 +28,11 @@ local theDemonOakRespawns = {
 		{
 			{ name = "braindeath", count = 3 },
 			{ name = "bone beast", count = 1 },
-			yell = "LEVANTEM ESCRAVOS! LEVANTEM DA ESCURIDÃO!!!"
+			--yell = "LEVANTEM ESCRAVOS! LEVANTEM DA ESCURIDÃO!!!"
 		},
 		{
 			{ name = "betrayed wraith", count = 2 },
-			yell = "PEGUEM OS OSSOS E VENHAM ATÉ MIM! VENHAM ATÉ AONDE EU POSSA VER-LOS!!!"
+			--yell = "PEGUEM OS OSSOS E VENHAM ATÉ MIM! VENHAM ATÉ AONDE EU POSSA VER-LOS!!!"
 		},
 	},
 	
@@ -40,11 +40,11 @@ local theDemonOakRespawns = {
 	[ITEM_DEMON_OAK_RIGHT_ARM] = {
 		{
 			{ name = "banshee", count = 3 },
-			yell = "BANSHEES TRAGAM-ME SUAS ALMAS!!"
+			--yell = "BANSHEES TRAGAM-ME SUAS ALMAS!!"
 		},
 		{
 			{ name = "grim reaper", count = 1 },
-			yell = "ARGGH! O TORTUREM! ACABEM COM ELE LENTAMENTE MEU ESCRAVO!!"
+			--yell = "ARGGH! O TORTUREM! ACABEM COM ELE LENTAMENTE MEU ESCRAVO!!"
 		},	
 	},
 	
@@ -52,12 +52,12 @@ local theDemonOakRespawns = {
 	[ITEM_DEMON_OAK_BIRD] = {
 		{
 			{ name = "lich", count = 3 },
-			yell = "MUITA DOR VOCÊ IRA SENTIR PARA OBTER A SUA RECOMPENSA!!!"
+			--yell = "MUITA DOR VOCÊ IRA SENTIR PARA OBTER A SUA RECOMPENSA!!!"
 		},
 		{
 			{ name = "dark torturer", count = 1 },
 			{ name = "blightwalker", count = 1 },
-			yell = "POR CADA GOLPE VOCÊ PAGARÁ DECADAS DE TORTURA!!"
+			--yell = "POR CADA GOLPE VOCÊ PAGARÁ DECADAS DE TORTURA!!"
 		},		
 	},
 	
@@ -66,12 +66,12 @@ local theDemonOakRespawns = {
 		{
 			{ name = "lich", count = 1 },
 			{ name = "giant spider", count = 2 },
-			yell = "ENTÃO VOCÊ GOSTA DISSO? O AMALDIÇÕEM!!"
+			--yell = "ENTÃO VOCÊ GOSTA DISSO? O AMALDIÇÕEM!!"
 		},
 		{
 			{ name = "undead dragon", count = 1 },
 			{ name = "hand of cursed fate", count = 1 },
-			yell = "SINTA O PESO DA MÃO AMALDIÇOADA!!"
+			--yell = "SINTA O PESO DA MÃO AMALDIÇOADA!!"
 		},		
 	}
 
@@ -81,6 +81,8 @@ function onUse(cid, item, frompos, item2, topos)
 
 	if(item.actionid == aid.DEMON_OAK_DEAD_TREE) then
 		return useOnDeadTree(cid, item, frompos, item2, topos)
+	elseif(item.actionid == aid.DEMON_OAK_STONE_COFFIN) then
+	
 	elseif(theDemonOakRespawns[item2.itemid] ~= nil) then
 		return useOnDemonOak(cid, item, frompos, item2, topos)
 	end
@@ -117,8 +119,6 @@ function useOnDemonOak(cid, item, frompos, item2, topos)
 			doCreateRespawnArea(respawns, demon_oak_pos, 5)	
 		end	
 	end
-	
-	print("item2: " .. item2.uid)
 	
 	--doCreatureSay(item2.uid, "-krrrak-", TALKTYPE_ORANGE_1)
 	doSendMagicEffect(getPlayerPosition(cid), CONST_ME_BIGPLANTS)
@@ -190,4 +190,18 @@ function useOnDeadTree(cid, item, frompos, item2, topos)
     setGlobalStorageValue(gid.DEMON_OAK_PLAYER_INSIDE, cid)
     --demonOakSpeak(theDemonOakYell.onEnter)
     return true
+end
+
+function useOnStoneCoffin(cid, item, frompos, item2, topos)
+
+	local demonOakStatus = getPlayerStorageValue(cid, sid.KILL_DEMON_OAK)
+	if(demonOakStatus == 1) then
+		local rewardTeleportPos = getThingPos(uid.THE_DEMON_OAK_REWARD_ROOM)
+		
+	    doTeleportThing(cid, rewardTeleportPos, true)
+	    doSendMagicEffect(topos, CONST_ME_TELEPORT)
+	    doSendMagicEffect(frompos, CONST_ME_POFF)		
+	    
+		return true		
+	end	
 end

@@ -7,6 +7,8 @@ function onStartup()
 	
 	local sendPlayerToTemple = getGlobalStorageValue(gid.SEND_PLAYERS_TO_TEMPLE)
 	
+	setGlobalStorageValue(gid.START_SERVER_WEEKDAY, os.date().wday)
+	
 	if(sendPlayerToTemple == 1) then
 		db.executeQuery("UPDATE `players` SET `posx` = '0', `posy` = '0', `posz` = '0';")
 		setGlobalStorageValue(gid.SEND_PLAYERS_TO_TEMPLE, 0)

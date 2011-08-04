@@ -1379,6 +1379,10 @@ function sendEnvolveEffect(cid, effect)
 	doSendMagicEffect({x = getPlayerPosition(cid).x + 1, y = getPlayerPosition(cid).y, z = getPlayerPosition(cid).z}, effect) 	
 end 
 
+function getWeekday()
+	return getGlobalStorageValue(gid.START_SERVER_WEEKDAY)
+end
+
 -- Verifica se o player possui um item no shop a receber
 -- Usado em creaturescripts/login.lua
 function checkItemShop(cid)

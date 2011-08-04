@@ -96,17 +96,15 @@ function boatDestiny.addIslandOfPeace(keywordHandler, npcHandler)
 		if(level < 80) then
 			npcHandler:say('Você gostaria de pagar 500 moedas de ouro pela passagem que irá o transformar novamente em morador da tranquilidade de Island of Peace?', cid)
 			return true
-		else
-			local date = os.date("*t")
-		
-			if(date.wday ~= WEEKDAY.MONDAY) then
+		else		
+			if(getWeekday() ~= WEEKDAY.MONDAY) then
 				npcHandler:say('Desculpe mas o barco que leva de Quendor a Island of Peace so parte as segunda-feiras.', cid)
 				npcHandler:resetNpc()
 				return true
 			end
 			
 			npcHandler:say('Oh, hoje é segunda-feira e o barco que leva de volta para Island of Peace esta disponivel! Mas lembre-se que lá reina a paz e a tranquilidade e não é permitido a agressividade <...>', cid)
-			npcHandler:say('entre seus moradores. Também saiba que você se transformará em morador da ilha, e você somente poderá pegar o barco de volta para Quendor na proxima segunda-feira <...>', cid)
+			npcHandler:say('entre seus moradores. Também saiba que se você partir para a ilha, você somente poderá pegar o barco de volta para Quendor na proxima segunda-feira <...>', cid)
 			npcHandler:say('E então, deseja mesmo se mudar para Island of Peace? A passagem custa 500 moedas de ouro.', cid)
 			
 			return true
@@ -172,18 +170,16 @@ function boatDestiny.addQuendorFromIslandOfPeace(keywordHandler, npcHandler)
 		if(level < 80) then
 			npcHandler:say('Você gostaria de pagar 500 moedas de ouro pela passagem que irá o transformar novamente em morador da perigosa Quendor?', cid)
 			return true
-		else
-			local date = os.date("*t")
-		
-			if(date.wday ~= WEEKDAY.MONDAY) then
+		else		
+			if(getWeekday() ~= WEEKDAY.MONDAY) then
 				npcHandler:say('Desculpe mas o barco que leva de Island of Peace a Quendor so parte as segunda-feiras.', cid)
 				npcHandler:resetNpc()
 				return true
 			end
 			
-			npcHandler:say('Oh, hoje é segunda-feira e o barco que leva de volta para Quendor esta disponivel! Mas você precisa saber que em Quendor é o  local da hostilidade e todos moradores são permitidos de <...>', cid)
-			npcHandler:say('se enfrentarem, mesmo até a morte! Também saiba que você se transformará em morador desta perigosa cidade, você somente poderá pegar o barco de volta para <...>', cid)
-			npcHandler:say('Island of Peace na proxima segunda-feira. E então, deseja mesmo se mudar para Quendor? A passagem custa 500 moedas de ouro.', cid)
+			npcHandler:say('Oh, hoje é segunda-feira e o barco que leva de volta para Quendor esta disponivel! Mas você precisa saber que Quendor é um lugar da hostilidade e todos moradores são permitidos de <...>', cid)
+			npcHandler:say('se enfrentarem, mesmo até a morte! Também saiba que se você se transformar em um morador desta perigosa cidade, somente poderá pegar novamente o barco de volta para Island of Peace na proxima segunda-feira. <...>', cid)
+			npcHandler:say('E então, deseja mesmo se mudar para Quendor? A passagem custa 500 moedas de ouro.', cid)
 			
 			return true
 		end

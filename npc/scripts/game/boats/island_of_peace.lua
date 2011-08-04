@@ -13,8 +13,8 @@ boatDestiny.addQuendorFromIslandOfPeace(keywordHandler, npcHandler)
         
 local text = 'Meu navio pode levar-lo ocasionamente a {quendor}.'      
         
-keywordHandler:addKeyword({'passage', 'trave', 'passagem', 'viagar', 'cidades'}, StdModule.say, {npcHandler = npcHandler, onlyFocus = true, text = text})
-keywordHandler:addKeyword({'job'}, StdModule.say, {npcHandler = npcHandler, onlyFocus = true, text = 'Eu sou o Capit√£o deste navio.'})
+keywordHandler:addKeyword({'passage', 'travel', 'passagem', 'viajar', 'cidades'}, StdModule.say, {npcHandler = npcHandler, onlyFocus = true, text = text})
+keywordHandler:addKeyword({'job'}, StdModule.say, {npcHandler = npcHandler, onlyFocus = true, text = 'Eu sou o Capit„o deste navio.'})
 
 -- Makes sure the npc reacts when you say hi, bye etc.
 npcHandler:addModule(FocusModule:new())

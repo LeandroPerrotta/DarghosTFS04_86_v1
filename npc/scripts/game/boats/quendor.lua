@@ -16,10 +16,10 @@ boatDestiny.addSalazart(keywordHandler, npcHandler)
 boatDestiny.addTrainers(keywordHandler, npcHandler, D_CustomNpcModules.travelTrainingIsland)
 boatDestiny.addIslandOfPeace(keywordHandler, npcHandler)
         
-local text = 'Meu navio pode levar-lo para {aracura}, {aaragon}, {northrend}, {salazart} e {trainers} al√©m de ocasionamente tamb√©m a {island of peace}.'      
+local text = 'Meu navio pode levar-lo para {aracura}, {aaragon}, {northrend}, {salazart} e {trainers} alÈm de ocasionamente tambÈm a {island of peace}.'      
         
-keywordHandler:addKeyword({'passage', 'trave', 'passagem', 'viagar', 'cidades'}, StdModule.say, {npcHandler = npcHandler, onlyFocus = true, text = text})
-keywordHandler:addKeyword({'job'}, StdModule.say, {npcHandler = npcHandler, onlyFocus = true, text = 'Eu sou o Capit√£o deste navio.'})
+keywordHandler:addKeyword({'passage', 'travel', 'passagem', 'viajar', 'cidades'}, StdModule.say, {npcHandler = npcHandler, onlyFocus = true, text = text})
+keywordHandler:addKeyword({'job'}, StdModule.say, {npcHandler = npcHandler, onlyFocus = true, text = 'Eu sou o Capit„o deste navio.'})
 
 -- Makes sure the npc reacts when you say hi, bye etc.
 npcHandler:addModule(FocusModule:new())

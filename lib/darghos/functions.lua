@@ -570,17 +570,19 @@ function movementTileOnStepOut(cid, item, position, fromPosition)
 end
 
 function doUpdateCreatureImpassable(cid)
-	
-	local onIsland = (getPlayerStorageValue(cid, sid.IS_ON_TRAINING_ISLAND) == 1) and true or false
-	
-	if(getPlayerTown(cid) ~= towns.ISLAND_OF_PEACE and not onIsland) then
+		
+	if(getPlayerGroupId(cid) > GROUP_PLAYER_NON_PVP) then
 		return
-	end	
+	end
 	
 	doPlayerSetGroupId(cid, GROUP_PLAYER)
 end
 
 function doUpdateCreaturePassable(cid)
+
+	if(getPlayerGroupId(cid) > GROUP_PLAYER_NON_PVP) then
+		return
+	end	
 
 	local onIsland = (getPlayerStorageValue(cid, sid.IS_ON_TRAINING_ISLAND) == 1) and true or false
 	

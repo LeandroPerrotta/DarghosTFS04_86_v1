@@ -127,7 +127,7 @@ function D_CustomNpcModules.travelTrainingIsland(cid, message, keywords, paramet
 			doUpdateCreaturePassable(cid)
 		else
 			setPlayerStorageValue(cid, sid.IS_ON_TRAINING_ISLAND, STORAGE_NULL)
-			setPlayerStorageValue(cid, sid.NEXT_STAMINA_UPDATE, STORAGE_NULL)
+			setPlayerStorageValue(cid, sid.NEXT_STAMINA_UPDATE, STORAGE_NULL)	
 			doUpdateCreatureImpassable(cid)
 		end
 

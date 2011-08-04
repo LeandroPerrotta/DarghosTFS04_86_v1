@@ -1,82 +1,86 @@
--- Consts
-SCENARIO_TYPE_CAPTURE_THE_FLAG = 0
+SCENARIO_SEWER, SCENARIO_OPEN_ARENA, SCENARIO_HELL = 1, 2, 3
+SCENARIO_ID_MIN, SCENARIO_ID_MAX = SCENARIO_SEWER, SCENARIO_HELL
 
--- Private vars
-pvpScenario = {
-	type = nil,
-	duration = nil,
-	preparation = 60 * 2,
-	queues = nil,
-	games = 0,
-	currentGame = nil
+SCENARIO_STATUS_FREE, SCENARIO_STATUS_BUSY = 1, 2
+
+SCENARIO_STATUS_VAR = "scenarioState_"
+SCENARIO_TEAMS_VAR = "scenarioTeam_"
+
+--[[
+	scenario team struct:
+
+	teams = {
+		//team 1
+		[1] = {
+			//key is the cid!!
+			[1000] = { death = false },
+			[1001] = { death = true }
+		},
+		//team 2
+		[2] = {
+			[1002] = { death = false },
+			[1003] = { death = false }
+		}
+	}
+--]]
+
+pvpScenarios = {
+
+	[SCENARIO_SEWER] = {
+		maxTeamSize = ARENA_1X1
+	},
+	
+	[SCENARIO_OPEN_ARENA] = {
+		minTeamSize = ARENA_2X2,
+		maxTeamSize = ARENA_5X5
+	},
+	
+	[SCENARIO_HELL] = {
+		minTeamSize = ARENA_2X2,
+		maxTeamSize = ARENA_5X5
+	}
 }
 
--- Cria uma nova instancia de um scenario PvP
-function pvpScenario:new(type, duration, preparation)
-	local obj = {}
-	
-	obj.type = type
-	obj.duration = duration or 60 * 10
-	obj.preparation = preparation or 60 * 2
-	obj.queues = {}
-	obj.currentGame = {}
-	setmetatable(obj, self)
-	self.__index = self
-	return obj
-end
-
-function pvpScenario:run()
-
-	self:prepareGame()
-end
-
-function pvpScenario:addQueue(queue)
-	table.insert(self.queues, queue)
-end
-
-function pvpScenario:prepareGame()
-	
-	local gameQueue = nil
-	local isFull = false
-	
-	for k,v in pairs(self.queues) do
-		local queue = v
-		
-		if(queue:isFull()) then
-			if(gameQueue == nil) then
-				gameQueue = queue
-				isFull = true
-			else
-				if(queue:getFullIn() < gameQeue.getFullIn()) then
-					gameQueue = queue
-				end
-			end
-		else
-			if(gameQueue ~= nil) then
-				if(not isFull) then
-					if(queue:getPlayersCount() > gameQueue:getPlayersCount()) then
-						gameQueue = queue
-					end
-				end
-			else
-				gameQueue = queue
-			end
-		end
+function getScenarioState(scenario)
+	if(scenario >= SCENARIO_ID_MIN and scenario <= SCENARIO_ID_MAX) then
+		return getGlobalValue(SCENARIO_STATUS_VAR .. scenario)
 	end
 	
-	self.currentGame = gameQueue
-	
-	gameQueue:broadcastGameStart()
-	
-	addEvent("self:startGame", 1000 * self.preparation)
+	return nil
 end
 
-function pvpScenario:startGame()
-	
-	addEvent("self:endGame", 1000 * self.duration)
+function setScenarioState(scenario, state)
+	local state = state or nil
+
+	if(scenario >= SCENARIO_ID_MIN and scenario <= SCENARIO_ID_MAX) then
+		if(state == nil) then
+			clearGlobalValue(SCENARIO_STATUS_VAR .. scenario)
+		else
+			setGlobalValue(SCENARIO_STATUS_VAR .. scenario, state)
+		end
+		
+		return
+	end
 end
 
-function pvpScenario:endGame()
+function getScenarioTeams(scenario)
+	if(scenario >= SCENARIO_ID_MIN and scenario <= SCENARIO_ID_MAX) then
+		return getGlobalValue(SCENARIO_TEAMS_VAR .. scenario)
+	end
 	
-	self:prepareGame()
+	return nil
+end
+
+function setScenarioTeams(scenario, team)
+	local team = state or nil
+
+	if(scenario >= SCENARIO_ID_MIN and scenario <= SCENARIO_ID_MAX) then
+		if(team == nil) then
+			clearGlobalValue(SCENARIO_TEAMS_VAR .. scenario)
+		else
+			setGlobalValue(SCENARIO_TEAMS_VAR .. scenario, team)
+		end
+		
+		return
+	end
 end

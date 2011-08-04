@@ -14,10 +14,12 @@ boatDestiny.addAaragon(keywordHandler, npcHandler)
 boatDestiny.addNorthrend(keywordHandler, npcHandler)
 boatDestiny.addSalazart(keywordHandler, npcHandler)
 boatDestiny.addTrainers(keywordHandler, npcHandler, D_CustomNpcModules.travelTrainingIsland)
+boatDestiny.addIslandOfPeace(keywordHandler, npcHandler)
         
-keywordHandler:addKeyword({'passage'}, StdModule.say, {npcHandler = npcHandler, onlyFocus = true, text = 'I can take you to Aracura, Aaragon, Northrend, and Salazart also Trainers.'})
-keywordHandler:addKeyword({'job'}, StdModule.say, {npcHandler = npcHandler, onlyFocus = true, text = 'I am the captain of this ship.'})
-keywordHandler:addKeyword({'travel'}, StdModule.say, {npcHandler = npcHandler, onlyFocus = true, text = 'I can take you to Aracura, Aaragon, Northrend, and Salazart also Trainers.'})
+local text = 'Meu navio pode levar-lo para {aracura}, {aaragon}, {northrend}, {salazart} e {trainers} além de ocasionamente também a {island of peace}.'      
+        
+keywordHandler:addKeyword({'passage', 'trave', 'passagem', 'viagar', 'cidades'}, StdModule.say, {npcHandler = npcHandler, onlyFocus = true, text = text})
+keywordHandler:addKeyword({'job'}, StdModule.say, {npcHandler = npcHandler, onlyFocus = true, text = 'Eu sou o Capitão deste navio.'})
 
 -- Makes sure the npc reacts when you say hi, bye etc.
 npcHandler:addModule(FocusModule:new())

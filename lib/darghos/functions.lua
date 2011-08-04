@@ -1114,7 +1114,7 @@ function setRateStage(cid, newlevel)
 	
 	local stageNode = stages.normal
 	
-	if(getPlayerTown(cid) == towns.ISLAND_OF_PEACE) then
+	if(darghos_use_secure_stages and getPlayerTown(cid) == towns.ISLAND_OF_PEACE) then
 		stageNode = stages.secure
 	end
 	

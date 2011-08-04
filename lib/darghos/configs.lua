@@ -27,3 +27,6 @@ darghos_players_to_spoof = 25
 
 -- Define se é necessario comer para recuperar life/mana
 darghos_need_eat = false
+
+-- Define se jogadores em area non-pvp usarão um estagio de exp diferenciado do normal
+darghos_use_secure_stages = false

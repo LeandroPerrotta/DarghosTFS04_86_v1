@@ -59,21 +59,33 @@ function outfitTicket.onUse(cid, item, fromPosition, itemEx, toPosition)
 		return true
 	end
 	
-	if(not canPlayerWearOutfitId(cid, outfitId, 0)) then
+	local playerOutfit = { outfit = false, first_addon = false, second_addon = false }
+	
+	if(canPlayerWearOutfitId(cid, outfitId, 0)) then
+		playerOutfit.outfit = true
+	end
+	
+	if(canPlayerWearOutfitId(cid, outfitId, 1)) then
+		playerOutfit.first_addon = true
+	end
+	
+	if(canPlayerWearOutfitId(cid, outfitId, 2)) then
+		playerOutfit.second_addon = true
+	end
+	
+	if(not playerOutfit.outfit) then
 		doPlayerSendTextMessage(cid, MESSAGE_INFO_DESCR, "You earned the " .. tempName .. " outfit!")
 		doPlayerAddOutfitId(cid, outfitId, 0)
+	elseif(not playerOutfit.first_addon) then
+		doPlayerSendTextMessage(cid, MESSAGE_INFO_DESCR, "You earned the first addon for " .. tempName .. " outfit!")
+		doPlayerAddOutfitId(cid, outfitId, 1)	
+	elseif(not playerOutfit.second_addon) then
+		doPlayerSendTextMessage(cid, MESSAGE_INFO_DESCR, "You earned the second addon for " .. tempName .. " outfit!")
+		doPlayerAddOutfitId(cid, outfitId, 2)
 	else
-		if(canPlayerWearOutfitId(cid, outfitId, 2)) then
-			doPlayerSendTextMessage(cid, MESSAGE_INFO_DESCR, "You already have the full " .. tempName .. " outfit!")
-			return true
-		elseif(canPlayerWearOutfitId(cid, outfitId, 1)) then
-			doPlayerSendTextMessage(cid, MESSAGE_INFO_DESCR, "You earned the second addon for " .. tempName .. " outfit!")
-			doPlayerAddOutfitId(cid, outfitId, 2)
-		else
-			doPlayerSendTextMessage(cid, MESSAGE_INFO_DESCR, "You earned the first addon for " .. tempName .. " outfit!")
-			doPlayerAddOutfitId(cid, outfitId, 1)
-		end		
-	end	
+		doPlayerSendTextMessage(cid, MESSAGE_INFO_DESCR, "You already have the full " .. tempName .. " outfit!")
+		return true		
+	end
 	
 	sendEnvolveEffect(cid, CONST_ME_HOLYAREA)
 	doRemoveItem(item.uid)

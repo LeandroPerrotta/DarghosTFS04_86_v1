@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<npc name="Venxea" floorchange="0" walkinterval="2000" speed="220" script="data/npc/scripts/game/magic.lua">
+<npc name="Venxea" floorchange="0" walkinterval="2000" speed="220" script="|DATA|/game/magic.lua">
 	<health now="150" max="150"/>
 	<look type="131" head="12" body="99" legs="37" feet="11" addons="0"/>
   

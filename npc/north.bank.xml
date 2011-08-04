@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<npc name="Bankman Fruendithas" floorchange="0" walkinterval="4000" script="data/npc/scripts/game/bank.lua">
+<npc name="Bankman Fruendithas" floorchange="0" walkinterval="4000" script="|DATA|/game/bank.lua">
     <health now="100" max="100"/>
     <look type="136" head="67" body="22" legs="56" feet="87" addons="3"/>
     <parameters>

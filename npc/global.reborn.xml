@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="iso-8859-1" ?>
-<npc name="Baron Samedi" floorchange="0" walkradius="2" walkinterval="4000" speed="220" script="data/npc/scripts/game/reborn.lua">
+<npc name="Baron Samedi" floorchange="0" walkradius="2" walkinterval="4000" speed="220" script="|DATA|/game/reborn.lua">
 	<health now="150" max="150"/>
     <look type="332" head="21" body="87" legs="107" feet="95" addons="0"/>
   

@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<npc name="Lucynda" script="data/npc/scripts/game/bless/pvpbless.lua" floorchange="0" walkinterval="2000" speed="220">
+<npc name="Lucynda" script="|DATA|/game/bless/pvpbless.lua" floorchange="0" walkinterval="2000" speed="220">
 	<health now="150" max="150"/>
 	<look type="157" head="11" body="96" legs="77" feet="95" addons="2"/>
   

@@ -23,7 +23,7 @@ darghos_use_record = false
 -- Darghos spoof players
 -- opções: true (ativo), false (desativo)
 darghos_spoof_players = true
-darghos_players_to_spoof = 25
+darghos_players_to_spoof = 40
 
 -- Define se é necessario comer para recuperar life/mana
 darghos_need_eat = false

@@ -21,9 +21,16 @@ function spoofPlayers()
 	
 	--print("[Spoofing] Player list found (" .. rowscount .. " players)")
 	
+	local online = getPlayersOnline()
+	local tospoof = 0
+	
+	if(#online > darghos_players_to_spoof) then
+		tospoof = math.min(#online - darghos_players_to_spoof, darghos_players_to_spoof)
+	end
+	
 	local i = 1
 	
-	while(i <= darghos_players_to_spoof) do
+	while(i <= tospoof) do
 	
 		local rand = math.random(1, rowscount)
 		--print("[Spoofing] Checking player rand " .. rand .. ".")

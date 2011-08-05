@@ -30,6 +30,11 @@ function onLogin(cid)
 	--defineFirstItems(cid)
 	restoreAddon(cid)
 	
+	-- premium test
+	if(canReceivePremiumTest(cid, getPlayerLevel(cid))) then
+		addPremiumTest(cid)
+	end	
+	
 	-- island of peace non pvp for TFS via onLogin
 	if(darghos_distro == DISTROS_TFS) then
 		if(getPlayerTown(cid) == towns.ISLAND_OF_PEACE and getPlayerGroupId(cid) < GROUP_PLAYER_TUTOR) then

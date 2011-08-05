@@ -127,17 +127,17 @@ function teleportRune.onUse(cid, item, frompos, item2, topos)
 	local onIsland = (getPlayerStorageValue(cid, sid.IS_ON_TRAINING_ISLAND) == 1) and true or false
 	
 	if(onIsland or teleportScrollIsLocked(cid)) then
-		doPlayerSendCancel(cid, "VocÃª nÃ£o pode usar este item neste lugar!")
+		doPlayerSendCancel(cid, "Você não pode usar este item neste lugar!")
 		return true
 	end
 
 	if(hasCondition(cid, CONDITION_INFIGHT) == TRUE) then
-		doPlayerSendCancel(cid, "VocÃª nÃ£o pode usar este item enquanto estiver em batalha!")
+		doPlayerSendCancel(cid, "Você não pode usar este item enquanto estiver em batalha!")
 		return true
 	end
 	
 	if(getPlayerStorageValue(cid, sid.TELEPORT_RUNE_STATE) ~= teleportRune.STATE_NONE) then
-		doPlayerSendCancel(cid, "A carga jÃ¡ sendo carregada, tenha paciencia!")
+		doPlayerSendCancel(cid, "A carga já sendo carregada, tenha paciencia!")
 		return true
 	end
 	
@@ -146,12 +146,12 @@ function teleportRune.onUse(cid, item, frompos, item2, topos)
 		local secondsLeft = (lastTeleportRuneUsage + teleportRune.TELEPORT_USAGE_INTERVAL) - os.time()
 		
 		if(secondsLeft >= 60) then
-			doPlayerSendCancel(cid, "VocÃª deve aguardar " .. math.floor(secondsLeft / 60) .. " minutos para que sua teleport rune descanÃ§e e possa usar-la novamente.")
+			doPlayerSendCancel(cid, "Você deve aguardar " .. math.floor(secondsLeft / 60) .. " minutos para que sua teleport rune descançe e possa usar-la novamente.")
 		else
-			doPlayerSendCancel(cid, "VocÃª deve aguardar menos de um minuto para que sua teleport rune termine de descanÃ§ar e possa usar-la novamente.")
+			doPlayerSendCancel(cid, "Você deve aguardar menos de um minuto para que sua teleport rune termine de descançar e possa usar-la novamente.")
 		end
 		
-		doPlayerSendCancel(cid, "VocÃª deve aguardar " .. math.ceil(((lastTeleportRuneUsage + teleportRune.TELEPORT_USAGE_INTERVAL) - os.time()) / 60) .. " minutos para que sua teleport rune descanÃ§e e possa usar-la novamente.")
+		doPlayerSendCancel(cid, "Você deve aguardar " .. math.ceil(((lastTeleportRuneUsage + teleportRune.TELEPORT_USAGE_INTERVAL) - os.time()) / 60) .. " minutos para que sua teleport rune descançe e possa usar-la novamente.")
 		return true
 	end
 	
@@ -541,7 +541,7 @@ function movementTileOnStepIn(cid, item, position, fromPosition)
 		local killUngreez = (getPlayerStorageValue(cid, sid.INQ_KILL_UNGREEZ) == 1) and true or false	
 		
 		if(not killUngreez) then
-			doPlayerSendCancel(cid, "Somente os que ajudam a combater as forÃ§as demoniacas estÃ£o autorizados a atravessar este portal.")
+			doPlayerSendCancel(cid, "Somente os que ajudam a combater as forças demoniacas estão autorizados a atravessar este portal.")
 			doTeleportThing(cid, fromPosition, false)
 			doSendMagicEffect(position, CONST_ME_MAGIC_BLUE)
 		end
@@ -550,7 +550,7 @@ function movementTileOnStepIn(cid, item, position, fromPosition)
 		local killUngreez = (getPlayerStorageValue(cid, sid.INQ_KILL_UNGREEZ) == 1) and true or false	
 		
 		if(killUngreez) then
-			doPlayerSendCancel(cid, "VocÃª jÃ¡ derrotou o demonio Ungreez.")
+			doPlayerSendCancel(cid, "Você já derrotou o demonio Ungreez.")
 			doTeleportThing(cid, fromPosition, false)
 			doSendMagicEffect(position, CONST_ME_MAGIC_BLUE)
 		end
@@ -788,7 +788,7 @@ function addShieldTrie(cid, target)
 	local cTarget = getCreatureTarget(cid)
 	
 	if(cTarget == 0) then
-		--print("Alvo nÃ£o encontrado, limpando... ")
+		--print("Alvo não encontrado, limpando... ")
 		setPlayerStorageValue(cid, sid.TRAINING_SHIELD, 0)
 		return
 	else 
@@ -881,7 +881,7 @@ function addAllOufits(cid)
 end
 
 --[[
-	* REGISTRO DE EVENTOS ONKILL PARA MISSï¿½ES
+	* REGISTRO DE EVENTOS ONKILL PARA MISS?ES
 ]]--
 function OnKillCreatureMission(cid)
 
@@ -948,11 +948,11 @@ function obsidianKnifeOnGhazranCorpse(cid, corpse)
 	
 	if not(hasRemovedTongue) then
 
-		doPlayerSendTextMessage(cid, MESSAGE_INFO_DESCR, "Vocï¿½ conseguiu obter a lï¿½ngua de Ghazran. Seu questlog foi atualizado.")
+		doPlayerSendTextMessage(cid, MESSAGE_INFO_DESCR, "Voc? conseguiu obter a l?ngua de Ghazran. Seu questlog foi atualizado.")
 		setPlayerStorageValue(cid, sid.ARIADNE_GHAZRAN_TONGUE, 1)
 		setPlayerStorageValue(cid, QUESTLOG.ARIADNE.GHAZRAN_WING, 3)
 	else
-		doPlayerSendCancel(cid, "Vocï¿½ jï¿½ obteve a lï¿½ngua de Ghazran.")
+		doPlayerSendCancel(cid, "Voc? j? obteve a l?ngua de Ghazran.")
 	end
 end
 
@@ -1282,7 +1282,7 @@ function playerRecord()
 		if(total > record) then
 		
 			setGlobalStorageValue(gid.PLAYERS_RECORD, total)
-			broadcastMessage("A marca de ".. total .." jogadores online Ã© um novo recorde no Darghos!", MESSAGE_EVENT_DEFAULT)
+			broadcastMessage("A marca de ".. total .." jogadores online é um novo recorde no Darghos!", MESSAGE_EVENT_DEFAULT)
 		end
 	else
 
@@ -1317,7 +1317,7 @@ function checkGeneralInfoPlayer(cid)
 end
 
 
--- Verificaï¿½ï¿½o ATUAL se um player estï¿½ em Area premmy, e teleporta ele para area free.
+-- Verifica??o ATUAL se um player est? em Area premmy, e teleporta ele para area free.
 function runPremiumSystem(cid)
 
 	local name = getCreatureName(cid)
@@ -1382,9 +1382,9 @@ end
 function addPremiumTest(cid)
 
 	doPlayerAddPremiumDays(cid, 7)
-	local account = getPlayerAccount(cid)
+	local account = getPlayerAccountId(cid)
 	db.executeQuery("INSERT INTO `wb_premiumtest` VALUES ('" .. account .. "', '" .. os.time() .. "');")
-	doPlayerSendTextMessage(cid, MESSAGE_STATUS_CONSOLE_ORANGE, "Parabens! Este Ã© o seu primeiro personagem a atingir o level 100 no Darghos! Como prÃªmio vocÃª acaba de receber uma Conta Premium por uma semana gratuitamente, que irÃ¡ permitir que vocÃª conheÃ§a todo o Darghos! Boa sorte!")
+	doPlayerSendTextMessage(cid, MESSAGE_STATUS_CONSOLE_ORANGE, "Parabens! Este é o seu primeiro personagem a atingir o level 100 no Darghos! Como prêmio você acaba de receber uma Conta Premium por uma semana gratuitamente, que irá permitir que você conheça todo o Darghos! Boa sorte!")
 	sendEnvolveEffect(cid, CONST_ME_HOLYAREA)
 end
 
@@ -1398,9 +1398,9 @@ function canReceivePremiumTest(cid, newlevel)
 		return false
 	end
 
-	local account = getPlayerAccount(cid)
+	local account = getPlayerAccountId(cid)
 	
-	local result = db.getResult("SELECT COUNT(*) as `rowscount` FROM `wb_premiumtest` WHERE `account_id` <= '" .. account .. "';")
+	local result = db.getResult("SELECT COUNT(*) as `rowscount` FROM `wb_premiumtest` WHERE `account_id` = '" .. account .. "';")
 	if(result:getID() == -1) then
 		--print("[Spoofing] Players list not found.")
 		return false

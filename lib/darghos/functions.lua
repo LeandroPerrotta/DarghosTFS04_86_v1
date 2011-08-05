@@ -1384,7 +1384,7 @@ function addPremiumTest(cid)
 	doPlayerAddPremiumDays(cid, 7)
 	local account = getPlayerAccount(cid)
 	db.executeQuery("INSERT INTO `wb_premiumtest` VALUES ('" .. account .. "', '" .. os.time() .. "');")
-	doPlayerSendTextMessage(cid, MESSAGE_STATUS_CONSOLE_ORANGE, "Parabéns! Este é o seu primeiro personagem a atingir o level 100 no Darghos! Como prêmio você acaba de receber uma Conta Premium por uma semana gratuitamente, que irá permitir que você conheça todo o Darghos! Boa sorte!")
+	doPlayerSendTextMessage(cid, MESSAGE_STATUS_CONSOLE_ORANGE, "Parabens! Este é o seu primeiro personagem a atingir o level 100 no Darghos! Como prêmio você acaba de receber uma Conta Premium por uma semana gratuitamente, que irá permitir que você conheça todo o Darghos! Boa sorte!")
 	sendEnvolveEffect(cid, CONST_ME_HOLYAREA)
 end
 

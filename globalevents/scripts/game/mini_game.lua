@@ -2,7 +2,9 @@ function onTime(time)
 
 	local date = os.date("*t")
 	
-	if(date.wday ~= WEEKDAY.SUNDAY) then
+	local eventDays = { WEEKDAY.SUNDAY, WEEKDAY.TUESDAY }
+	
+	if(not isInArray(eventDays, date.wday)) then
 		return true
 	end
 

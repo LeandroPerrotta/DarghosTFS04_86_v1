@@ -73,6 +73,18 @@ if(not getPlayerBalance) then
         end
 end
 
+function doPlayerTransferMoneyToGuildBank(cid, money)
+
+		local guild = getPlayerGuildId(cid)
+		
+		if(guild == 0 or not doPlayerWithdrawMoney(cid, money)) then
+			return false
+		end
+		
+        db.executeQuery("UPDATE `guilds` SET `balance` = `balance` + " .. money .. "  .. WHERE `id` = " .. guild)
+        return true
+end
+
 local function getPlayerVocationByName(name)
         local result = db.getResult("SELECT `vocation` FROM `players` WHERE `name` = " .. db.escapeString(name))
         if(result:getID() == -1) then
@@ -117,7 +129,7 @@ function creatureSayCallback(cid, type, msg)
                 end
                 talkState[cid] = 0
         elseif msgcontains(msg, 'help') or msgcontains(msg, 'functions') then
-                selfSay("You can check the {balance} of your bank account, {deposit} money or {withdraw} it. You can also {transfer} money to other characters, provided that they have a vocation.", cid)
+                selfSay("You can check the {balance} of your bank account, {deposit} money or {withdraw} it. You can also {transfer} money to other characters or the bank of your guild, provided that they have a vocation.", cid)
                 talkState[cid] = 0
         elseif msgcontains(msg, 'bank') then
                 npcHandler:say("We can change money for you. You can also access your bank account.", cid)
@@ -207,32 +219,46 @@ function creatureSayCallback(cid, type, msg)
                 end
 
                 if isValidMoney(count[cid]) then
-                        selfSay("Who would you like transfer " .. count[cid] .. " gold to?", cid)
+                        selfSay("You can tel me the name of character that who would you like transfer " .. count[cid] .. " gold? Or you like to transfer it to your {guild bank}?", cid)
                         talkState[cid] = 12
                 else
                         selfSay("Is isnt valid amount of gold to transfer.", cid)
                         talkState[cid] = 0
                 end
         elseif talkState[cid] == 12 then
-                transfer[cid] = msg
-
-                if getCreatureName(cid) == transfer[cid] then
-                        selfSay("Ekhm, You want transfer money to yourself? Its impossible!", cid)
+        
+        		if msgcontains(msg, 'guild bank') then
+        		
+				    local guild = getPlayerGuildId(cid)
+				    if(guild == 0) then
+             			selfSay("Sorry, but you are not in any guild...", cid)
                         talkState[cid] = 0
                         return true
-                end
-
-                if isInArray(config.transferDisabledVocations, getPlayerVocation(cid)) then
-                        selfSay("Your vocation cannot transfer money.", cid)
-                        talkState[cid] = 0
-                end
-
-                if playerExists(transfer[cid]) then
-                        selfSay("So you would like to transfer " .. count[cid] .. " gold to \"" .. transfer[cid] .. "\" ?", cid)
-                        talkState[cid] = 13
-                else
-                        selfSay("Player with name \"" .. transfer[cid] .. "\" doesnt exist.", cid)
-                        talkState[cid] = 0
+				    end        		
+				    
+                    selfSay("So you would like to transfer " .. count[cid] .. " gold to the bank of your guild \"" .. getPlayerGuildName(cid) .. "\"?", cid)
+                    talkState[cid] = 14      		
+        		else
+	                transfer[cid] = msg
+	
+	                if getCreatureName(cid) == transfer[cid] then
+	                        selfSay("Ekhm, You want transfer money to yourself? Its impossible!", cid)
+	                        talkState[cid] = 0
+	                        return true
+	                end
+	
+	                if isInArray(config.transferDisabledVocations, getPlayerVocation(cid)) then
+	                        selfSay("Your vocation cannot transfer money.", cid)
+	                        talkState[cid] = 0
+	                end
+	
+	                if playerExists(transfer[cid]) then
+	                        selfSay("So you would like to transfer " .. count[cid] .. " gold to \"" .. transfer[cid] .. "\" ?", cid)
+	                        talkState[cid] = 13
+	                else
+	                        selfSay("Player with name \"" .. transfer[cid] .. "\" doesnt exist.", cid)
+	                        talkState[cid] = 0
+	                end
                 end
         elseif talkState[cid] == 13 then
                 if msgcontains(msg, 'yes') then
@@ -247,113 +273,18 @@ function creatureSayCallback(cid, type, msg)
                         selfSay("As you wish. Is there something else I can do for you?", cid)
                 end
                 talkState[cid] = 0
----------------------------- money exchange --------------
-        elseif msgcontains(msg, 'changhdeytwetdfnkjipe gçlPAOKDKold') then
-                npcHandler:say("How many platinum coins would you like to get?", cid)
-                talkState[cid] = 14
         elseif talkState[cid] == 14 then
-                if getCount(msg) == -1 or getCount(msg) == 0 then
-                        npcHandler:say("Hmm, can I help you with something else?", cid)
-                        talkState[cid] = 0
-                else
-                        count[cid] = getCount(msg)
-                        npcHandler:say("So you would like me to change " .. count[cid] * 100 .. " of your gold coins into " .. count[cid] .. " platinum coins?", cid)
-                        talkState[cid] = 15
-                end
-        elseif talkState[cid] == 15 then
-                if msgcontains(msg, 'ylllkkassieieiieees') then
-                        if doPlayerRemoveItem(cid, 2148, count[cid] * 100) then
-                                doPlayerAddItem(cid, 2152, count[cid])
-                                npcHandler:say("Here you are.", cid)
+                if msgcontains(msg, 'yes') then
+                        local targetVocation = getPlayerVocationByName(transfer[cid])
+                        if not doPlayerTransferMoneyToGuildBank(cid, count[cid]) then
+                                selfSay("Are impossible to transfer to your guild bank.", cid)
                         else
-                                npcHandler:say("Sorry, you do not have enough gold coins.", cid)
+                                selfSay("You have transferred " .. count[cid] .. " gold to \"" .. getPlayerGuildName(cid) .."\" guild bank.", cid)
+                                transfer[cid] = nil
                         end
-                else
-                        npcHandler:say("Well, can I help you with something else?", cid)
+                elseif msgcontains(msg, 'no') then
+                        selfSay("As you wish. Is there something else I can do for you?", cid)
                 end
-                talkState[cid] = 0
-        elseif msgcontains(msg, 'chansaffsdgsdgge platasdfgasddfsdhcbxinum') then
-                npcHandler:say("Would you like to change your platinum coins into gold or crystal?", cid)
-                talkState[cid] = 16
-        elseif talkState[cid] == 16 then
-                if msgcontains(msg, 'gosassadasddadgfsdgld') then
-                        npcHandler:say("How many platinum coins would you like to change into gold?", cid)
-                        talkState[cid] = 17
-                elseif msgcontains(msg, 'crysfafasrteyiukjhgnstal') then
-                        npcHandler:say("How many crystal coins would you like to get?", cid)
-                        talkState[cid] = 19
-                else
-                        npcHandler:say("Well, can I help you with something else?", cid)
-                        talkState[cid] = 0
-                end
-        elseif talkState[cid] == 17 then
-                if getCount(msg) == -1 or getCount(msg) == 0 then
-                        npcHandler:say("Hmm, can I help you with something else?", cid)
-                        talkState[cid] = 0
-                else
-                        count[cid] = getCount(msg)
-                        npcHandler:say("So you would like me to change " .. count[cid] .. " of your platinum coins into " .. count[cid] * 100 .. " gold coins for you?", cid)
-                        talkState[cid] = 18
-                end
-        elseif talkState[cid] == 18 then
-                if msgcontains(msg, 'yeasasass') then
-                        if doPlayerRemoveItem(cid, 2152, count[cid]) then
-                                npcHandler:say("Here you are.", cid)
-                                doPlayerAddItem(cid, 2148, count[cid] * 100)
-                        else
-                                npcHandler:say("Sorry, you do not have enough platinum coins.", cid)
-                        end
-                else
-                        npcHandler:say("Well, can I help you with something else?", cid)
-                end
-                talkState[cid] = 0
-        elseif talkState[cid] == 19 then
-                if getCount(msg) == -1 or getCount(msg) == 0 then
-                        npcHandler:say("Hmm, can I help you with something else?", cid)
-                        talkState[cid] = 0
-                else
-                        count[cid] = getCount(msg)
-                        npcHandler:say("So you would like me to change " .. count[cid] * 100 .. " of your platinum coins into " .. count[cid] .. " crystal coins for you?", cid)
-                        talkState[cid] = 20
-                end
-        elseif talkState[cid] == 20 then
-                if msgcontains(msg, 'yasdcsxxcsxxxxes') then
-                        if doPlayerRemoveItem(cid, 2152, count[cid] * 100) then
-                                npcHandler:say("Here you are.", cid)
-                                doPlayerAddItem(cid, 2160, count[cid])
-                        else
-                                npcHandler:say("Sorry, you do not have enough platinum coins.", cid)
-                        end
-                else
-                        npcHandler:say("Well, can I help you with something else?", cid)
-                end
-                talkState[cid] = 0
-        elseif msgcontains(msg, 'changeadsdxxxsadas crysaddxxxxxasstal') then
-                npcHandler:say("How many crystal coins would you like to change into platinum?", cid)
-                talkState[cid] = 21
-        elseif talkState[cid] == 21 then
-                if getCount(msg) == -1 or getCount(msg) == 0 then
-                        npcHandler:say("Hmm, can I help you with something else?", cid)
-                        talkState[cid] = 0
-                else
-                        count[cid] = getCount(msg)
-                        npcHandler:say("So you would like me to change " .. count[cid] .. " of your crystal coins into " .. count[cid] * 100 .. " platinum coins for you?", cid)
-                        talkState[cid] = 22
-                end
-        elseif talkState[cid] == 22 then
-                if msgcontains(msg, 'yeghdfghfdghhs') then
-                        if doPlayerRemoveItem(cid, 2160, count[cid])  then
-                                npcHandler:say("Here you are.", cid)
-                                doPlayerAddItem(cid, 2152, count[cid] * 100)
-                        else
-                                npcHandler:say("Sorry, you do not have enough crystal coins.", cid)
-                        end
-                else
-                        npcHandler:say("Well, can I help you with something else?", cid)
-                end
-                talkState[cid] = 0
-        elseif msgcontains(msg, 'chansadsadasdxxxvvvvccccccge') then
-                npcHandler:say("There are three different coin types in Tibia: 100 gold coins equal 1 platinum coin, 100 platinum coins equal 1 crystal coin. So if you'd like to change 100 gold into 1 platinum, simply say '{change gold}' and then '1 platinum'.", cid)
                 talkState[cid] = 0
         end
 

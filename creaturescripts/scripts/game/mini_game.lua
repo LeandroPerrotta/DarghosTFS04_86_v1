@@ -10,8 +10,8 @@ end
 function kickPlayers()
 
 	for _, pid in ipairs(getPlayersOnline()) do
-		local isInside = getPlayerStorageValue(pid, sid.INSIDE_MINI_GAME) or false
-		if(isInside) then
+		local isInside = getPlayerStorageValue(pid, sid.INSIDE_MINI_GAME)
+		if(isInside == 1) then
 		
 			doSendMagicEffect(getCreaturePosition(pid), CONST_ME_MAGIC_BLUE)
 			doTeleportThing(pid, getPlayerMasterPos(pid))	

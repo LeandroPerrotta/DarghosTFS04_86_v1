@@ -219,7 +219,7 @@ function creatureSayCallback(cid, type, msg)
                 end
 
                 if isValidMoney(count[cid]) then
-                        selfSay("You can tel me the name of character that who would you like transfer " .. count[cid] .. " gold? Or you like to transfer it to your {guild bank}?", cid)
+                        selfSay("You can tel me the name of character that who would you like transfer " .. count[cid] .. " gold? Or you like to transfer it to your {guild balance}?", cid)
                         talkState[cid] = 12
                 else
                         selfSay("Is isnt valid amount of gold to transfer.", cid)
@@ -227,7 +227,7 @@ function creatureSayCallback(cid, type, msg)
                 end
         elseif talkState[cid] == 12 then
         
-        		if msgcontains(msg, 'guild bank') then
+        		if msgcontains(msg, 'guild balance') then
         		
 				    local guild = getPlayerGuildId(cid)
 				    if(guild == 0) then

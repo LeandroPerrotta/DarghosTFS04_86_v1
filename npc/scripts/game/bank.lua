@@ -81,7 +81,7 @@ function doPlayerTransferMoneyToGuildBank(cid, money)
 			return false
 		end
 		
-        db.executeQuery("UPDATE `guilds` SET `balance` = `balance` + " .. money .. "  .. WHERE `id` = " .. guild .. ";")
+        db.executeQuery("UPDATE `guilds` SET `balance` = `balance` + " .. money .. "  WHERE `id` = " .. guild .. ";")
         return true
 end
 

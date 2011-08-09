@@ -33,8 +33,14 @@ end
 
 function autoBroadcast()
 
-	local message = "<Novo Sistema> Você gosta de pvp? duelos? Então não deixe de conhecer o novo PvP Arena. Para saber mais acesse: http://www.darghos.com.br/index.php?ref=darghopedia.pvp_arenas"
-	doBroadcastMessage(message, MESSAGE_TYPES["blue"])
+	local messages = {
+		"<Novo Sistema> Você gosta de pvp? duelos? Então não deixe de conhecer o novo PvP Arena. Para saber mais acesse: www.darghos.com.br/?ref=darghopedia.pvp_arenas",
+		"Confira os novos preços das Contas Premium! Ter acesso as todas vantagens e beneficios nunca esteve tão barato: www.darghos.com.br"
+	}
+	
+	local random = math.random(1, #messages)
+	
+	doBroadcastMessage(messages[random], MESSAGE_TYPES["blue"])
 	addEvent(autoBroadcast, 1000 * 60 * 60)
 end
 

@@ -121,28 +121,28 @@ function creatureSayCallback(cid, type, msg)
         end
 
 ---------------------------- help ------------------------
-        if msgcontains(msg, 'advanced') then
+        if msgcontains(msg, 'advanced') and talkState[cid] == 0 then
                 if isInArray(config.transferDisabledVocations, getPlayerVocation(cid)) then
                         selfSay("Once you are on the Tibian mainland, you can access new functions of your bank account, such as transferring money to other players safely or taking part in house auctions.", cid)
                 else
                         selfSay("Renting a house has never been this easy. Simply make a bid for an auction. We will check immediately if you have enough money.", cid)
                 end
                 talkState[cid] = 0
-        elseif msgcontains(msg, 'help') or msgcontains(msg, 'functions') then
+        elseif (msgcontains(msg, 'help') or msgcontains(msg, 'functions')) and talkState[cid] == 0 then
                 selfSay("You can check the {balance} of your bank account, {deposit} money or {withdraw} it. You can also {transfer} money to other characters or the bank of your guild, provided that they have a vocation.", cid)
                 talkState[cid] = 0
-        elseif msgcontains(msg, 'bank') then
+        elseif msgcontains(msg, 'bank') and talkState[cid] == 0 then
                 npcHandler:say("We can change money for you. You can also access your bank account.", cid)
                 talkState[cid] = 0
-        elseif msgcontains(msg, 'job') then
+        elseif msgcontains(msg, 'job') and talkState[cid] == 0 then
                 npcHandler:say("I work in this bank. I can change money for you and help you with your bank account.", cid)
                 talkState[cid] = 0
 ---------------------------- balance ---------------------
-        elseif msgcontains(msg, 'balance') then
+        elseif msgcontains(msg, 'balance') and talkState[cid] == 0 then
                 selfSay("Your account balance is " .. getPlayerBalance(cid) .. " gold.", cid)
                 talkState[cid] = 0
 ---------------------------- deposit ---------------------
-        elseif msgcontains(msg, 'deposit all') and getPlayerMoney(cid) > 0 then
+        elseif msgcontains(msg, 'deposit all') and getPlayerMoney(cid) > 0 and talkState[cid] == 0 then
                 count[cid] = getPlayerMoney(cid)
                 if not isValidMoney(count[cid]) then
                         selfSay("Sorry, but you can't deposit that much.", cid)
@@ -157,7 +157,7 @@ function creatureSayCallback(cid, type, msg)
                         selfSay("Would you really like to deposit " .. count[cid] .. " gold?", cid)
                         talkState[cid] = 2
                 end
-        elseif msgcontains(msg, 'deposit') then
+        elseif msgcontains(msg, 'deposit') and talkState[cid] == 0 then
                 selfSay("Please tell me how much gold it is you would like to deposit.", cid)
                 talkState[cid] = 1
         elseif talkState[cid] == 1 then
@@ -181,7 +181,7 @@ function creatureSayCallback(cid, type, msg)
                 end
                 talkState[cid] = 0
 ---------------------------- withdraw --------------------
-        elseif msgcontains(msg, 'withdraw') then
+        elseif msgcontains(msg, 'withdraw') and talkState[cid] == 0 then
                 selfSay("Please tell me how much gold you would like to withdraw.", cid)
                 talkState[cid] = 6
         elseif talkState[cid] == 6 then
@@ -207,7 +207,7 @@ function creatureSayCallback(cid, type, msg)
                         talkState[cid] = 0
                 end
 ---------------------------- transfer --------------------
-        elseif msgcontains(msg, 'transfer') then
+        elseif msgcontains(msg, 'transfer') and talkState[cid] == 0 then
                 selfSay("Please tell me the amount of gold you would like to transfer.", cid)
                 talkState[cid] = 11
         elseif talkState[cid] == 11 then

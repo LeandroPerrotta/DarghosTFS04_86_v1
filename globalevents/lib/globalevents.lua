@@ -26,7 +26,7 @@ function spoofPlayers()
 	local spoofStartIn = (darghos_spoof_start_in > 0) and darghos_spoof_start_in or darghos_players_to_spoof
 	
 	if(#online > spoofStartIn) then
-		tospoof = math.min(#online - darghos_players_to_spoof, darghos_players_to_spoof)
+		tospoof = math.min((#online + (darghos_players_to_spoof - spoofStartIn)) - darghos_players_to_spoof, darghos_players_to_spoof)
 	end
 	
 	local i = 1

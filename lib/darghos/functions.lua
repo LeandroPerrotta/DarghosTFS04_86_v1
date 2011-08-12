@@ -1082,8 +1082,7 @@ function setRateStage(cid, newlevel)
 			{start_level = 140, end_level = 159, multipler = 5}, 
 			{start_level = 160, end_level = 179, multipler = 2}, 
 			{start_level = 180, end_level = 199, multipler = 1.5}, 
-			{start_level = 200, end_level = 239, multipler = 1}, 
-			{start_level = 240, multipler = 0.5}, 
+			{start_level = 200, multipler = 1}
 		},
 		
 		secure = {

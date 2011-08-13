@@ -20,6 +20,9 @@ darghos_use_reborn = false
 -- opções: true (ativo), false (desativo)
 darghos_use_record = false
 
+-- Darghos exp event rate (double,  triple,  etc)
+darghos_exp_multipler = 2
+
 -- Darghos spoof players
 -- opções: true (ativo), false (desativo)
 darghos_spoof_players = true

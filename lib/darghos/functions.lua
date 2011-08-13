@@ -1105,7 +1105,7 @@ function setRateStage(cid, newlevel)
 		
 			if(newlevel >= v.start_level and newlevel <= v.end_level) then
 				--print("[" .. getCreatureName(cid) .. "] level " .. newlevel .. ", exp stage " .. v.multipler .. "x")
-				setExperienceRate(cid, v.multipler)
+				setExperienceRate(cid, v.multipler * darghos_exp_multipler)
 				break
 			end	
 		end

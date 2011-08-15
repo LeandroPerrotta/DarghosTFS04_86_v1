@@ -166,11 +166,25 @@ function boatDestiny.addQuendorFromIslandOfPeace(keywordHandler, npcHandler)
 		end	
 		
 		local level = getPlayerLevel(cid)
+		local leaveFromIslandOfPeace = getPlayerStorageValue(cid, sid.LEAVE_FROM_ISLAND_OF_PEACE)
+		
+		if(leaveFromIslandOfPeace == -1) then
+			npcHandler:say('Vejo que você nunca viajou para Quendor, este barco pode levar-lo para lá, por ser sua primeira viagem, não lhe será cobrado nada, porém saiba que diferentemente de Island of Peace, aonde não é permitido a <...>', cid)
+			
+			if(level < 80) then
+				npcHandler:say('agressão entre seus moradores, em Quendor isto é permitido, mesmo até a morte! Porem como você ainda esta iniciando a sua jornada você poderá voltar para Island of Peace se achar Quendor muito perigosa. <...>', cid)
+			else
+				npcHandler:say('agressão entre seus moradores, em Quendor isto é permitido, mesmo até a morte! Saiba por você ja ser forte e caso você se arrependa e queira voltar, você só poderá pegar o barco que parte as segunda-feiras para Island of Peace. <...>', cid)
+			end
+			
+			npcHandler:say('E então, deseja mesmo se mudar para Quendor?', cid)			
+			return true
+		end		
 		
 		if(level < 80) then
 			npcHandler:say('Você gostaria de pagar 500 moedas de ouro pela passagem que irá o transformar novamente em morador da perigosa Quendor?', cid)
 			return true
-		else		
+		else				
 			if(getWeekday() ~= WEEKDAY.MONDAY) then
 				npcHandler:say('Desculpe mas o barco que leva de Island of Peace a Quendor so parte as segunda-feiras.', cid)
 				npcHandler:resetNpc()
@@ -203,7 +217,9 @@ function boatDestiny.addQuendorFromIslandOfPeace(keywordHandler, npcHandler)
 			return true		
 		end		
 		
-		if(not doPlayerRemoveMoney(cid, parameters.cost)) then
+		local leaveFromIslandOfPeace = getPlayerStorageValue(cid, sid.LEAVE_FROM_ISLAND_OF_PEACE)
+		
+		if(leaveFromIslandOfPeace == 1 and not doPlayerRemoveMoney(cid, parameters.cost)) then
 			npcHandler:say('Oh, infelizmente você não possui o dinheiro necessario para embarcar...', cid)
 			npcHandler:resetNpc()
 			return true
@@ -213,7 +229,13 @@ function boatDestiny.addQuendorFromIslandOfPeace(keywordHandler, npcHandler)
 			table.insert(boatDestiny.pvpChangedList, cid)
 		end
 		
-		npcHandler:say('Seja bem vindo de volta a Quendor caro ' .. getPlayerName(cid) .. '!', cid)
+		if(leaveFromIslandOfPeace == -1) then
+			npcHandler:say('Seja bem vindo a Quendor caro ' .. getPlayerName(cid) .. '! Vejo que é sua primeira passagem por aqui, siga para o sul pela trilha e logo chegará aos portões de Quendor, boa jornada!', cid)
+			setPlayerStorageValue(cid, sid.LEAVE_FROM_ISLAND_OF_PEACE, 1)
+		else
+			npcHandler:say('Seja bem vindo de volta a Quendor caro ' .. getPlayerName(cid) .. '!', cid)
+		end
+		
 		doTeleportThing(cid, parameters.destination, false)
 		doSendMagicEffect(parameters.destination, CONST_ME_TELEPORT)
 		doPlayerSetTown(cid, towns.QUENDOR)

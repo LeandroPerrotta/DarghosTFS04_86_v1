@@ -1319,48 +1319,33 @@ end
 -- Verifica??o ATUAL se um player est? em Area premmy, e teleporta ele para area free.
 function runPremiumSystem(cid)
 
-	local name = getCreatureName(cid)
-	if(getPlayerTown(cid) == getTownIdByName("Island of Peace")) then
-		backCity = "Island of Peace"
-	else
-		backCity = "Quendor City"
-	end	
-	local message = "Dear "..name..",\nYour premium time is over!\nYou were automatically taken to the temple of "..backCity..".\nContinue contributing to the Darghos Server and have a good game!\n\nYours,\nUltraXSoft Team."
+	if(isPremium(cid) and getPlayerStorageValue(cid,sid.PREMMY_VERIFY) ~= 1) then
+		setPlayerStorageValue(cid, sid.PREMMY_VERIFY,1)
+		return
+	end
 	
-	if isPremium(cid) == TRUE then
-		
-		if getPlayerStorageValue(cid,sid.PREMMY_VERIFY) ~= 1 then
-		
-			setPlayerStorageValue(cid, sid.PREMMY_VERIFY,1)
-			doSendMagicEffect(getPlayerPosition(cid),11)
-			
-			--print("[premiumsystem] Configurou o Premium Status no Storage Value (Player:"..name..")")
-		end
-	else
+	if(not isPremium(cid) and getPlayerStorageValue(cid,sid.PREMMY_VERIFY) == 1) then
 	
-		if getPlayerStorageValue(cid, sid.PREMMY_VERIFY) == 1 then
-			
-			if(getPlayerTown(cid) == getTownIdByName("Island of Peace")) then
-				TP_CITY = ISLAND_PEACE
-				ID_NAME = "Island of Peace"
-			else
-				TP_CITY = QUENDOR
-				ID_NAME = "quendor"	
-			end
-			
-			doPlayerSendTextMessage(cid, MESSAGE_EVENT_ADVANCE, message)
-			doTeleportThing(cid, TP_CITY)
-			setPlayerStorageValue(cid, sid.PREMMY_VERIFY,0)
-			doPlayerSetTown(cid, getTownIdByName(ID_NAME))
-			--Player is not premium - remove premium privileges
-			--Change outfit
-			local lookType = 128
-			if(getPlayerSex(cid) == 0) then
-				lookType = 136
-			end
-			doCreatureChangeOutfit(cid, {lookType = lookType, lookHead = 78, lookBody = 69, lookLegs = 97, lookFeet = 95, lookAddons = 0})
-						
+		local new_town = towns.QUENDOR
+	
+		if(getPlayerTown(cid) == towns.ISLAND_OF_PEACE) then
+			new_town = towns.ISLAND_OF_PEACE
+		end		
+		
+		doPlayerSetTown(cid, new_town)
+		doTeleportThing(cid, getTownTemplePosition(new_town))
+		setPlayerStorageValue(cid, sid.PREMMY_VERIFY,0)
+		
+		--Player is not premium - remove premium privileges
+		--Change outfit
+		local lookType = 128
+		if(getPlayerSex(cid) == 0) then
+			lookType = 136
 		end
+		doCreatureChangeOutfit(cid, {lookType = lookType, lookHead = 78, lookBody = 69, lookLegs = 97, lookFeet = 95, lookAddons = 0})	
+		
+		local message = "Caro " .. getCreatureName(cid) ..",\n\nA sua conta premium expirou e por isso você perdeu os privilegios exclusivos deste tipo de conta.\nVocê pode re-adquirir uma nova Conta Premium atraves de nosso website e todos os privilegios serão novamente ativos.\n\n Tenha um bom jogo!\nUltraXSoft Team."	
+		doPlayerPopupFYI(cid, message)
 	end
 end
 

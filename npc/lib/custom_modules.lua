@@ -251,11 +251,11 @@ function D_CustomNpcModules.addTradeList(shopModule, tradelist_name)
 			-- mas por se tratar de um NPC, vamos inverter, e partir da perspectiva deste
 					
 			if(v.sell_for ~= nil) then
-				shopModule.addBuyableItem(nil, itemtype, v.sell_for, v.subtype, v.name)
+				shopModule:addBuyableItem(nil, itemtype, v.sell_for, v.subtype, v.name)
 			end
 			
 			if(v.buy_for ~= nil) then
-				shopModule.addSellableItem(nil, itemtype, v.buy_for, v.name)
+				shopModule:addSellableItem(nil, itemtype, v.buy_for, v.name)
 			end
 		end
 	end

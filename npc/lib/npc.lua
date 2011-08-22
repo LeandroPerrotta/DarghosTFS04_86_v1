@@ -5,6 +5,7 @@ dofile(getDataDir() .. 'npc/lib/npc_tasks.lua')
 dofile(getDataDir() .. 'npc/lib/npc_system.lua')
 dofile(getDataDir() .. 'npc/lib/custom_modules.lua')
 dofile(getDataDir() .. 'npc/lib/addonItems.lua')
+dofile(getDataDir() .. 'npc/lib/trade.lua')
 
 function selfIdle()
 	following = false

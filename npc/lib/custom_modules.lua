@@ -234,7 +234,7 @@ function D_CustomNpcModules.addTradeList(shopModule, tradelist_name)
 		if(v.name == nil) then
 			print("[Warning] D_CustomNpcModules.addTradeList - Invalid item without name found on " .. tradelist_name .. " trade list.")
 			error = true
-		else if(v.sell_for == nil and v.buy_for == nil) then
+		elseif(v.sell_for == nil and v.buy_for == nil) then
 			print("[Warning] D_CustomNpcModules.addTradeList - Item name " .. v.name .. " without buy or sell at " .. tradelist_name .. " trade list.")
 			error = true
 		end

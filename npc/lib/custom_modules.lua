@@ -217,3 +217,46 @@ function D_CustomNpcModules.inquisitionBless(cid, message, keywords, parameters,
 	npcHandler:resetNpc()
 	return true
 end
+
+function D_CustomNpcModules.addTradeList(shopModule, tradelist_name)
+
+	local list = trade_lists[tradelist_name]
+	
+	if(list == nil) then
+		print("[Warning] D_CustomNpcModules.addTradeList - Trade list with name " .. tradelist_name .. " not found.")
+		return
+	end	
+	
+	for k,v in pairs(list) do
+	
+		local error = false
+	
+		if(v.name == nil) then
+			print("[Warning] D_CustomNpcModules.addTradeList - Invalid item without name found on " .. tradelist_name .. " trade list.")
+			error = true
+		else if(v.sell_for == nil and v.buy_for == nil) then
+			print("[Warning] D_CustomNpcModules.addTradeList - Item name " .. v.name .. " without buy or sell at " .. tradelist_name .. " trade list.")
+			error = true
+		end
+	
+		local itemtype = v.itemtype or getItemIdByName(v.name)
+		
+		if(not itemtype) then
+			print("[Warning] D_CustomNpcModules.addTradeList - Item id not defined and not found by name " .. v.name .. " on " .. tradelist_name .. " trade list.")
+		end
+	
+		if(not error) then
+			
+			-- lembrando que as funções no Jiddo são nomeadas da perspectiva do player...
+			-- mas por se tratar de um NPC, vamos inverter, e partir da perspectiva deste
+					
+			if(v.sell_for ~= nil) then
+				shopModule.addBuyableItem(nil, itemtype, v.sell_for, v.subtype, v.name)
+			end
+			
+			if(v.buy_for ~= nil) then
+				shopModule.addSellableItem(nil, itemtype, v.buy_for, v.name)
+			end
+		end
+	end
+end

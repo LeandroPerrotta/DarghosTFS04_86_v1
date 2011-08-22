@@ -165,7 +165,7 @@ function useOnDeadTree(cid, item, frompos, item2, topos)
 	
 	local taskStatus = getPlayerStorageValue(cid, sid.TASK_KILL_DEMONS)
 	if(taskStatus ~= 1) then
-		doPlayerSendTextMessage(cid, MESSAGE_EVENT_DEFAULT, "Para entrar é preciso de uma permissão especial concedida por Oldrak.")
+		doPlayerSendTextMessage(cid, MESSAGE_EVENT_DEFAULT, "Antes de entrar você precisa concluir uma tarefa concedida por Oldrak em Plains of Death.")
 		return true		
 	end
 	

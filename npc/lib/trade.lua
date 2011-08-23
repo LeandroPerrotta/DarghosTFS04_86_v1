@@ -124,7 +124,7 @@ trade_lists = {
 		{ name = "iron helmet", sell_for = 390, buy_for = 225 },
 		{ name = "steel helmet", sell_for = 580, buy_for = 285 },
 		{ name = "legion helmet", buy_for = 45 },
-		{ name = "warior helmet", buy_for = 1044 },
+		{ name = "warrior helmet", buy_for = 1044 },
 	},
 	
 	["legs"] = {
@@ -232,7 +232,7 @@ trade_lists = {
 	},
 	
 	["containers_free"] = {
-		{ name = "brown backpack", sell_for = 20 },	
+		{ name = "brown backpack", itemtype = 1988, sell_for = 20 },	
 		{ name = "green backpack", sell_for = 20 },	
 		{ name = "grey backpack", sell_for = 20 },	
 		{ name = "purple backpack", sell_for = 20 },	
@@ -241,7 +241,7 @@ trade_lists = {
 		{ name = "golden backpack", sell_for = 20 },	
 		{ name = "yellow backpack", sell_for = 20 },
 		
-		{ name = "brown bag", sell_for = 5 },	
+		{ name = "brown bag", itemtype = 1987, sell_for = 5 },	
 		{ name = "green bag", sell_for = 5 },	
 		{ name = "grey bag", sell_for = 5 },	
 		{ name = "purple bag", sell_for = 5 },	
@@ -271,7 +271,7 @@ trade_lists = {
 		{ name = "rope", sell_for = 50, buy_for = 15 },				
 		{ name = "scythe", sell_for = 50, buy_for = 10 },				
 		{ name = "shovel", sell_for = 50, buy_for = 8 },				
-		{ name = "worms", sell_for = 1 },				
+		{ name = "worm", sell_for = 1 },				
 		{ name = "torch", sell_for = 2 },				
 		{ name = "magic lightwand", itemtype = 2162, sell_for = 120, buy_for = 35 },				
 	},	

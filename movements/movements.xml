@@ -89,8 +89,10 @@
 	<movevent type="StepIn" actionid="30101-30199" event="script" value="game/teleport.lua"/>	
 
 	<!-- CUSTOM EXHAUSTEDS PARA MIGHT RING E STONE SKIN AMULETS -->
+	<!-- 
 	<movevent type="Equip" itemid="2164" slot="ring" event="script" value="game/custom_exhausted.lua"/>
 	<movevent type="Equip" itemid="2197" slot="necklace" event="script" value="game/custom_exhausted.lua"/>
+	-->
 
 	<!-- CUSTOM ITEMS -->
 	<!-- BOOTS SECTOR -->
@@ -474,7 +476,7 @@
 	<movevent type="DeEquip" itemid="2170" slot="necklace" event="function" value="onDeEquipItem"/>
 	<movevent type="Equip" itemid="2172" slot="necklace" event="function" value="onEquipItem"/>
 	<movevent type="DeEquip" itemid="2172" slot="necklace" event="function" value="onDeEquipItem"/>
-	<!-- <movevent type="Equip" itemid="2197" slot="necklace" event="function" value="onEquipItem"/> -->
+	<movevent type="Equip" itemid="2197" slot="necklace" event="function" value="onEquipItem"/>
 	<movevent type="DeEquip" itemid="2197" slot="necklace" event="function" value="onDeEquipItem"/>
 	<movevent type="Equip" itemid="2198" slot="necklace" event="function" value="onEquipItem"/>
 	<movevent type="DeEquip" itemid="2198" slot="necklace" event="function" value="onDeEquipItem"/>
@@ -520,7 +522,7 @@
 	<movevent type="DeEquip" itemid="11368" slot="necklace" event="function" value="onDeEquipItem"/>
 
 	<!-- Rings -->
-	<!-- <movevent type="Equip" itemid="2164" slot="ring" event="function" value="onEquipItem"/> -->
+	<movevent type="Equip" itemid="2164" slot="ring" event="function" value="onEquipItem"/>
 	<movevent type="DeEquip" itemid="2164" slot="ring" event="function" value="onDeEquipItem"/>
 	<movevent type="Equip" itemid="2165" slot="ring" event="function" value="onEquipItem"/>
 	<movevent type="Equip" itemid="2202" slot="ring" event="function" value="onEquipItem"/>

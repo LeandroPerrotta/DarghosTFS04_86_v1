@@ -346,7 +346,7 @@ trade_lists = {
 		{ name = "dwarven ring", itemtype = 2213, sell_for = 2000 },
 		{ name = "energy ring", itemtype = 2167, sell_for = 2000 },
 		{ name = "life ring", itemtype = 2168, sell_for = 900 },
-		{ name = "might ring", itemtype = 2164, sell_for = 5000 },
+		{ name = "might ring", itemtype = 2164, subtype = 20, sell_for = 5000 },
 		{ name = "ring of healing", itemtype = 2214, sell_for = 2000 },
 		{ name = "time ring", itemtype = 2169, sell_for = 2000 },
 	},

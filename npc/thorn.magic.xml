@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<npc name="Fuhrer" floorchange="0" walkinterval="2000" speed="220" script="|DATA|/game/magic.lua">
+<npc name="Fuhrer" floorchange="0" walkinterval="2000" speed="220" script="|DATA|/game/default.lua">
 	<health now="150" max="150"/>
 	<look type="130" head="78" body="91" legs="38" feet="114" addons="0"/>
   

@@ -23,16 +23,74 @@ function addonSummoner.changeTicket(keywordHandler, npcHandler)
 	node:addChildKeyword({'no'}, StdModule.say, {npcHandler = npcHandler, onlyFocus = true, reset = true, text = 'Then stay here!'})
 end
 
-ADDON_ITEMS = {
-	["summoner_changeticket"] = addonSummoner.changeTicket
-}
+function harounForgeItems(keywordHandler, npcHandler)
 
--- Chama um modulo de AddonItems diretamente pelo XML do monstro
--- verificar a const ADDON_ITEMS
-function parseAddonItemModule(keywordHandler, npcHandler)
-	local item_module = NpcSystem.getParameter("call_addon_item")
-	if(item_module ~= nil) then
-		local addon_func = ADDON_ITEMS[item_module]
-		addon_func(keywordHandler, npcHandler)
-	end
+	local params = {
+		npcHandler = npcHandler,
+		neededItems = {
+			{name = "fire sword", count = 3}
+		},	
+		receiveItems = {
+			{id = 5904} -- magic sulphur
+		},
+		fail = "Sorry, you not have 3 fire swords. And without this items I can't forge an magic sulphur...",
+		success = "Here are your magic sulphur! Good luck!"
+	}
+
+	local node = keywordHandler:addKeyword({'magic sulphur'}, StdModule.say, {npcHandler = npcHandler, onlyFocus = true, text = 'I can forge the magic sulphur, but for this I need 3 fire swords. You want it?'})
+	node:addChildKeyword({'yes'}, D_CustomNpcModules.addonTradeItems, params)
+	node:addChildKeyword({'no'}, StdModule.say, {npcHandler = npcHandler, onlyFocus = true, reset = true, text = 'Ok, tell me if you need something else!'})
+	
+	params = {
+		npcHandler = npcHandler,
+		neededItems = {
+			{name = "warrior helmet", count = 4}
+		},	
+		receiveItems = {
+			{id = 5885} -- warrior sweat
+		},
+		fail = "Sorry, you not have 4 warrior helmets. And without this items I can't forge an warrior sweat...",
+		success = "Here are your warrior sweat! Good luck!"
+	}
+	
+	node = keywordHandler:addKeyword({'warrior sweat'}, StdModule.say, {npcHandler = npcHandler, onlyFocus = true, text = 'I can forge the warrior sweat, but for this I need 4 warrior helmet. You want it?'})
+	node:addChildKeyword({'yes'}, D_CustomNpcModules.addonTradeItems, params)
+	node:addChildKeyword({'no'}, StdModule.say, {npcHandler = npcHandler, onlyFocus = true, reset = true, text = 'Ok, tell me if you need something else!'})	
+
+	params = {
+		npcHandler = npcHandler,
+		neededItems = {
+			{name = "royal helmet", count = 2}
+		},	
+		receiveItems = {
+			{id = 5884} -- fighting spirit
+		},
+		fail = "Sorry, you not have 2 royal helmets. And without this items I can't forge an fighting spirit...",
+		success = "Here are your fighting spirit! Good luck!"
+	}
+	
+	node = keywordHandler:addKeyword({'fighting spirit'}, StdModule.say, {npcHandler = npcHandler, onlyFocus = true, text = 'I can forge the fighting spirit, but for this I need 2 royal helmet. You want it?'})
+	node:addChildKeyword({'yes'}, D_CustomNpcModules.addonTradeItems, params)
+	node:addChildKeyword({'no'}, StdModule.say, {npcHandler = npcHandler, onlyFocus = true, reset = true, text = 'Ok, tell me if you need something else!'})	
+
+	params = {
+		npcHandler = npcHandler,
+		neededItems = {
+			{name = "boots of haste"}
+		},	
+		receiveItems = {
+			{id = 5891} -- enchanted chicken wing
+		},
+		fail = "Sorry, you not have a boots of haste. And without this items I can't forge an enchanted chicken wing...",
+		success = "Here are your enchanted chicken wing! Good luck!"
+	}	
+	
+	node = keywordHandler:addKeyword({'enchanted chicken wing'}, StdModule.say, {npcHandler = npcHandler, onlyFocus = true, text = 'I can forge the enchanted chicken wing, but for this I need an boots of haste. You want it?'})
+	node:addChildKeyword({'yes'}, D_CustomNpcModules.addonTradeItems, params)
+	node:addChildKeyword({'no'}, StdModule.say, {npcHandler = npcHandler, onlyFocus = true, reset = true, text = 'Ok, tell me if you need something else!'})	
 end
+
+ADDON_ITEMS = {
+	["summoner_changeticket"] = addonSummoner.changeTicket,
+	["haroun_forge"] = harounForgeItems
+}

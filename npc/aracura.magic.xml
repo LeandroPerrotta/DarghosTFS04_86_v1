@@ -7,5 +7,6 @@
 		<parameter key="message_greet" value="Hello |PLAYERNAME|. I sell runes, potions, wands and rods." />
 		<parameter key="message_decline" value="Is |TOTALCOST| gold coins too much for you? Get out of here!" />
 		<parameter key="call_addon_item" value="summoner_changeticket" />
+		<parameter key="use_trade_lists" value="runes;potions;wands;rods" />
 	</parameters>  
 </npc>

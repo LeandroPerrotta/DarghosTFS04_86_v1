@@ -85,8 +85,8 @@
 		-->
 		<itemlist listid="djinn_haroun">
 			<item keywords="wand;of;cosmic;energy" id="2189" sellprice="3000" name="wand of cosmic energy"/>	
-			<item keywords="wand;of;decay" id="2188" sellprice="2250" name="wand of decay"/>	
-			<item keywords="wand;of;draconia" id="8921" sellprice="2250" name="wand of draconia"/>	
+			<item keywords="wand;of;decay" id="2188" sellprice="1000" name="wand of decay"/>	
+			<item keywords="wand;of;draconia" id="8921" sellprice="1500" name="wand of draconia"/>	
 			<item keywords="wand;of;dragonbreath" id="2191" sellprice="300" name="wand of dragonbreath"/>	
 			<item keywords="wand;of;inferno" id="2187" sellprice="4500" name="wand of inferno"/>	
 			<item keywords="wand;of;starstorm" id="8920" sellprice="5400" name="wand of starstorm"/>	

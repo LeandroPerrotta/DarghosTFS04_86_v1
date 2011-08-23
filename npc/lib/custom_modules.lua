@@ -21,17 +21,31 @@ function D_CustomNpcModules.addonTradeItems(cid, message, keywords, parameters, 
 
 	for _,item in pairs(parameters.neededItems) do
 	
+		local count = item.count or 1
+	
 		if(item.anyOf ~= nil) then
 		
 			local found = false
 		
 			for _,sub in pairs(item.anyOf) do
 			
-				local count = (sub.count ~= nil) and sub.count or item.count 
+				count = sub.count or count
+				
+				if(sub.id == nil and sub.name == nil) then
+					print('[Warning - ' .. getCreatureName(getNpcId()) .. '] NpcSystem:', 'D_CustomNpcModules.addonTradeItems - An value of sub-item table not have both id and name.')
+					return false
+				end
+				
+				local itemtype = sub.id or getItemIdByName(sub.name)
+				
+				if(not itemtype) then
+					print('[Warning - ' .. getCreatureName(getNpcId()) .. '] NpcSystem:', 'D_CustomNpcModules.addonTradeItems - Can not found a id for an sub-item called ' .. item.name .. '.')
+					return false			
+				end				
 			
-				if(getPlayerItemCount(cid, sub.id) >= count) then
+				if(getPlayerItemCount(cid, itemtype) >= count) then
 					found = true
-					table.insert(itemsToRemove, {id = sub.id, count = count})
+					table.insert(itemsToRemove, {id = itemtype, count = count})
 					break
 				end			
 			end
@@ -40,9 +54,21 @@ function D_CustomNpcModules.addonTradeItems(cid, message, keywords, parameters, 
 				foundAll = false
 				break
 			end		
-		else
-			if(getPlayerItemCount(cid, item.id) >= item.count) then
-				table.insert(itemsToRemove, {id = sub.id, count = item.count})
+		else	
+			if(item.id == nil and item.name == nil) then
+				print('[Warning - ' .. getCreatureName(getNpcId()) .. '] NpcSystem:', 'D_CustomNpcModules.addonTradeItems - An value of item table not have both id and name.')
+				return false
+			end
+			
+			local itemtype = item.id or getItemIdByName(item.name)
+			
+			if(not itemtype) then
+				print('[Warning - ' .. getCreatureName(getNpcId()) .. '] NpcSystem:', 'D_CustomNpcModules.addonTradeItems - Can not found a id for an item called ' .. item.name .. '.')
+				return false			
+			end
+		
+			if(getPlayerItemCount(cid, itemtype) >= item.count) then
+				table.insert(itemsToRemove, {id = itemtype, count = count})
 			else
 				foundAll = false
 				break
@@ -51,7 +77,7 @@ function D_CustomNpcModules.addonTradeItems(cid, message, keywords, parameters, 
 	end
 	
 	if(not foundAll) then		
-		local msg = (parameters.fail ~= nil) and parameters.fail or "Sorry but you not have all needed items..."
+		local msg = parameters.fail or "Sorry but you not have all needed items..."
 		npcHandler:say(msg, cid)
 		npcHandler:resetNpc()
 		return true
@@ -81,7 +107,9 @@ function D_CustomNpcModules.addonTradeItems(cid, message, keywords, parameters, 
 	
 	for _,item in pairs(parameters.receiveItems) do
 	
-		local tmp = doCreateItemEx(item.id, item.count)
+		local count = item.count or 1
+	
+		local tmp = doCreateItemEx(item.id, count)
 		if(doPlayerAddItemEx(cid, tmp, true) ~= RETURNVALUE_NOERROR) then
 			print('[Warning - ' .. getCreatureName(getNpcId()) .. '] NpcSystem:', 'D_CustomNpcModules.addonTradeItems - Impossible to give an item, aborted. Details:', '{player=' .. getCreatureName(cid) .. ', item_id=' .. v.id .. ', count=' .. v.count .. '}', 'Added items: ' .. table.show(addedItems))
 			return false
@@ -90,7 +118,7 @@ function D_CustomNpcModules.addonTradeItems(cid, message, keywords, parameters, 
 		end
 	end		
 	
-	local msg = (parameters.success ~= nil) and parameters.success or "Thanks! Here it is! I hope you are happy!"
+	local msg = parameters.success or "Thanks! Here it is! I hope you are happy!"
 	npcHandler:say(msg, cid)
 	npcHandler:resetNpc()
 	return true	
@@ -258,5 +286,29 @@ function D_CustomNpcModules.addTradeList(shopModule, tradelist_name)
 				shopModule:addSellableItem(nil, itemtype, v.buy_for, v.name)
 			end
 		end
+	end
+end
+
+function D_CustomNpcModules.parseCustomParameters(keywordHandler, npcHandler)
+	local trade_lists = NpcSystem.getParameter("use_trade_lists")
+	if(trade_lists ~= nil) then
+		local shopModule = ShopModule:new()
+		npcHandler:addModule(shopModule)
+		D_CustomNpcModules.parseTradeLists(shopModule)
+	end
+	
+	local addon_item = NpcSystem.getParameter("call_addon_item")
+	if(addon_item ~= nil) then
+		local addon_func = ADDON_ITEMS[addon_item]
+		addon_func(keywordHandler, npcHandler)		
+	end
+end
+
+function D_CustomNpcModules.parseTradeLists(shopModule, trade_lists)
+
+	local lists = string.explode(trade_lists, ";")
+	
+	for k,v in pairs(lists) do
+		D_CustomNpcModules.addTradeList(shopModule, v)
 	end
 end

@@ -67,14 +67,19 @@ function autoloot(cid, target, pos)
     end
     
   	local playerMoney = getPlayerMoney(cid)
-	local totalMoney = playerMoney + (moneyToAdd * GOLD_RATE) 
-    
+  	    
 	if(playerMoney > 0 and not doPlayerRemoveMoney(cid, playerMoney)) then
 		print("[Autolot gold] Can not remove player previous money.")
 		return
 	end
 	
-	if(not doPlayerAddMoney(cid, totalMoney)) then
+	if(isPremium(cid)) then
+		moneyToAdd = moneyToAdd * GOLD_RATE
+	end
+	
+	playerMoney = playerMoney + moneyToAdd
+	
+	if(not doPlayerAddMoney(cid, playerMoney)) then
 		print("[Autolot gold] Can not add new player money.")
 		return
 	end
@@ -86,7 +91,11 @@ function autoloot(cid, target, pos)
 		end
 	end
 
-    doPlayerSendTextMessage(cid, MESSAGE_EVENT_DEFAULT, 'All the gold coins found in the creature defeated with an plus extra bonus of ' .. (GOLD_RATE * 100) .. '% (' .. (GOLD_RATE * moneyToAdd) .. ' gps) has sent to their inventory.')      
+	if(isPremium(cid)) then
+    	doPlayerSendTextMessage(cid, MESSAGE_EVENT_DEFAULT, 'All the gold coins found in the creature defeated with an plus extra bonus of ' .. (GOLD_RATE * 100) .. '% (' .. (GOLD_RATE * moneyToAdd) .. ' gps) has sent to their inventory.')      
+	else
+		doPlayerSendTextMessage(cid, MESSAGE_EVENT_DEFAULT, 'All the gold coins found in the creature defeated (' .. (GOLD_RATE * moneyToAdd) .. ' gps) has sent to their inventory.')
+	end
 end
 
 function onKill(cid, target, lastHit)

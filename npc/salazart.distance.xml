@@ -6,6 +6,6 @@
 	<parameters>
 		<parameter key="message_greet" value="Hello |PLAYERNAME|. On my {trade} you can found a varieties of ranged weapons also ammunitions." />
 		<parameter key="message_decline" value="Is |TOTALCOST| gold coins too much for you? Get out of here!" />
-		<parameter key="use_trade_lists" value="ranged;ammunition;assassin_star" />
+		<parameter key="use_trade_lists" value="ranged;ammunition;ammunition_special1" />
 	</parameters>  
 </npc>

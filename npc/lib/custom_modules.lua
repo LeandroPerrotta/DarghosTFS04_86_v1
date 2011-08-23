@@ -67,7 +67,7 @@ function D_CustomNpcModules.addonTradeItems(cid, message, keywords, parameters, 
 				return false			
 			end
 		
-			if(getPlayerItemCount(cid, itemtype) >= item.count) then
+			if(getPlayerItemCount(cid, itemtype) >= count) then
 				table.insert(itemsToRemove, {id = itemtype, count = count})
 			else
 				foundAll = false

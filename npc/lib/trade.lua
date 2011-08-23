@@ -204,7 +204,7 @@ trade_lists = {
 	
 	["ranged"] = {
 		{ name = "crossbow", sell_for = 500, buy_for = 240 },
-		{ name = "battle hammer", sell_for = 400, buy_for = 195 },
+		{ name = "bow", sell_for = 400, buy_for = 195 },
 		{ name = "spear", sell_for = 10, buy_for = 4 },
 		{ name = "throwing knife", sell_for = 25 },
 		{ name = "throwing star", sell_for = 42 },

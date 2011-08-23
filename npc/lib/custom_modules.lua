@@ -294,7 +294,7 @@ function D_CustomNpcModules.parseCustomParameters(keywordHandler, npcHandler)
 	if(trade_lists ~= nil) then
 		local shopModule = ShopModule:new()
 		npcHandler:addModule(shopModule)
-		D_CustomNpcModules.parseTradeLists(shopModule)
+		D_CustomNpcModules.parseTradeLists(shopModule, trade_lists)
 	end
 	
 	local addon_item = NpcSystem.getParameter("call_addon_item")

@@ -1,5 +1,6 @@
 function onStartup()
 
+	cleanFreeHouseOwners()
 	spoofPlayers()
 	Dungeons.onServerStart()
 	summonLordVankyner()	

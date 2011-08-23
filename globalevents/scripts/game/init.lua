@@ -12,7 +12,7 @@ function onStartup()
 	if(sendPlayerToTemple == 1) then
 		db.executeQuery("UPDATE `players` SET `posx` = '0', `posy` = '0', `posz` = '0';")
 		setGlobalStorageValue(gid.SEND_PLAYERS_TO_TEMPLE, 0)
-		print("Sending players to temple.")
+		print("[onStartup] Sending players to temple.")
 	end	
 	
 	local runDbManutention = getGlobalStorageValue(gid.DB_MANUTENTION_STARTUP)
@@ -29,6 +29,23 @@ function onStartup()
 	luaGlobal.truncate()
 	
 	return true
+end
+
+function cleanFreeHouseOwners()
+
+	local result = db.getResult("SELECT `houses`.`id` FROM `houses` LEFT JOIN `players` `p` ON `houses`.`owner` = `p`.`id` LEFT JOIN `accounts` `a` ON `a`.`id` = `p`.`account_id` WHERE `a`.`premdays` = '0'");
+	if(result:getID() ~= -1) then
+		local cleanedHouses = 0
+		
+		repeat
+			local hid = result:getDataInt("id")
+			setHouseOwner(hid, 0, true)
+			cleanedHouses = cleanedHouses + 1
+		until not(result:next())
+		result:free()
+		
+		print("[onStartup] " .. cleanedHouses .. " houses pertencentes a free accounts agora estão disponiveis.")
+	end
 end
 
 function autoBroadcast()

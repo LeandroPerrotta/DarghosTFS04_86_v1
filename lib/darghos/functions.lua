@@ -1075,14 +1075,20 @@ function setRateStage(cid, newlevel)
 	
 	local stages = {
 		normal = {
-			{end_level = 49, multipler = 50}, 
-			{start_level = 50, end_level = 99, multipler = 25}, 
-			{start_level = 100, end_level = 119, multipler = 15}, 
-			{start_level = 120, end_level = 139, multipler = 10}, 
-			{start_level = 140, end_level = 159, multipler = 5}, 
-			{start_level = 160, end_level = 179, multipler = 2}, 
-			{start_level = 180, end_level = 199, multipler = 1.5}, 
-			{start_level = 200, multipler = 1}
+			{end_level = 99, multipler = 100}, 
+			{start_level = 100, end_level = 119, multipler = 50}, 
+			{start_level = 120, end_level = 139, multipler = 25}, 
+			{start_level = 140, end_level = 159, multipler = 15}, 
+			{start_level = 160, end_level = 179, multipler = 10}, 
+			{start_level = 180, end_level = 199, multipler = 8}, 
+			{start_level = 200, end_level = 219, multipler = 6}, 
+			{start_level = 220, end_level = 239, multipler = 5},
+	        {start_level = 240, end_level = 279, multipler = 4},
+	        {start_level = 280, end_level = 319, multipler = 3},
+	        {start_level = 320, end_level = 359, multipler = 2.5},
+	        {start_level = 360, end_level = 399, multipler = 2},
+	        {start_level = 400, end_level = 439, multipler = 1.5},
+	        {start_level = 440, multipler = 1}
 		},
 		
 		secure = {

@@ -1,3 +1,11 @@
+local function pushBack(cid, position, fromPosition, displayMessage)
+	doTeleportThing(cid, fromPosition, false)
+	doSendMagicEffect(position, CONST_ME_MAGIC_BLUE)
+	if(displayMessage) then
+		doPlayerSendTextMessage(cid, MESSAGE_INFO_DESCR, "The tile seems to be protected against unwanted intruders.")
+	end
+end
+
 function onStepIn(cid, item, position, fromPosition)
 
 	if(item.actionid >= 30020 and item.actionid < 30100) then
@@ -15,6 +23,14 @@ function onStepIn(cid, item, position, fromPosition)
 		doPlayerSendTextMessage(cid, MESSAGE_STATUS_DEFAULT,"Bem vindo a cidade de ".. town_name .."!")
 		
 		return TRUE
+	end
+	
+	if(item.actionid >= aid.SHRINE_MIN and item.actionid <= aid.SHRINE_MAX) then
+		return teleportToShrine(cid, item, position, fromPosition)
+	end
+	
+	if(item.actionid == aid.CALL_TELEPORT_BACK) then
+		return doTeleportBack(cid)
 	end
 	
 	if(item.actionid ~= nil and item.actionid == aid.CHURCH_PORTAL) then
@@ -41,4 +57,26 @@ function onStepIn(cid, item, position, fromPosition)
 	end
 	
 	return TRUE
+end
+
+function teleportToShrine(cid, item, position, fromPosition)
+
+	local actionid = item.actionid
+
+	if((actionid == SHRINE_FIRE or actionid == SHRINE_ENERGY) and not isSorcerer(cid)) then
+	
+		doPlayerSendCancel(cid, "Somente sorcerers podem atravessar o portal para este santuario.")
+		pushBack(cid, position, fromPosition)
+		return false
+	end
+	
+	if((actionid == SHRINE_EARTH or actionid == SHRINE_ICE) and not isDruid(cid)) then
+	
+		doPlayerSendCancel(cid, "Somente druids podem atravessar o portal para este santuario.")
+		pushBack(cid, position, fromPosition)
+		return false
+	end
+	
+	doTeleportBack(cid, fromPosition)
+	return true
 end

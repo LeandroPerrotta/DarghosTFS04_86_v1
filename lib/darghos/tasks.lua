@@ -1,5 +1,6 @@
 local STORAGE_RANGE = 100
 local STORAGE_START = 52100
+local EXPERIENCE_RATE = 2
 
 defaultDialogs = {
 	STARTED_TASK = "Perfeito, fa�a seu trabalho e volte aqui quando ele estiver concluido... Boa sorte!",
@@ -565,7 +566,7 @@ function Task:doPlayerAddReward()
 	end
 	
 	if(reward.exp ~= nil) then
-		doPlayerAddExp(self.cid, reward.exp)
+		doPlayerAddExp(self.cid, reward.exp * EXPERIENCE_RATE)
 		doPlayerSendTextMessage(self.cid, MESSAGE_STATUS_CONSOLE_BLUE, "Voc� adquiriu " .. reward.exp .. " pontos de experiencia por concluir a tarefa.")
 	end
 	

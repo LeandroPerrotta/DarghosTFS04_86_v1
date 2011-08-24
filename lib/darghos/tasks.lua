@@ -565,9 +565,9 @@ function Task:doPlayerAddReward()
 		end
 	end
 	
-	if(reward.exp ~= nil) then
+	if(rewards ~= nil) then
 		doPlayerAddExp(self.cid, reward.exp * EXPERIENCE_RATE)
-		doPlayerSendTextMessage(self.cid, MESSAGE_STATUS_CONSOLE_BLUE, "Voc� adquiriu " .. reward.exp .. " pontos de experiencia por concluir a tarefa.")
+		doPlayerSendTextMessage(self.cid, MESSAGE_STATUS_CONSOLE_BLUE, "Voc� adquiriu " .. (reward.exp * EXPERIENCE_RATE) .. " pontos de experiencia por concluir a tarefa.")
 	end
 	
 	if(reward.money ~= nil) then

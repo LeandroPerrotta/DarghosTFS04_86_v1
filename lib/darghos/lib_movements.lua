@@ -65,10 +65,10 @@ function doTeleportBack(cid, backPos)
 	
 	if(backPos == nil) then
 	
-		local teleportTo = (getPlayerStorageValue(cid, sid.TELEPORT_BACK_POS) ~= -1) and string.explode(getPlayerStorageValue(cid, sid.TELEPORT_BACK_POS), ";") or false
+		local teleportTo = (getPlayerStorageValue(cid, sid.TELEPORT_BACK_POS) ~= -1) and unpackPosition(getPlayerStorageValue(cid, sid.TELEPORT_BACK_POS)) or false
 	
 		if(not teleportTo) then
-			print("[Darghos Movement] doTeleportBack - Backpos not found on starge value of player " .. getPlayerName(cid) .. ".")
+			print("[Darghos Movement] doTeleportBack - Backpos not found on storage value of player " .. getPlayerName(cid) .. ".")
 			return false
 		end
 	
@@ -82,7 +82,7 @@ function doTeleportBack(cid, backPos)
 		
 		setPlayerStorageValue(cid, sid.TELEPORT_BACK_POS, -1)
 	else
-		setPlayerStorageValue(cid, sid.TELEPORT_BACK_POS, backPos["x"] .. ";" .. backPos["y"] .. ";" .. backPos["z"])
+		setPlayerStorageValue(cid, sid.TELEPORT_BACK_POS, packPosition(backPos))
 	end
 	
 	return true

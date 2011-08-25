@@ -74,12 +74,33 @@ function outfitTicket.onUse(cid, item, fromPosition, itemEx, toPosition)
 	end
 	
 	if(not playerOutfit.outfit) then
+		local log_id = getItemAttribute(item.uid, "itemShopLogId")
+		
+		if(not log_id or not doLogItemShopUse(cid, log_id)) then
+			doPlayerSendTextMessage(cid, MESSAGE_STATUS_SMALL, "The benefit of this item has already been provided. Issue reported.")
+			return true
+		end		
+	
 		doPlayerSendTextMessage(cid, MESSAGE_INFO_DESCR, "You earned the " .. tempName .. " outfit!")
 		doPlayerAddOutfitId(cid, outfitId, 0)
 	elseif(not playerOutfit.first_addon) then
+		local log_id = getItemAttribute(item.uid, "itemShopLogId")
+		
+		if(not log_id or not doLogItemShopUse(cid, log_id)) then
+			doPlayerSendTextMessage(cid, MESSAGE_STATUS_SMALL, "The benefit of this item has already been provided. Issue reported.")
+			return true
+		end		
+	
 		doPlayerSendTextMessage(cid, MESSAGE_INFO_DESCR, "You earned the first addon for " .. tempName .. " outfit!")
 		doPlayerAddOutfitId(cid, outfitId, 1)	
 	elseif(not playerOutfit.second_addon) then
+		local log_id = getItemAttribute(item.uid, "itemShopLogId")
+		
+		if(not log_id or not doLogItemShopUse(cid, log_id)) then
+			doPlayerSendTextMessage(cid, MESSAGE_STATUS_SMALL, "The benefit of this item has already been provided. Issue reported.")
+			return true
+		end		
+		
 		doPlayerSendTextMessage(cid, MESSAGE_INFO_DESCR, "You earned the second addon for " .. tempName .. " outfit!")
 		doPlayerAddOutfitId(cid, outfitId, 2)
 	else

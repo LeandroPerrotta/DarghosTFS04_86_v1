@@ -94,7 +94,7 @@ function autoloot(cid, target, pos)
 	if(isPremium(cid)) then
     	doPlayerSendTextMessage(cid, MESSAGE_EVENT_DEFAULT, 'All the gold coins found in the creature defeated with an plus extra bonus of ' .. (GOLD_RATE * 100) .. '% (' .. (GOLD_RATE * moneyToAdd) .. ' gps) has sent to their inventory.')      
 	else
-		doPlayerSendTextMessage(cid, MESSAGE_EVENT_DEFAULT, 'All the gold coins found in the creature defeated (' .. (GOLD_RATE * moneyToAdd) .. ' gps) has sent to their inventory.')
+		doPlayerSendTextMessage(cid, MESSAGE_EVENT_DEFAULT, 'All the gold coins found in the creature defeated (' .. moneyToAdd .. ' gps) has sent to their inventory.')
 	end
 end
 

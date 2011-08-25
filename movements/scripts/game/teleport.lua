@@ -78,5 +78,23 @@ function teleportToShrine(cid, item, position, fromPosition)
 	end
 	
 	doTeleportBack(cid, fromPosition)
+	
+	local destPos = nil
+	
+	if(actionid == SHRINE_EARTH) then
+		destPos = getThingPosition(uid.SHRINE_EARTH_POS)
+	elseif(actionid == SHRINE_ICE) then
+		destPos = getThingPosition(uid.SHRINE_ICE_POS)
+	elseif(actionid == SHRINE_FIRE) then
+		destPos = getThingPosition(uid.SHRINE_FIRE_POS)
+	elseif(actionid == SHRINE_ENERGY) then
+		destPos = getThingPosition(uid.SHRINE_ENERGY_POS)
+	else
+		print("[Darghos Movement] teleportToShrine - Destination shrine pos not found, check action id.")
+	end
+	
+	doTeleportThing(cid, destPos)
+	doSendMagicEffect(destPos, CONST_ME_MAGIC_BLUE)		
+	
 	return true
 end

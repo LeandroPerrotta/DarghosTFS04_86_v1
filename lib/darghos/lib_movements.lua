@@ -62,8 +62,6 @@ function doUpdateCreaturePassable(cid)
 end
 
 function doTeleportBack(cid, backPos)
-
-	local teleportTo = (getPlayerStorageValue(cid, sid.TELEPORT_BACK_POS) ~= -1) and string.explode(getPlayerStorageValue(cid, sid.TELEPORT_BACK_POS), ";") or false
 	
 	if(backPos == nil) then
 	

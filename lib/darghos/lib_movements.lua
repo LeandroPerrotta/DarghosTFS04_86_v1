@@ -71,14 +71,9 @@ function doTeleportBack(cid, backPos)
 			print("[Darghos Movement] doTeleportBack - Backpos not found on storage value of player " .. getPlayerName(cid) .. ".")
 			return false
 		end
-	
-		local destPos = {}
-		destPos["x"] = teleportTo[1]
-		destPos["y"] = teleportTo[2]
-		destPos["z"] = teleportTo[3]
 		
-		doTeleportThing(cid, destPos)
-		doSendMagicEffect(destPos, CONST_ME_MAGIC_BLUE)	
+		doTeleportThing(cid, teleportTo)
+		doSendMagicEffect(teleportTo, CONST_ME_MAGIC_BLUE)	
 		
 		setPlayerStorageValue(cid, sid.TELEPORT_BACK_POS, -1)
 	else

@@ -1,34 +1,13 @@
 function packPosition(pos)
 
-	local index = 16
-	local ret = 0
-	
-	for k,v in pairs(pos) do
-		ret = bit.ubor(ret, bit.ulshift(v, index))
-		index = index - 8
-		
-		if(index < 0) then
-			break
-		end		
-	end	
-	
-	if(index ~= -8) then
-		print("[Darghos Functions] packTableData - Wrong pointer value.")
-		return false
-	end
-	
-	return ret
+	local json = require("json")
+	return json.encode(pos)
 end
 
 function unpackPosition(data)
-
-	local ret = {
-		["x"] = bit.urshift(bit.uband(data, 16711680), 16),
-		["y"] = bit.urshift(bit.uband(data, 65280), 8),
-		["z"] = bit.urshift(bit.uband(data, 16711680), 0)
-	}
 	
-	return ret
+	local json = require("json")
+	return json.decode(data)
 end
 
 function lockTeleportScroll(cid)

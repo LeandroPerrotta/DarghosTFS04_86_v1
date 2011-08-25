@@ -67,8 +67,6 @@ function doTeleportBack(cid, backPos)
 	
 		local teleportTo = (getPlayerStorageValue(cid, sid.TELEPORT_BACK_POS) ~= -1) and unpackPosition(getPlayerStorageValue(cid, sid.TELEPORT_BACK_POS)) or false
 	
-		print(table.show(teleportTo))
-	
 		if(not teleportTo) then
 			print("[Darghos Movement] doTeleportBack - Backpos not found on storage value of player " .. getPlayerName(cid) .. ".")
 			return false

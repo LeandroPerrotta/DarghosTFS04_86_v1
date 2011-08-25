@@ -63,14 +63,14 @@ function teleportToShrine(cid, item, position, fromPosition)
 
 	local actionid = item.actionid
 
-	if((actionid == SHRINE_FIRE or actionid == SHRINE_ENERGY) and not isSorcerer(cid)) then
+	if((actionid == aid.SHRINE_FIRE or actionid == aid.SHRINE_ENERGY) and not isSorcerer(cid)) then
 	
 		doPlayerSendCancel(cid, "Somente sorcerers podem atravessar o portal para este santuario.")
 		pushBack(cid, position, fromPosition)
 		return false
 	end
 	
-	if((actionid == SHRINE_EARTH or actionid == SHRINE_ICE) and not isDruid(cid)) then
+	if((actionid == aid.SHRINE_EARTH or actionid == aid.SHRINE_ICE) and not isDruid(cid)) then
 	
 		doPlayerSendCancel(cid, "Somente druids podem atravessar o portal para este santuario.")
 		pushBack(cid, position, fromPosition)
@@ -81,13 +81,13 @@ function teleportToShrine(cid, item, position, fromPosition)
 	
 	local destPos = nil
 	
-	if(actionid == SHRINE_EARTH) then
+	if(actionid == aid.SHRINE_EARTH) then
 		destPos = getThingPosition(uid.SHRINE_EARTH_POS)
-	elseif(actionid == SHRINE_ICE) then
+	elseif(actionid == aid.SHRINE_ICE) then
 		destPos = getThingPosition(uid.SHRINE_ICE_POS)
-	elseif(actionid == SHRINE_FIRE) then
+	elseif(actionid == aid.SHRINE_FIRE) then
 		destPos = getThingPosition(uid.SHRINE_FIRE_POS)
-	elseif(actionid == SHRINE_ENERGY) then
+	elseif(actionid == aid.SHRINE_ENERGY) then
 		destPos = getThingPosition(uid.SHRINE_ENERGY_POS)
 	else
 		print("[Darghos Movement] teleportToShrine - Destination shrine pos not found, check action id.")

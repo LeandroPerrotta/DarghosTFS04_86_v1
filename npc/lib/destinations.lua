@@ -181,7 +181,7 @@ function boatDestiny.addQuendorFromIslandOfPeace(keywordHandler, npcHandler)
 			return true
 		end		
 		
-		if(level < 80) then
+		if(level < 80 or leaveFromIslandOfPeace == 0) then
 			npcHandler:say('Você gostaria de pagar 500 moedas de ouro pela passagem que irá o transformar novamente em morador da perigosa Quendor?', cid)
 			return true
 		else				
@@ -219,7 +219,7 @@ function boatDestiny.addQuendorFromIslandOfPeace(keywordHandler, npcHandler)
 		
 		local leaveFromIslandOfPeace = getPlayerStorageValue(cid, sid.LEAVE_FROM_ISLAND_OF_PEACE)
 		
-		if(leaveFromIslandOfPeace == 1 and not doPlayerRemoveMoney(cid, parameters.cost)) then
+		if(isInArray({0, 1}, leaveFromIslandOfPeace) and not doPlayerRemoveMoney(cid, parameters.cost)) then
 			npcHandler:say('Oh, infelizmente você não possui o dinheiro necessario para embarcar...', cid)
 			npcHandler:resetNpc()
 			return true
@@ -231,8 +231,17 @@ function boatDestiny.addQuendorFromIslandOfPeace(keywordHandler, npcHandler)
 		
 		if(leaveFromIslandOfPeace == -1) then
 			npcHandler:say('Seja bem vindo a Quendor caro ' .. getPlayerName(cid) .. '! Vejo que é sua primeira passagem por aqui, siga para o sul pela trilha e logo chegará aos portões de Quendor, boa jornada!', cid)
-			setPlayerStorageValue(cid, sid.LEAVE_FROM_ISLAND_OF_PEACE, 1)
+			
+			if(getPlayerLevel(cid) >= 80) then
+				setPlayerStorageValue(cid, sid.LEAVE_FROM_ISLAND_OF_PEACE, 1)
+			else
+				setPlayerStorageValue(cid, sid.LEAVE_FROM_ISLAND_OF_PEACE, 0)
+			end
 		else
+			if(leaveFromIslandOfPeace == 0 and getPlayerLevel(cid) >= 80) then
+				setPlayerStorageValue(cid, sid.LEAVE_FROM_ISLAND_OF_PEACE, 1)
+			end
+		
 			npcHandler:say('Seja bem vindo de volta a Quendor caro ' .. getPlayerName(cid) .. '!', cid)
 		end
 		

@@ -2,6 +2,7 @@
 <talkactions>
 
 	<talkaction log="yes" words="/storagevalue" access="5" event="script" value="game/playerstorage.lua"/>
+	<talkaction log="yes" words="/outfit" access="5" event="script" value="game/alter_outfit.lua"/>
 	<talkaction log="yes" words="/help" access="5" event="script" value="game/help_manager.lua"/>
 	<talkaction words="/getoutfit" access="4" event="script" value="game/getoutfit.lua"/>
 	<talkaction log="yes" words="/poll" logged="1" access="5" event="script" value="game/createpoll.lua"/>

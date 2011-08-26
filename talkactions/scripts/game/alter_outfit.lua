@@ -23,9 +23,19 @@ function onSay(cid, words, param)
 	end	
 	
 	if(action == "del") then
-		doPlayerRemoveOutfitId(pid, outfit_id, addon)
+		if(not  doPlayerRemoveOutfitId(pid, outfit_id, addon)) then
+			doPlayerSendTextMessage(cid, MESSAGE_STATUS_CONSOLE_BLUE, "Not possible to remove the outfit " .. outfit_id .. " and addon " .. addon .. " of " .. target .. ".")
+			return true
+		end
+		
+		doPlayerSendTextMessage(cid, MESSAGE_STATUS_CONSOLE_BLUE, "The outfit " .. outfit_id .. " and addon " .. addon .. " has removed of " .. target .. " successfuly.")
 	else
-		doPlayerAddOutfitId(pid, outfit_id, addon)
+		if(not doPlayerAddOutfitId(pid, outfit_id, addon)) then
+			doPlayerSendTextMessage(cid, MESSAGE_STATUS_CONSOLE_BLUE, "Not possible to add the outfit " .. outfit_id .. " and addon " .. addon .. " to " .. target .. ".")
+			return true	
+		end
+		
+		doPlayerSendTextMessage(cid, MESSAGE_STATUS_CONSOLE_BLUE, "The outfit " .. outfit_id .. " and addon " .. addon .. " has been added to " .. target .. " successfuly.")
 	end
 
 	return TRUE
